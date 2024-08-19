@@ -1,0 +1,69 @@
+﻿@model IPublishedContent
+
+
+@{
+
+    string Title = Model.HasValue("title") ? Model.Value<string>("title") : string.Empty;
+    var useCaseItems = Model.Value<IEnumerable<IPublishedElement>>("useCaseItems");
+}
+<section class="mt-0 py-md-2 w-100 use-case-section">
+    <div class="useCaseHeadline d-flex  w-100 justify-content-center mb-2 pt-4"><h1 class="head-h2">@Title</h1></div>
+    <div class="w-100">
+    <div id="useCaseList" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">       
+            @{
+                var i = 1;
+                var itemcount = useCaseItems.Count();
+            }
+            @foreach (var item in useCaseItems)
+            {
+                if(i==1 || i==4){
+                    var active="active";
+                    if(i > 1){
+                      active="";
+                    }
+                    @:<div class="carousel-item @active">
+                    @:<div class="row justify-content-center">
+                }
+                @:<div class="col-sm-12 col-md-3 col-lg-3 use-case-col">
+                @:<div class="use-case-inner">
+                if (item.Value("link")!=null && item.Value<IEnumerable<Link>>("link").FirstOrDefault()!=null)
+                {
+                    var linkValue = item.Value<IEnumerable<Link>>("link").FirstOrDefault();
+                    @:<a href="@linkValue.Url" class=uc-link-title>
+                }
+                if(item.HasValue("title"))
+                {
+                    <h2 class="uc-title mb-4">@item.Value("title")</h2>
+                }
+                if (item.HasValue("description"))
+                {
+                    <div class="uc-text mb-3">
+                        @Html.Raw(item.Value("description"))
+                    </div>
+                }
+                if (item.Value("link")!=null && item.Value<IEnumerable<Link>>("link").FirstOrDefault()!=null)
+                {
+                    @:</a>
+                }
+                @:</div>
+                @:</div>
+                if(i==3 || i==itemcount){
+                    @:</div>
+                    @:</div>
+                }
+                i++;
+            }
+
+        </div>
+       
+        <button class="carousel-control-prev" type="button" data-bs-target="#useCaseList" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#useCaseList" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>     
+    </section>

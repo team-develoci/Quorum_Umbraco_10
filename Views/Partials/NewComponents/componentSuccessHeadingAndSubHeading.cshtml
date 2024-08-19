@@ -1,0 +1,49 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var allstories = Model.Value<Link>("storiesLink");
+
+    var successtories = Model.Value<List<IPublishedElement>>("successStories");
+}
+
+
+<div class="quorumWrapper margin-bottom-lower">
+    <div class="container desktop-footer qm-grid custom-paragraph">
+
+        <div class="success-stories-Title">@Model.Value("heading")</div>
+        @Html.Raw(Model.Value("subHeading"))
+        <div class="row QuorumCards">
+            @foreach (var story in successtories)
+            {
+                var logo = story.Value<IPublishedContent>("logo");
+                var storylink = story.Value<Link>("storyLink");
+            <div class="col-sm-4 success-stories-cards1">
+                <div class="QuorumImg">
+                    @if (logo != null)
+                        {
+                    <picture class="story-img">
+                        <source srcset="@logo.Url()" media="(min-width: 1024px)">
+                        <img loading="lazy" srcset="@logo.Url()" alt="@(logo!=null?logo.Value<string>("altText"): string.Empty)" width="226px" height="86px">
+                    </picture>
+                        }
+                </div>
+                <div class="story-details">
+                    <p class="story-Title"> @story.Value("title") </p>
+                    <blockquote id="story-Description1"> @Html.Raw(story.Value("copy"))</blockquote>
+                    <p id="story-quote"> @story.Value("author")</p>
+                    <i><p id="story-quote">@story.Value("authorTitle")</p></i>
+                    <div class="read-stories1">
+                        <img loading="lazy" src="~/images/Vector-5.jpg" alt = "vector 5" width="10px" height="32px" />
+                        <a href="@storylink.Url" target="@storylink.Target">@storylink.Name</a>
+                        <img loading="lazy" src="~/images/Vector-4.jpg" alt = "vector 4" width="10px" height="32px" />
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        <a class="text-decrotion-none" href="@(allstories!=null && allstories.Url!=null?allstories.Url:"/")"><button class="new-stories">@allstories.Name</button></a>
+    </div>
+</div>
+
+

@@ -1,0 +1,23 @@
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var formGuid = Model.Value<string>("form");
+}
+<div class="c-umbraco-form" data-form-type="@Model.Value("formType")" data-event-label="@Model.Value("eventLabel")" data-loop-analytics-action="@Model.Value("loopAnalyticsAction")">
+
+    @Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = formGuid, DisableDefaultStylesheet = true, FormTheme = "contact-form" })
+
+</div>
+
+
+@* This is used by the tealium tradking script to figurout the form field names*@
+@* TODO: Somehow get the alias out of Umbraco Forms when rendering, but for now this works *@
+@{
+    var service = new global::Umbraco.Forms.Data.Storage.FormStorage();
+    var form = service.GetForm(new Guid(formGuid));
+    var umbracoFormMaping = form.AllFields.Select(s => string.Format("\"{0}\":\"{1}\"", s.Id, s.Alias));
+}
+<script>
+    var umbracoFormMap = {
+        @Html.Raw(string.Join(",", umbracoFormMaping))
+    };
+</script>

@@ -1,0 +1,19 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+    var isExpanded = Model.Value<bool>("isExpanded");
+}
+<div class="c-expandable-copy expandible-state--@(isExpanded ? "expanded" : "collapsed")">
+    
+    <h3><a class="c-expandable-copy__expander-text @(isExpanded ? "minus" : "")" href="#expand" onclick="$(this).parents('.c-expandable-copy').find('.collapsed-section').toggle(); $(this).toggleClass('minus')">@Model.Value("expanderLinkText") @*@expandedState*@</a></h3>
+    
+    @if (Model.HasValue("expandedCopy"))
+    {
+        <div class="collapsed-section" style="@(!isExpanded ? "display:none;" : "")">
+            @Html.Raw(Model.Value("expandedCopy"))
+        </div>
+    }
+</div>
+
+
+

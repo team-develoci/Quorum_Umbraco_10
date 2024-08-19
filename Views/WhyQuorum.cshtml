@@ -1,0 +1,106 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    
+}
+
+@*Marquee (Stats hero #294)*@
+@{
+    var marquee = Model.HasValue("statsMarquee") ? Model.Value<IList<IPublishedContent>>("statsMarquee") : null;
+}
+@if (marquee != null && marquee.Any())
+{
+    @Html.Partial("~/views/partials/newcomponents/ComponentStatsHeroMarquee.cshtml", marquee.First())
+}
+
+@*Top Blade (Storytelling #297)*@
+@*Top Blade*@
+@{
+    var topBlades = Model.Value<IList<IPublishedContent>>("topBlades", new List<IPublishedContent>());
+}
+@Html.Partial("~/Views/Partials/NewComponents/Repeaters/simple.cshtml", new SimpleWrapperModel { ComponentModel = topBlades, ComponentView = "~/Views/Partials/NewComponents/componentStoryTellingBlade.cshtml" })
+
+
+@*Slider*@
+<div class="background-dark padding-md-def-lg-def margin-def c-image-slider">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-10 col-sm-push-1 col-md-8 col-md-push-2 c-image-slider__copy">
+                <h2>@Model.Value("sliderHeadline")</h2>
+                @Html.Raw(Model.Value("sliderCopy"))
+            </div>
+        </div>
+        @{
+            var imageSlider = Model.Value<IList<IPublishedContent>>("sliderComponent");
+        }
+        @if (imageSlider != null && imageSlider.Any())
+        { 
+        @Html.Partial("~/views/partials/newcomponents/componentimageslider.cshtml", imageSlider.First())
+        }
+    </div>
+</div>
+
+@*Middle Blade*@
+@{
+    var middleBlades = Model.Value<IList<IPublishedContent>>("middleBlades", new List<IPublishedContent>());
+}
+@Html.Partial("~/Views/Partials/NewComponents/Repeaters/simple.cshtml", new SimpleWrapperModel { ComponentModel = middleBlades, ComponentView = "~/Views/Partials/NewComponents/componentStoryTellingBlade.cshtml" })
+
+
+
+
+@*Features Blade*@
+@{
+    var featuresBlade = Model.Value<IPublishedContent>("featuresBlade");
+}
+@if (featuresBlade != null)
+{
+    @Html.Partial("~/views/partials/newcomponents/" + featuresBlade.DocumentTypeAlias + ".cshtml", featuresBlade)
+}
+
+
+
+    @*Testimonials*@
+    <div class="padding-md-def-lg-def margin-def">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-push-2 c-testimonial-tile__copy">
+                    <h2>@Model.Value("testimonialsHeadline")</h2>
+                    @Html.Raw(Model.Value("testimonialsCopy"))
+                </div>
+            </div>
+            @{
+                var testimonials = Model.Value<IList<IPublishedContent>>("testimonials", new List<IPublishedContent>());
+            }
+            @if (testimonials != null && testimonials.Any())
+            {
+                @Html.Partial("~/views/partials/newcomponents/ComponentTestimonialTileBlade.cshtml", testimonials.First())
+            }
+
+        </div>
+    </div>
+
+    @*Video Blade*@
+    @{
+        var videoBlade = Model.Value<IList<IPublishedContent>>("videoBlade", new List<IPublishedContent>()).FirstOrDefault(); ;
+    }
+    @if (videoBlade != null)
+    {
+        @Html.Partial("~/views/partials/newcomponents/ComponentVideoBlade.cshtml", videoBlade)
+    }
+
+
+
+    @*Contact Blade*@
+    @{
+        var contactBlade = Model.Value<IPublishedContent>("contactBlade");
+    }
+    @if (contactBlade != null)
+    {
+        <div class="padding-md-def-def-def">
+            @Html.Partial("~/views/partials/newcomponents/" + contactBlade.DocumentTypeAlias + ".cshtml", contactBlade)
+        </div>
+    }
+
+
+

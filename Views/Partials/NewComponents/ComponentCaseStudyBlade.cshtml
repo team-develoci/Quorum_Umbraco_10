@@ -1,0 +1,40 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta1 = Model.Value("button");
+    
+    var backgroundImage = Model.Value("backgroundImage");
+    var logoImage = Model.Value("logo");
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId + " .c-case-study-blade__wrapper")
+
+<div id="@elemntId" class="c-case-study-blade">
+    <div class="c-case-study-blade__wrapper">
+        <div class="container">
+            <h1>@Model.Value("headline")</h1>
+            <div class="row">
+                <div class="col-sm-7 col-sm-push-1 case-study-overview">
+                    @if(logoImage != null)
+                    { 
+                    <img loading="lazy" src="@logoImage.Url" alt="@(!string.IsNullOrEmpty(logoImage.Value<string>("altText"))?logoImage.Value<string>("altText"): string.Empty)"/>
+                    }
+                    <blockquote class="c-case-study-blade__wrapper__quote">
+                       @Model.Value("quoteText")*@
+                    </blockquote>
+                    <p class="x-small">@Model.Value("citation")</p>
+                    <p class="small">@Html.Raw(Model.Value("copy"))</p>
+                    @if (cta1 != null)
+                    {
+                        <a href="@cta1.Link" target="@cta1.Target" class="btn btn-default">@cta1.Caption</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="blue-layer-large"></div>
+</div>

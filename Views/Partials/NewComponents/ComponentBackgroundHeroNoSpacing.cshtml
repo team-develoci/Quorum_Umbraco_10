@@ -1,0 +1,34 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var heroimage = Model.Value<IPublishedContent>("heroImage");
+    var button = Model.Value("linkButton");
+}
+
+
+<section class="heroImage-wrapper position-relative d-flex justify-content-center hero-bottom ">
+    @if(heroimage!=null){
+     <img loading="lazy" class="w-100 h-100" src="@heroimage.Url()" alt="@(!string.IsNullOrEmpty(heroimage.Value<string>("altText")) ?heroimage.Value<string>("altText"): string.Empty)" />
+    }
+    <div class="container-lg position-absolute top-0 px-3 py-5 d-flex align-items-center h-100 w-100 m-auto justify-content-center">
+        <div class="col-xl-10 p-0">
+            <h1 class="head-h1 text-white fw-200 mb-3">
+                @Html.Raw(Model.Value("headline"))
+            </h1>
+            <div class="paragraph-text text-white fw-500 mb-3">
+                @Html.Raw(Model.Value("copy"))
+                @if (button != null)
+                {
+                    try
+                    {
+                        var btn = (List<Link>)button;
+                        <a href="@btn.FirstOrDefault().Url" class="btn btnOrange d-flex justify-content-center align-items-center">@btn.FirstOrDefault().Name</a>
+                    }
+                    catch
+                    { }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+

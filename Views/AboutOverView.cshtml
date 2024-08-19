@@ -1,0 +1,74 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+@{
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("hero");
+    var copy1 = Model.Value<IList<IPublishedElement>>("headingCopy");
+    var copy2 = Model.Value<IEnumerable<IPublishedElement>>("HeadingText");
+    var solutionmenus = Model.Value<IList<IPublishedElement>>("NavigationMenu");
+    var cards = Model.Value<IList<IPublishedElement>>("hubCard");
+}
+
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentBackgroundHeroNoSpacing.cshtml", HeroComponent.FirstOrDefault())
+}
+<section class="about-us-page py-lg-4 py-5">
+    <div class="container-lg">
+        <div class="row">
+
+            <div class="col-md-3">
+
+                @if (solutionmenus != null)
+                {
+                    foreach (var menu in solutionmenus)
+                    {
+                        @Html.Partial("~/Views/ComponentVerticalNavigation.cshtml", menu);
+                    }
+                }
+            </div>
+            <div class="col-md-9">
+                @if (copy1 != null)
+                {
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentHeadingOverview.cshtml", copy1.FirstOrDefault())
+                }
+                @if (cards != null)
+                {
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentHubTileCards.cshtml", cards.FirstOrDefault())
+                }
+                @if (copy2 != null)
+                {
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentHeadingWithMultiText.cshtml", copy2.FirstOrDefault())
+                }
+            </div>
+        </div>
+    </div>
+
+</section>
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('a[name="biographymodal"]').on('click',function () {
+                var divname=this.attributes.name1.value;
+                var hl = $('p[name="' + divname + '-hl"]').text();
+                var d = $('p[name="' + divname + '-d"]').text();
+                var b = $('p[name="' + divname + '-b"]').text();
+                var img = $('p[name="' + divname + '-img"]').text();
+
+                $('#modal-img').attr('src', img);
+                $('#modal_h').text(hl);
+                $('#modal_d').text(d);
+                $('#modal_b').text(b);
+
+                $('#biographyModalToggle').modal('show');
+
+            });
+            $('#biomodalclose').on('click', function () {
+                $('#biographyModalToggle').modal('hide');
+            })
+        });
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    if (HttpContextAccessor != null)
+    {
+        HttpContextAccessor.HttpContext.Response.ContentType = "text/xml";    
+    }
+    var blogRoot = Model.AncestorOrSelf("BlogList");
+    var scheme = HttpContextAccessor.HttpContext.Request.Scheme;
+    var host = HttpContextAccessor.HttpContext.Request.Host;
+    var baseUrl = $"{scheme}://{host}";
+}<rss version="2.0"
+      xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      xmlns:atom="http://www.w3.org/2005/Atom"
+      xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+      xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+    <channel>
+        <title>@blogRoot.Value("headline")</title>
+        <atom:link href="@baseUrl" rel="self" type="application/rss+xml" />
+        <link>@baseUrl</link>
+        <description>@blogRoot.Value("subhead")</description>
+        <lastbuilddate>@DateTime.Now.ToString("r")</lastbuilddate>
+        <language>CultureInfo.CurrentCulture</language>
+        <sy:updateperiod>hourly</sy:updateperiod>
+        <sy:updatefrequency>1</sy:updatefrequency>
+        @foreach (var item in blogRoot.Descendants("BlogPost"))
+        {
+            IPublishedContent author = null;
+            var categoryName="";
+            if (item.HasProperty("category") && item.HasValue("category")){
+                IPublishedContent category = item.Value<IPublishedContent>("category");
+                categoryName = category.Name;
+            }
+            if (item.HasValue("author"))
+            {
+                author = Umbraco.Content(item.Value("author"));
+            }
+            var publishedDate = item.Value<DateTime>("itemDate") != DateTime.MinValue ? item.Value<DateTime>("itemDate") : item.CreateDate;
+
+            <item>
+                <title>@item.Value("headline")</title>
+                @Html.Raw("<link>" + @item.Url(mode: UrlMode.Absolute) + "</link>")
+                <pubdate>@publishedDate.ToString("r")</pubdate>
+                <dc:creator><![CDATA[@(author != null ? author.Name : "")]]></dc:creator>
+                <category><![CDATA[@categoryName]]></category>                
+                <description><![CDATA[@Html.Raw(item.Value("teaserText"))]]></description>
+                <content:encoded>
+                    <![CDATA[@Html.Raw(item.Value("bodyContent"))]]>
+                </content:encoded>
+            </item>
+
+        }
+    </channel>
+</rss>

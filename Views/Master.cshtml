@@ -1,0 +1,160 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using System.Globalization
+@using System.Web.Optimization
+@using ClientDependency.Core.Mvc
+@using ClientDependency.Core
+@{
+    Layout = null;
+    var homePage = Model;
+    var rootId = Model.Id;
+    var configuration = UmbracoContext.ContentCache.GetByRoute(rootId + "/configuration");
+}
+@*Style Sheets & Java Script*@
+@{
+    Html.RequiresCss("~/css/styles1.css", 1);
+    Html.RequiresCss("~/css/header.css",2);
+    Html.RequiresCss("~/css/styles2.css", 3);
+    Html.RequiresCss("~/css/Footer.css", 4);
+
+    Html.RequiresJs("~/scripts/components/global.js", 1);
+}
+<!Doctype HTML5>
+<html>
+@MvcHtmlString.Create("<!--" + DateTime.Now.ToString(CultureInfo.CurrentCulture) + "-->")
+<head>
+    @*Move GTM script below @ line 112 *@
+    @{
+        // Is this a page or year request?
+        var page = 1; int.TryParse(Request.QueryString["page"], out page);
+        var y = 1; int.TryParse(Request.QueryString["y"], out y);
+
+        //Cannonical Tag Var
+        var canonicalTag = Request.Url.GetLeftPart(UriPartial.Authority) + Request.FilePath;
+        var pageUsAlternateUrl = Request.Url.GetLeftPart(UriPartial.Authority) + Request.FilePath;
+        var pageDefaultAlternateUrl = Request.Url.GetLeftPart(UriPartial.Authority) + Request.FilePath;
+        var paginatedTitle = "";
+        if (page > 1)
+        {
+            paginatedTitle = " Page " + page;
+        }
+        else if (y > 1)
+        {
+            paginatedTitle = " " + y;
+        }
+    }
+    <title>@Model.Value("pageTitle")@paginatedTitle </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no" />
+    <meta name="description" content="@Model.Value("pageDescription")@paginatedTitle" />
+    <meta name="keywords" content="@Model.Value("pageKeywords")" />
+    @*Social Media Tags*@
+    @Html.Partial("~/Views/Partials/Social/SocialMetaData.cshtml")
+    @if (configuration != null)
+    {
+        @* Google Site Verfication *@
+        if (configuration.HasProperty("googleSiteVerification") && configuration.HasValue("googleSiteVerification"))
+        {
+            <meta name="google-site-verification" content="@configuration.Value("googleSiteVerification")" />
+        }
+        @*Custom <meta> tags*@
+        if (configuration.HasProperty("pageMetaData") && configuration.HasValue("pageMetaData"))
+        {
+            @Html.Raw(@configuration.Value("pageMetaData"))
+        }
+    }
+    @*Canonical URLs*@
+    @if (Model.HasValue("pageCanonicalTag") && !String.IsNullOrEmpty(Model.Value("pageCanonicalTag").ToString()))
+    {
+        //Explicit override
+        canonicalTag = Model.Value("pageCanonicalTag").ToString();
+
+    }
+    else if (y > 1 || page > 1)
+    {
+        //Blog and Press pages
+        canonicalTag = @Request.Url.GetLeftPart(UriPartial.Authority) + Request.Url.PathAndQuery;
+    }
+    <link rel="canonical" href="@canonicalTag" />
+
+    @*hreflang values*@
+    @if (Model.HasValue("alternateUrl") && !String.IsNullOrEmpty(Model.Value("alternateUrl").ToString()))
+    {
+        // Explicit Override
+        var alternateUrl = Model.Value("alternateUrl").ToString();
+        pageUsAlternateUrl = alternateUrl;
+        pageDefaultAlternateUrl = alternateUrl;
+    }
+    else if (y > 1 || page >= 1)
+    {
+        pageUsAlternateUrl = @Request.Url.GetLeftPart(UriPartial.Authority) + Request.Url.PathAndQuery;
+        pageDefaultAlternateUrl = @Request.Url.GetLeftPart(UriPartial.Authority) + Request.Url.PathAndQuery;
+    }
+    <link rel="alternate" hreflang="en-US" href="@pageUsAlternateUrl" />
+    <link rel="alternate" hreflang="x-default" href="@pageDefaultAlternateUrl" />
+    <link rel="shortcut icon" href="@Request.Url.GetLeftPart(UriPartial.Authority)/favicon.ico" type="image/x-icon" />
+    <link href=" https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+    @*<!-- Bootstrap 5 CDN Links -->*@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    @Html.RenderCssHere()
+    @Html.Partial("~/Views/Partials/_LDJson.cshtml")
+    @*GTM scipt here.. *@
+    @*Html.Partial("~/views/partials/analytics/GoogleTagManagerHead.cshtml")*@
+</head>
+<body>
+
+    @if (Model.HasValue("CustomHTML") && !String.IsNullOrEmpty(@Model.Value("CustomHTML").ToString()))
+    {
+        @Html.Raw(@Model.Value("CustomHTML"))
+    }
+
+    @*moving gtm script @ line 153*@
+
+    @{
+
+        var siteSelectionMessage = UmbracoContext.ContentCache.GetByRoute(rootId + "/configuration/global-elements/site-selection-message");
+        if (ViewBag.ContentOnly != true && siteSelectionMessage != null && siteSelectionMessage.GetTemplateAlias() != string.Empty)
+        {
+
+            @Html.Partial("~/views/partials/newcomponents/" + siteSelectionMessage.GetTemplateAlias() + ".cshtml", siteSelectionMessage)
+        }
+    }
+
+    @if (ViewBag.ContentOnly != true)
+    {
+        @Umbraco.RenderMacro("MainNavigation")
+        <main role="main" class="content @Model.GetTemplateAlias()">
+            @RenderSection("Marquee", false)
+            @RenderBody()
+        </main>
+        @Umbraco.RenderMacro("MainFooter")
+    }
+    else
+    {
+        @RenderBody()
+    }
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+    @Html.RenderJsHere()
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    @*<!-- Vidyard Player -->*@
+    <script type="text/javascript" async src="https://play.vidyard.com/embed/v4.js"></script>
+    @*<!-- Qualified -->*@
+    <script>
+        (function(w,q){w['QualifiedObject']=q;w[q]=w[q]||function(){
+        (w[q].q=w[q].q||[]).push(arguments)};})(window,'qualified')
+    </script>
+    <script async src="https://js.qualified.com/qualified.js?token=Bmb8ErCixHzAHKdB"></script>
+    @*<!-- End Qualified -->*@
+    @*UF RECO EMBED WIDGET*@
+    @{  var enableUberFlip = 0;
+        if(Model.HasValue("enableDiv")){
+            enableUberFlip = (int)Model.Value("enableDiv");
+        }
+        if(enableUberFlip == 1){
+            @Html.Raw(Model.Value("uberflipCode"))
+        }
+    }
+    @Html.Partial("~/Views/Partials/Analytics/PardotTracking.cshtml")
+    @Html.Partial("~/views/partials/analytics/GoogleTagManagerHead.cshtml")
+    @*@Html.Partial("~/Views/Partials/Analytics/GoogleTagManagerBody.cshtml")*@
+    @RenderSection("Scripts", false)
+</body>
+</html>

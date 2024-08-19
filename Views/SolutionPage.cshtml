@@ -1,0 +1,32 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("hero");
+    var cat = Model.Value<IList<IPublishedElement>>("cAT");
+    var parent = Model.Parent;
+}
+
+@{
+    if (parent != null)
+    {
+        <p class="solution-breadcrumbs"><a href="@parent.Url">@parent.Name</a>
+        <span class="solution-span">/</span>@Model.Name</p>
+    }
+}
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentSubHeroBackground.cshtml", HeroComponent.FirstOrDefault())
+}
+
+<div class="solution-margin sub-solution-wrapper">
+
+    @if (cat != null && cat.Any())
+    {
+        @Html.Partial("~/Views/Partials/NewComponents/Repeaters/CATLinkWithText.cshtml", new SimpleWrapperModel { ComponentModel = cat, ComponentView = "~/Views/Partials/NewComponents/ComponentCATLinkWithText.cshtml" })
+    }
+
+</div>
+
+
+
+

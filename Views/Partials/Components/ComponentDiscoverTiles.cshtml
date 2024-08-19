@@ -1,0 +1,48 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+	var heading = Model.Value<String>("heading");
+	var tiles = Model.Value<IList<IPublishedElement>>("tiles");
+	var itemsPerRow = Model.Value<int>("itemsPerRow");
+}
+<section class="discover-tiles">
+@if(heading != null){
+	<div class="discover-heading"><h1>@heading</h1></div>
+}
+@if(tiles != null){
+
+	int count = tiles.Count();
+	int item = 0;
+	foreach (var tile in tiles)
+    {
+		var header = tile.Value("heading");
+		var text = tile.Value("text");
+		var action = tile.Value<IEnumerable<Link>>("action").FirstOrDefault();
+		var image = tile.Value<MediaWithCrops>("image");
+			
+		if (item % itemsPerRow == 0) // Check if it's the first item of a row (multiple of 3)
+		{
+			@:<div class="discover-tiles-wrap">  
+		}
+		<div class="discover-tile" style="width:calc(100%/@itemsPerRow)">
+			@if(image != null){
+				var imageUrl = image.Content.Url();
+				var imageAlt = image.Content.Value("altText");
+				 <img loading="lazy" src="@imageUrl" alt="@imageAlt"/>
+			}
+			<div class="discover-tile-text">
+				<h2 class="discover-tile-h1">@header</h2> <!-- Add the 'bar' class here -->
+				<p>@text</p>
+				@if(action != null){
+					<a href="@action.Url" target="@action.Target" target="_blank"><h3>@action.Name</h3></a>
+				}
+			</div>
+		</div>
+		if (item == count - 1 || (item + 1) % itemsPerRow == 0) // Check if it's the last item in the row
+		{
+			@:</div>
+		}
+		item++;
+	}
+}
+</section>

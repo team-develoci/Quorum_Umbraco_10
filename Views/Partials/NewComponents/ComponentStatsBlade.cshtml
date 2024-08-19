@@ -1,0 +1,29 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    //var stats = Model.Value<IList<IPublishedContent>>("stats");
+}
+
+@*<div class="c-stats-blade">
+    <div class="container">
+        <div class="row flex flex-justify-center">
+            @foreach (var stat in stats)
+            {
+                <div class="c-stats-blade__stat col-sm-4">
+                    @if (stat.HasValue("statValue"))
+                    { <span class="stat-number">@Html.Raw(stat.Value("statValue"))</span>}
+                    @if (stat.HasValue("statValueSuperscript"))
+                    {  <span class="stat-sup">@Html.Raw(stat.Value("statValueSuperscript"))</span> }
+                    @if (stat.HasValue("statDescription"))
+                    {<span class="stat-copy col-xs-10 col-sm-12">@Html.Raw(stat.Value("statDescription"))</span> }
+                </div>
+            }
+        </div>
+    </div>
+</div>*@
+
+<h1 style="color:red">Nested Content Need to be Fixed!!</h1>
+
+

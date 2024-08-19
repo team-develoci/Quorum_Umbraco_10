@@ -1,0 +1,128 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var resourceList = Model.Content.AncestorOrSelf("ResourceList");
+    var pressReleaseList = resourceList.FollowingSibling("PressReleaseList");
+}
+
+<div class="container-fluid featured-resources">
+    <div class="container">
+        <div class="row">
+            <h1 class="text-center resource-tile-head">@resourceList.GetPropertyValue("headline")</h1>
+        </div>
+        @{
+            var featuredResourcesIds = resourceList.GetPropertyValue<string>("featuredResources").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+            var featuredResources = Umbraco.Content(featuredResourcesIds).Where(x => x != null);
+        }
+
+        @Html.Partial("~/Views/Partials/NewComponents/repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = featuredResources, ComponentView = "~/Views/Partials/NewComponents/ComponentResourceTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+
+    </div>
+</div>
+
+
+@{
+    List<IPublishedContent> resources = new List<IPublishedContent>();
+    
+    foreach (var child in resourceList.Children)
+    {
+        resources.AddRange(child.Children);
+    }
+    foreach (var child in pressReleaseList.Children.Where("includeResourceList == true"))
+    {
+        resources.Add(child);
+    }
+    
+    resources = resources.OrderByDescending(x => x.HasValue("itemDate") ? x.GetPropertyValue<DateTime>("itemDate") : x.UpdateDate).ToList();    
+}
+
+<section class="resource-filter">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <span class="filter-label">Filter Resources</span>
+                
+                <div class="select-arrow">
+                    <select id="filter-content-type" class="form-control">
+                        <option value="">All Content Types</option>
+                        @foreach (var typeId in resources.Select(s => s.Parent.Id).Distinct())
+                        {
+                            var type = Umbraco.Content(typeId);
+                            <option value="@type.Id" @(type.Id == Model.Content.Id ? "selected=\"selected\"" : "")>@type.Name</option>
+                        }
+                    </select>
+                </div>
+                @*<div class="select-arrow">
+                    <select id="filter-industry" class="form-control">
+                        <option value="">All Industries</option>
+                        @foreach (IPublishedContent industries in Umbraco.Content(resources.SelectMany(s => s.GetPropertyValue<string>("industrySegment").Split(',')).Distinct()))
+                        {
+                            <option value="@industries.Id">@industries.Name</option>
+                        }
+                    </select>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+
+    <div class="row filtered-resources">
+        @Html.Partial("~/Views/Partials/NewComponents/repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = resources, ComponentView = "~/Views/Partials/NewComponents/ComponentResourceTile.cshtml", SColumns = 3, ComponentSettings = new { }, NoRowWrappers = true })
+    </div>
+    <div class="row no-results text-center" style="display:none;">
+        <h3>No resources match your search criteria</h3>
+    </div>
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            $("#filter-content-type,#filter-industry").change(filterResources);
+            filterResources();
+        });
+
+        function filterResources()
+        {
+            var industryValue = $("#filter-industry").val();
+            var resourceTypeValue = $("#filter-content-type").val();
+
+            //console.log("ind:" + industryValue + " type:" + resourceTypeValue);
+
+            var selector = ".filtered-resources .resource-tile";
+            if (industryValue != null && industryValue.length > 0)
+            {
+                selector += ".resource-tile--industry-" + industryValue;
+                
+            }
+            if (resourceTypeValue != null && resourceTypeValue.length > 0)
+            {
+                selector += ".resource-tile--type-" + resourceTypeValue;
+            }
+            console.log(selector);
+
+            $(".filtered-resources .resource-tile").each(function (i, item) {
+                $(item).parent().hide();
+            });
+            $(selector).each(function (i, item) {
+                $(item).parent().show();
+            });
+            if ($(selector).length > 0)
+            {
+                $(".no-results").hide();
+            }
+            else
+            {
+                $(".no-results").show();
+            }
+
+            
+        }
+
+
+    </script>
+}

@@ -1,0 +1,52 @@
+﻿@model IPublishedContent
+
+
+@{
+	var link = Model.Value<IEnumerable<Link>>("link");
+    var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
+    var imgPositionClass = Model.Value<string>("imagePositionClass");
+    var widthClass = Model.Value<string>("widthClass");
+    var sectionClass = "featured-content-default";
+    var imageClass = "col-md-6 p-0";
+    if(!String.IsNullOrEmpty(widthClass)){
+        sectionClass = widthClass;
+    }
+    if(!String.IsNullOrEmpty(imgPositionClass)){
+        imageClass = imageClass+" "+imgPositionClass;
+    }
+}
+
+
+<section class="@sectionClass">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 p-0">
+                <div class="blueBox h-100">
+					@if (Model.HasValue("title"))
+                    {
+                       <h2 class="head-h2 fw-200 text-white mb-3 mb-md-5"> @Model.Value("title")</h2>
+                    }
+                    @if (Model.HasValue("content"))
+                    {
+                        <h5 class="text-white head-h5 fw-300">
+                            @Html.Raw(Model.Value("content"))
+                        </h5>
+                    }
+                    @if (link != null && link.Any() )
+                    {
+						var itemlink = link.FirstOrDefault();
+                        <div class="col-md-4">
+                            <a href="@itemlink.Url" target="@itemlink.Target" class="learnBtn">@itemlink.Name</a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="@imageClass">
+                @if (thumbnail != null)
+                {
+                    <img loading="lazy" class="w-100 h-100 object-fit-cover" src="@thumbnail.Content.Url()" alt="@thumbnail.Content.Value("altText")"/>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,12 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+Layout = "Master.cshtml";
+    ViewBag.ContentOnly = true;
+}
+<div style="min-height:150px;" class="text-center"><h1>@Model.ContentType.</h1></div>
+@Html.Partial("~/views/partials/newcomponents/" + Model.ContentType.Alias + ".cshtml", Model.ContentType)
+
+<style>
+    body {background-color:white;}
+</style>

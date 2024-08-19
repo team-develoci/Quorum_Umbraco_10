@@ -1,0 +1,92 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+
+@section Marquee {
+    @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("marquee"), ComponentView = "~/Views/Partials/Components/skewedMarquee.cshtml", ComponentSettings = new { IsH1 = true, MarqueeType = "primary" } })
+}
+
+@if ((Model.Content.HasProperty("benefitsHead") && Model.Value<ArchetypeModel>("benefitsHead").Count() > 0) || (Model.Content.HasProperty("benefits") && Model.Value<ArchetypeModel>("benefits").Count() > 0))
+{
+    var headlineStyle = Model.Value<bool>("featuresBlockHeaderStyle") ? "font--robo-reg-18" : "";
+
+    <section class="container features-blade">
+        <div class="row">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("benefitsHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { } })
+        </div>
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("benefits"), ComponentView = "~/Views/Partials/Components/FeatureImage.cshtml", SColumns = 2, MColumns = 4, ComponentSettings = new { ImageCropHeight = (int?)85, HeadlineStyle = headlineStyle } })
+    </section>
+}
+
+<section class="container-fluid">
+    <div class="row">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("demoBlade"), ComponentView = "~/Views/Partials/Components/DemoBlade.cshtml", ComponentSettings = new { } })
+    </div>
+</section>
+
+@{
+    var resourceIds = Model.Value<string>("resources").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+    var resources = Umbraco.Content(resourceIds).Where(x => x != null);
+}
+@if (resources.Any())
+{
+
+    <section class="container">
+        <div class="row">
+            <h2 class="text-center resource-tile-head">@Model.Value("resourceHeadline")</h2>
+            @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = resources, ComponentView = "~/Views/Partials/NewComponents/ComponentResourceTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+        </div>
+    </section>
+
+    <div class="container">
+        <hr class="row" />
+    </div>
+}
+
+
+<section class="container">
+    <div class="row larger">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("featuresHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { } })
+    </div>
+
+    @Html.Partial("~/Views/Partials/Components/Wrappers/Grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("features"), ComponentView = "~/Views/Partials/Components/StoryTellingImageCopy.cshtml", ComponentSettings = new { ImageCols = 5 } })
+
+
+
+    <div class="container">
+        <hr class="row" />
+    </div>
+</section>
+
+
+<section class="container segment-blade icon-blocks">
+    <div class="row larger">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("segmentsHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { } })
+    </div>
+    <div class="row">
+        @{
+            var businessNeedTileIds = Model.Value<string>("segments").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+            var businessNeedTiles = Umbraco.Content(businessNeedTileIds).Where(x => x != null);
+        }
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = businessNeedTiles, ComponentView = "~/Views/Partials/Components/FeatureBusinessSection.cshtml", SColumns = 3, ComponentSettings = new { HideDescription = true } })
+    </div>
+</section>
+
+
+<section class="contact-container">
+    <div class="container">
+        <div class="row no-margin">
+            @Html.Partial("~/Views/Partials/Components/contactform.cshtml")
+        </div>
+    </div>
+</section>
+
+<script>
+    let solution = document.getElementsByClassName('AllSolutions');
+    let nav = document.getElementById('component-navigation');
+    if (solution) {
+        nav.classList.add('z-index-01')
+    }
+</script>

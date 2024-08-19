@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var image = Model.Value("teaserImage");
+    var arrowImage = Umbraco.Media(Guid.Parse("c7db9812-dfe7-4dbb-968f-6f1e5be9b881"));
+    IPublishedContent teaserImage = Model.Value<IPublishedContent>
+            ("teaserImage");
+    IPublishedContent category = Model.Value<IPublishedContent>("category");
+
+}
+<div class="col-sm-6 col-md-6 col-lg-6 col-xl-4 mb-4">
+    <div class="h-100 bg-white shadow-sm">
+        <img loading="lazy" class="w-100 blog-post-teaser-img" src="@(teaserImage!=null?teaserImage.Url(): string.Empty)" alt="@(teaserImage!=null?teaserImage.Value<string>("altText"): string.Empty)">
+        <div class="content py-5 px-3 pe-5 position-relative">
+            <a href="@Model.Url()" class="text-decoration-none">
+                <div class="sub-head mb-1 secondary-color fw-600">@(category !=null ?category.Name:string.Empty)</div>
+                <p class="paragraph-text dark-blue fw-normal mb-0">"@Model.Value("headline")"</p>
+                <a href="@Model.Url()" class="position-absolute top-0 end-0 mt-4 me-4">
+                    <img src="@(arrowImage!=null?arrowImage.Url(): string.Empty)" alt="@(!string.IsNullOrEmpty(arrowImage.Value<string>("altText"))?arrowImage.Value<string>("altText"): string.Empty)" />
+                </a>
+            </a>
+        </div>
+    </div>
+</div>
+

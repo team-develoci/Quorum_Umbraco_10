@@ -1,0 +1,11 @@
+@*@inherits Umbraco.Web.Macros.PartialViewMacroPage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    //var footerModel = Model.Descendants("componentNavigation");
+    var headerModel = Umbraco.ContentSingleAtXPath("//componentMegaNavigation");
+}
+
+@if (headerModel != null)
+{
+    @Html.Partial("~/views/partials/newcomponents/componentMegaNavigation.cshtml", headerModel)
+}

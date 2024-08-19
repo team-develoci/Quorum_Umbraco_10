@@ -1,0 +1,22 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+
+
+@{
+    var heading = Model.Value<Link>("heading");
+    var subheading = Model.Value<List<Link>>("subHeading");
+}
+<div>
+    @if (heading != null)
+    {
+        <div class="solution-header"><a href="@heading.Url">@heading.Name</a> </div>
+        <ul>
+            @foreach (var subhead in subheading)
+            {
+                <li><a href="@subhead.Url">@subhead.Name</a></li>
+
+            }
+        </ul>
+    }
+</div>
+

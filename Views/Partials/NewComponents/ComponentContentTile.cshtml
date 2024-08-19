@@ -1,0 +1,39 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta = Model.Value<CTA>("link");
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+    var image = Model.Value<IPublishedContent>("image");
+}
+@if (cta != null)
+{
+    //Testing (Will need "alternate text" for the image if we go this route)
+    <div class="c-content-tile">
+        <a href="@cta.Link" target="@cta.Target" class="c-content-tile__link">
+
+            @if (backgroundImage != null)
+            {
+                <img loading="lazy" src="@backgroundImage.GetCropUrl(width: 500)" alt="@(!string.IsNullOrEmpty(backgroundImage.Value<string>("altText"))?backgroundImage.Value<string>("altText"): string.Empty)" class="c-content-tile__background-image" />
+            }
+            <div class="c-content-tile__copy-container">
+                @if (image != null)
+                {
+                    <div class="c-content-tile__feature-image">
+                        <img loading="lazy" src="@image.Url" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)" />
+                    </div>
+                }
+                <p class="c-hub-tile__description">@Model.Value("copy")</p>
+                <div class="btn btn-default">@cta.Caption</div>
+            </div>
+
+        </a>
+    </div>
+
+
+}
+
+
+

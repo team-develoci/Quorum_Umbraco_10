@@ -1,0 +1,87 @@
+﻿@model IPublishedContent
+
+
+@{
+    string marginTopClass = Model.HasValue("marginTopClass") ? Model.Value<string>("marginTopClass") : string.Empty;
+    string columnClass = Model.HasValue("columnClass") ? Model.Value<string>("columnClass") : string.Empty;
+    var featuredItems = Model.Value<IEnumerable<IPublishedElement>>("featuredItems");
+    string colClass = "col-md-8";
+
+    if (columnClass.Equals("relatedProductsTwo"))
+    {
+        colClass = "col-md-6";
+    }
+    else if (columnClass.Equals("relatedProductsThree"))
+    {
+        colClass = "col-md-4";
+
+    }
+    else if (columnClass.Equals("relatedProductsFour"))
+    {
+        colClass = "col-md-3";
+    }
+
+}
+
+<section class="relatedProducts mt-0 @columnClass @marginTopClass">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            @foreach (var item in featuredItems)
+            {
+                var link = item.Value<Link>("link");
+
+                if (columnClass.Equals("relatedProductsOne"))
+                {
+                    <div class="col-lg-8">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                @if (item.HasValue("content"))
+                                {
+
+                                    @Html.Raw(item.Value("content"))
+
+                                }
+                            </div>
+                            @if (link != null)
+                            {
+                                <div class="col-md-4">
+                                    <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (columnClass.Equals("relatedProductsTwo"))
+                {
+                    <div class="col-md-4">
+                        @if (item.HasValue("content"))
+                        {
+
+                            @Html.Raw(item.Value("content"))
+
+                        }
+                        @if (link != null)
+                        {
+                            <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="@colClass">
+                        @if (item.HasValue("content"))
+                        {
+
+                            @Html.Raw(item.Value("content"))
+
+                        }
+                        @if (link != null)
+                        {
+                            <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

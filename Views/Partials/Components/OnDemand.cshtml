@@ -1,0 +1,252 @@
+﻿@model IPublishedContent
+
+
+@{
+}
+
+
+<section class="onDemand mt-120 mb-120">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+
+                @{
+                    var rawitems = Model.Value<IEnumerable<IPublishedElement>>("rowItems");
+
+
+                }
+                @if (rawitems != null && rawitems.Any())
+                {
+                    foreach (var rawItem in rawitems)
+                    {
+                        <div class="row py-md-2 py-3 @(rawItem.HasValue("cssClass")?rawItem.Value("cssClass"):"")">
+                            @{
+                                var elementItems = rawItem.Value<IEnumerable<IPublishedElement>>("onDemandItem");
+                            }
+                            @if (elementItems != null && elementItems.Any())
+                            {
+                                foreach (var elementItem in elementItems)
+                                {
+                                    if (elementItem.ContentType.Alias == "onDemandContentWithLogo")
+                                    {
+                                        <div class="col-md-6 mb-4">
+
+                                            @{
+                                                var image = elementItem.Value<MediaWithCrops>("logoImage");
+                                            }
+
+                                            @if (elementItem.HasValue("logoText"))
+                                            {
+                                                <h2 class="secondaryHeding fw-normal dark-blue mb-3">@elementItem.Value("logoText")</h2>
+
+                                            }
+                                            else if (image != null)
+                                            {
+                                                <div class="image">
+                                                    <img loading="lazy" src="@image.Content.Url()" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"):string.Empty)">
+                                                </div>
+                                            }
+
+                                            @if (elementItem.HasValue("content"))
+                                            {
+                                                <div class="paragraph-text dark-gray">@Html.Raw(elementItem.Value("content"))</div>
+                                            }
+                                            @{
+                                                var linkvalue = elementItem.Value<IEnumerable<Link>>("link").FirstOrDefault();
+
+                                            }
+                                            @if (linkvalue != null && !string.IsNullOrWhiteSpace(linkvalue.Name))
+                                            {
+                                                <a href="@linkvalue.Url" class="learnBtn">@linkvalue.Name</a>
+                                            }
+
+                                        </div>
+                                    }
+                                    else if (elementItem.ContentType.Alias == "onDemandFormBox")
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="blueBox">
+                                                @if (elementItem.HasValue("content"))
+                                                {
+                                                    @Html.Raw(elementItem.Value("content"))
+                                                }
+                                                @{
+                                                    var hideform = elementItem.Value<bool>("hideForm");
+                                                }
+                                                @if (!hideform)
+                                                {
+                                                    <div class="newsLetterForm">
+                                                        <form>
+                                                            <input type="text" placeholder="First name">
+                                                            <input type="email" placeholder="Email address">
+                                                            <button class="btn btnPage btnOrange">Lorem Ipsum</button>
+                                                        </form>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (elementItem.ContentType.Alias == "onDemandBlueBox")
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="blueBox">
+                                                @if (elementItem.HasValue("subTitle"))
+                                                {
+                                                    <p class="paragraph-text fw-600 text-white mt-3 mb-2">@elementItem.Value("subTitle")</p>
+                                                }
+                                                @if (elementItem.HasValue("content"))
+                                                {
+                                                    <div class="paragraph-text text-white fw-normal">@Html.Raw(elementItem.Value("content"))</div>
+                                                }
+                                                @{
+                                                    var linkfield = elementItem.Value<IEnumerable<Link>>("link").FirstOrDefault();
+                                                }
+                                                @if (linkfield != null && !string.IsNullOrWhiteSpace(linkfield.Name))
+                                                {
+                                                    <button class="btn btnPage btnOrange">@linkfield.Name</button>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (elementItem.ContentType.Alias == "onDemandContentWithImage")
+                                    {
+                                        <div class="col-md-6 mb-md-5 mb-4">
+                                            @{
+                                                var imageLogo = elementItem.Value<MediaWithCrops>("logoImage");
+                                            }
+
+                                            @if (elementItem.HasValue("title"))
+                                            {
+                                                <h2 class="head-h2 fw-normal dark-blue mb-3">@elementItem.Value("title")</h2>
+
+                                            }
+                                            else if (imageLogo != null)
+                                            {
+                                                <div class="image">
+                                                    <img loading="lazy" src="@imageLogo.Content.Url()" alt="@(!string.IsNullOrEmpty(imageLogo.Value<string>("altText"))?imageLogo.Value<string>("altText"):string.Empty)" />
+                                                </div>
+                                            }
+
+                                            @if (elementItem.HasValue("content"))
+                                            {
+                                                <div class="paragraph-text">@Html.Raw(elementItem.Value("content"))</div>
+                                            }
+                                        </div>
+                                        <div class="col-md-6 mb-md-5 mb-4">
+                                            @{
+                                                var image = elementItem.Value<MediaWithCrops>("thumbnail");
+                                            }
+                                            @if (image != null)
+                                            {
+                                                <img loading="lazy" class="fullWidth mt-md-5 mt-0" src="@image.Content.Url()" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"):string.Empty)">
+                                            }
+
+                                        </div>
+                                    }
+
+
+                                    else if (elementItem.ContentType.Alias == "onDemandContentWithLogoImage")
+                                    {
+
+                                        <div class="col-md-6">
+                                            @{
+                                                var image = elementItem.Value<MediaWithCrops>("logoImage");
+                                            }
+
+                                            @if (elementItem.HasValue("logoText"))
+                                            {
+                                                <h2 class="head-h2 fw-normal dark-blue mb-3">@elementItem.Value("logoText")</h2>
+
+                                            }
+                                            else if (image != null)
+                                            {
+                                                <div class="image">
+                                                    <img loading="lazy" src="@image.Content.Url" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("alt"):string.Empty)">
+                                                </div>
+                                            }
+
+                                            @if (elementItem.HasValue("content"))
+                                            {
+                                                <div class="paragraph-text">
+                                                    @Html.Raw(elementItem.Value("content"))
+                                                </div>
+                                            }
+
+                                        </div>
+
+                                    }
+
+                                    else if (elementItem.ContentType.Alias == "onDemandLogoWithContent")
+                                    {
+                                        if (elementItem.HasValue("cSSClass"))
+                                        {
+
+                                            if (elementItem.Value("cSSClass").ToString() == "align-items-center")
+                                            {
+                                                <div class="col-md-6">
+                                                    @{
+                                                        var image = elementItem.Value<MediaWithCrops>("logoImage");
+                                                    }
+
+                                                    @if (elementItem.HasValue("logoText"))
+                                                    {
+                                                        <h2 class="head-h2 fw-normal dark-blue mb-3">@elementItem.Value("logoText")</h2>
+
+                                                    }
+                                                    else if (image != null)
+                                                    {
+                                                        <div class="image">
+                                                            <img loading="lazy" src="@image.Content.Url()" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)">
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @if (elementItem.HasValue("content"))
+                                                    {
+                                                        <div class="paragraph-text">
+                                                            @Html.Raw(elementItem.Value("content"))
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+
+                                            else if (elementItem.Value("cSSClass").ToString() == "justify-content-center")
+                                            {
+                                                <div class="col-md-8">
+                                                    @{
+                                                        var image = elementItem.Value<MediaWithCrops>("logoImage");
+                                                    }
+
+                                                    @if (elementItem.HasValue("logoText"))
+                                                    {
+                                                        <h2 class="head-h2 fw-normal dark-blue mb-3">@elementItem.Value("logoText")</h2>
+
+                                                    }
+                                                    else if (image != null)
+                                                    {
+                                                        <div class="image">
+                                                            <img loading="lazy" src="@image.Content.Url()" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"):string.Empty)">
+                                                        </div>
+                                                    }
+                                                    @if (elementItem.HasValue("content"))
+                                                    {
+                                                        <div class="paragraph-text">
+                                                            @Html.Raw(elementItem.Value("content"))
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>

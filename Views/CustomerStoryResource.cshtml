@@ -1,0 +1,104 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+<section class="container">
+    <h1 class="text-center margin-bottom">@Model.Value("headline")</h1>
+    <div class="row col-lg-12 customer-story-marquee margin-bottom">
+        @if (Model.HasValue("videoUrl"))
+        {
+            <div class="col-sm-6 customer-story-video">
+                <div class="video-container">
+
+                    <iframe src="@Model.Value("videoUrl")" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen width="640" height="388"></iframe>
+                    <script src="//fast.wistia.net/assets/external/E-v1.js" async></script>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                @{
+            var logoId = Model.Value<string>("logoImage");
+            IPublishedContent logo = logoId != null ? Umbraco.Media(logoId) : null;
+                }
+
+
+                @if (logo != null)
+                {
+                    <div class="customer-story-logo">
+                        <img src="@logo.Url()" alt="@logo.Value("altText")" />
+                    </div>
+                }
+                else
+                {
+                    @*TODO: What to do without an image?*@
+                    @*<img src="" />*@
+                }
+
+
+                <div class="customer-story-pullout">
+                    <p>@Model.Value("quote")</p>
+                    <p class="attribution">@Model.Value("quoteCitation")</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-sm-8">
+
+                @{
+            var logoId = Model.Value<string>("logoImage");
+            IPublishedContent logo = logoId != null ? Umbraco.Media(logoId) : null;
+                }
+
+
+                @if (logo != null)
+                {
+                    <div class="customer-story-logo">
+                        <img src="@logo.Url()" alt="@logo.Value("altText")" />
+                    </div>
+                }
+                else
+                {
+                    @*TODO: What to do without an image?*@
+                    @*<img src="" />*@
+                }
+
+
+                <div class="customer-story-pullout">
+                    <p>@Model.Value("quote")</p>
+                    <p class="attribution">@Model.Value("quoteCitation")</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <hr class="row" />
+</section>
+
+
+<section class="container">
+    <div class="row">
+        <div class="col-lg-8 customer-story-content">
+            <div class="customer-story-copy">
+                @Html.Raw(Model.Value("bodyCopy"))
+
+                @{
+                    var cta = Model.Value<CTA>("bodyCta");
+                }
+            </div>
+            @if (cta != null)
+            {
+                <a href="@cta.Link" target="@cta.Target" class="cta-arrow">@cta.Caption</a>
+            }
+        </div>
+    </div>
+    <hr class="row" />
+</section>
+
+
+<section class="container pullout-blade">
+    <div class="row">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("footerContactBlade"), ComponentView = "~/Views/Partials/Components/Textblock.cshtml", ComponentSettings = new { CtaClass = "btn btn-primary" } })
+    </div>
+</section>

@@ -1,0 +1,33 @@
+﻿@model IPublishedContent
+
+
+@{
+
+    var button = Model.Value<Link>("button");
+}
+
+<section class="blueBox">
+        <div class="container-lg">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-10">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="head-h3 text-white fw-200 text-center text-md-start">@Model.Value("title")</h3>
+                            <p>@Model.Value("copy")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <form>
+                                <div class="newsLetterForm">
+                                    <input type="text" id="optinbox-form-firstname" placeholder="First name">
+                                    <input type="email" id="optinbox-form-email" placeholder="Email address">
+                                    <a href="@(button!=null&&button.Url!=null?button.Url:"/request-a-demo/")" id="optinbox-form-anchor" class="btn btnPage btnOrange w-100 d-flex align-items-center justify-content-center">
+									@(!string.IsNullOrWhiteSpace(button.Name)?button.Name:"Request a Demo")
+									</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

@@ -1,0 +1,32 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var cards = Model.Value<List<IPublishedElement>>("card");
+       var heading = Model.Value("heading");
+    var subHeading = Model.Value("subHeading");
+}
+
+<div class="container-fluid no-bottom-margin full-container bg-grey padding-bottom-lower">
+        <div class="container-header">
+            @heading
+        </div>
+        <div class="container-details">
+            <div class="col-sm-6">
+                @subHeading
+            </div>
+            </div>
+            <div class="details-card-container">
+                @foreach (var card in cards)
+                {
+
+                    <div class="details-card">
+                        <div class="details-card-header">
+                            @card.Value("cardTitle")
+                        </div>
+                        <div class="details-card-content">
+                            @card.Value("copy")
+                        </div>
+                    </div>
+                }
+             </div>
+</div>

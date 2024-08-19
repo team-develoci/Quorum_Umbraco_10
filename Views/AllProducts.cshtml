@@ -1,0 +1,47 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    @*var typedMultiMediaPicker = Model.Value<IEnumerable<IPublishedContent>>("sliders");
+        foreach (var item in typedMultiMediaPicker)
+        {
+            <img src="@item.Url()" style="width:200px" />
+        }*@
+}
+
+<div class="padding-lg-def-lg-def">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2 text-center">
+                <h1>@Model.Value("headline")</h1>
+                @Html.Raw(Model.Value("copy"))
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="background-dark product-tiles padding-sm-def-lg-def">
+
+    @*Product tiles*@
+    @{
+    //var val = Model.Value("PropertyTiles");
+    var productTiles = Model.Value<IList<IPublishedElement>>("propertyTiles");
+    }
+    @*<h1>@val</h1>*@
+    <div class="container">
+
+        @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = productTiles, ComponentView = "~/Views/Partials/NewComponents/ComponentProductTile.cshtml", MColumns = 4, SColumns = 2, ComponentSettings = new { } })
+
+    </div>
+
+    @{
+        var exploreBlade = Model.Value<IList<IPublishedElement>>("componentExploreBlade");
+    }
+    @if (exploreBlade != null && exploreBlade.Any())
+        {
+            @Html.Partial("~/views/partials/newcomponents/componentexploreblade.cshtml", exploreBlade.First())
+        }
+
+</div>
+

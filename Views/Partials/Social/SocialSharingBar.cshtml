@@ -1,0 +1,18 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+<ul class="share-buttons">
+    <!-- facebook -->
+    <li><div class="fb-share-button" data-send="false" data-layout="button" data-width="50" data-show-faces="false" data-href="@Request.Url"></div></li>
+    <!-- g+ -->
+    <li><div class="g-plusone" data-annotation="none" data-size="medium" data-href="@Request.Url"></div></li>
+    <!-- linkedin -->
+    <li><script type="IN/Share" data-url="@Request.Url"></script></li>
+     <!-- pinterest -->
+    <li><a href="http://pinterest.com/pin/create/button/?url=@Request.Url" class="pin-it-button" count-layout="none"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" alt="Pin It" /></a></li>
+    <!-- twitter -->
+    <li><a class="twitter-share-button" data-count="none" data-via='@(@Umbraco.Field("twitterHandle"))' data-url="@Request.Url"></a></li>
+
+</ul>
+@using (Html.BeginScriptContext())
+{
+    Html.AddScriptFile("~/scripts/components/social-sharing.min.js");
+}

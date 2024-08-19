@@ -1,0 +1,97 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    string imageUrl = string.Empty;
+    string imageAlt = string.Empty;
+    var typedMediaPickerSingle = Model.Value<IPublishedContent>("image");
+    if (typedMediaPickerSingle != null)
+    {
+        imageUrl = typedMediaPickerSingle.Url();
+        imageAlt = typedMediaPickerSingle.Value<string>("alt", defaultValue: string.Empty);
+    }
+    //var image = typedMediaPickerSingle. //Model.Value<IPublishedContent>("image");
+    IList<IPublishedContent> toolTips = null;
+    //var toolTips = Model.Value<IList<IPublishedContent>>("tooltips");
+    var cropImages = Request.QueryString["crop"] == "true";
+}
+
+
+<div class="c-tooltip-image image">
+    <div class="wrapper hidden-xs">
+        @if (cropImages)
+        {
+            <img loading="lazy" src="@typedMediaPickerSingle.GetCropUrl(width:1100)" alt="@(typedMediaPickerSingle!=null?typedMediaPickerSingle.Value<string>("altText"): string.Empty)" class="visible-lg">
+            <img loading="lazy" src="@typedMediaPickerSingle.GetCropUrl(width: 940)" alt="@(typedMediaPickerSingle!=null?typedMediaPickerSingle.Value<string>("altText"): string.Empty)" class="visible-md">
+            <img loading="lazy" src="@typedMediaPickerSingle.GetCropUrl(width: 720)" alt="@(typedMediaPickerSingle!=null?typedMediaPickerSingle.Value<string>("altText"): string.Empty)" class="visible-sm">
+
+        }
+        else
+        {
+            <img loading="lazy" src="@imageUrl" alt="@imageAlt" class="">
+        }
+
+
+
+        @*@foreach (var tooltip in toolTips)
+            {
+                <a href="javascript:void(0);" data-toggle="tooltip" data-placement="@tooltip.Value("placement")"
+                   title="@tooltip.Value("text")" class="tooltip-anchor product"
+                   style="top:@(tooltip.Value<int>("topPosition", "0"))%; left:@(tooltip.Value<int>("leftPosition","0"))%;"></a>
+            }*@
+    </div>
+
+    <div class="visible-xs">
+        <div id="carousel_@elemntId" class="carousel slide c-repeater-carousel" data-ride="carousel" data-interval="false" data-wrap="false">
+            @*@if (toolTips.Count() > 1)
+                {
+                    <div class="vertical-item_inner-wrap">
+                        <ol class="carousel-indicators">
+                            @for (var i = 0; i < toolTips.Count(); i++)
+                            {
+                                <li data-target="#carousel_@elemntId" data-slide-to="@i" class="@((i==0)?" active":"")"></li>
+                            }
+                        </ol>
+                    </div>
+                }*@
+            <div class="carousel-inner ie-fix" role="listbox">
+
+                @*@for (var i = 0; i < toolTips.Count(); i++)
+                    {
+                        var item = toolTips.ElementAt(i);
+                        string itemImageUrl = string.Empty;
+                        string itemImageAlt = string.Empty;
+                        var singleItemImage = Model.Value<IPublishedContent>("mobileImage");
+                        if (typedMediaPickerSingle != null)
+                        {
+                            itemImageUrl = singleItemImage.Url();
+                            itemImageAlt = singleItemImage.Value<string>("alt", defaultValue: string.Empty);
+                        }
+
+                        //var itemImage = item.GetPropertyValue<IPublishedContent>("mobileImage");
+                        if (string.IsNullOrWhiteSpace(itemImageUrl)) { itemImageUrl = imageUrl; }
+                        <div class="item @((i==0)?" active":"")">
+                            <div class="c-tooltip-image__mobile-slide">
+                                <div class="c-tooltip-image__mobile-slide__image">
+                                    <img src="@itemImageUrl" alt="@itemImageAlt">
+                                </div>
+                                <div class="c-tooltip-image__mobile-slide__copy">
+                                    <p>@item.Value("text")</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    }*@
+
+                @*just show image if no tooltips are set*@
+                @if (toolTips == null)
+                {<div class="c-tooltip-image__mobile-slide">
+                        <img loading="lazy" src="@imageUrl" alt="@imageAlt">
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<h1 style="color:red">Tooltip is nested content need to be fixed.</h1>

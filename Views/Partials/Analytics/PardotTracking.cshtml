@@ -1,0 +1,25 @@
+﻿@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var configuration = Model.Descendants("configurationFolder").FirstOrDefault();
+
+    string pardotAId = null;
+    string pardotCId = null;
+
+    if (configuration != null)
+    {
+        pardotAId = configuration.Value<string>("pardotAId");
+        pardotCId = configuration.Value<string>("pardotCId");
+    }
+}
+
+@if (!String.IsNullOrEmpty(pardotAId) && !String.IsNullOrEmpty(pardotCId))
+{
+    @*<!-- Pardot Tracking -->*@
+    <script type="text/javascript">
+    piAId = '@Model.Value("pardotAId")';
+    piCId = '@Model.Value("pardotCId")';
+    (function () {function async_load() {var s = document.createElement('script'); s.type = 'text/javascript';s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.' + 'js';var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);}if (window.attachEvent) { window.attachEvent('onload', async_load); }else { window.addEventListener('load', async_load, false); }})();
+    </script>
+}

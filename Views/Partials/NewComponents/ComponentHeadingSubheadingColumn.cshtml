@@ -1,0 +1,26 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var columns = Model.Value<List<IPublishedElement>>("columns");
+}
+<section class="investment-section py-5">
+    <div class="container-lg">
+        <div class="content-wrapper mb-5 mx-auto">
+            <h1 class="head-h1 fw-200 mb-3 text-center dark-blue">@Model.Value("heading")</h1>
+            <div class="text fw-500 text-center dark-gray">
+                @Html.Raw(Model.Value("subHeading"))
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            @foreach (var cl in columns)
+            {
+                <div class="col-md-6 col-lg-4 text-center mb-4">
+                    <h3 class="head-h3 fw-normal secondary-color mb-4">@cl.Value("title")</h3>
+                    <div class="fw-normal">
+                        @Html.Raw(cl.Value("copy"))
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

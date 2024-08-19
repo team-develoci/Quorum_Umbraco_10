@@ -1,0 +1,17 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var tiles = Model.Value<IList<IPublishedContent>>("tiles");
+}
+
+<div class="c-product-solution-tile-blade">
+    <div class="container">
+        <h3>@Model.Value("headline")</h3>
+        <div class="">
+            @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = tiles, ComponentView = "~/Views/Partials/NewComponents/ComponentProductSolutionTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+        </div>
+    </div>
+</div>
+

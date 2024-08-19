@@ -1,0 +1,32 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("link");
+    var image = Model.Value<IPublishedContent>("image");
+}
+<div class="futureWrapper mt-120" role="contentinfo">
+    <div class="container desktop-footer copy-video">
+        <div class="row">
+            <h1>@Model.Value("title")</h1>
+            <div class="img-divider margin-bottom-lower">
+                <div class="col-md-6 grid-col grid-col-client-story-para">
+                    @Html.Raw(Model.Value("copy"))
+                    <a class="learnBtn" href="@button.Url"> @button.Name </a>
+                </div>
+
+                @if (image != null)
+                {
+                <div class="col-md-6 qm-video custom-w-40">
+                        <a class="" href="/">
+                            <picture>
+                                <source srcset="@(image != null ? image.Url : string.Empty)">
+                                <img loading="lazy" srcset="@(image != null ? image.Url : string.Empty)" alt="@(image!=null?image.Value<string>("altText"): "Quorum")" class="video-imgs">
+                            </picture>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

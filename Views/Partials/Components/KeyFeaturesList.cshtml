@@ -1,0 +1,40 @@
+﻿@model IPublishedContent
+
+@{
+    string Title = Model.HasValue("title") ? Model.Value<string>("title") : string.Empty;
+    var keyFeatureItems = Model.Value<IEnumerable<IPublishedElement>>("keyFeatures");
+}
+<section class="key-features-section">  
+    <div class="keyFeaturesHeading"><h1>@Title</h1></div>
+    <div class="accordion" id="keyFeaturesList">
+        @{
+            var i = 1;
+        }
+        @foreach (var item in keyFeatureItems)
+        {
+            var expanded ="true";
+            var show = "accordion-collapse collapse show";
+            if(i>1){
+                expanded="false";
+                show="accordion-collapse collapse";
+            }
+            var collapseTarget="#collapse"+i;
+            var collapse="collapse"+i;
+            var heading="heading"+i;
+            var classes="accordion-item keyItem_"+i;
+            <div class="@classes">
+                <h2 class="accordion-header" id="@heading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="@collapseTarget" aria-expanded="@expanded" aria-controls="@collapse">
+                        @item.Value("title")
+                    </button>
+                </h2>
+                <div id="@collapse" class="@show" aria-labelledby="@heading" data-bs-parent="#keyFeaturesList">
+                    <div class="accordion-body">
+                         @Html.Raw(item.Value("text"))
+                    </div>
+                </div>
+            </div>
+            i++;
+        }
+    </div>
+</section>

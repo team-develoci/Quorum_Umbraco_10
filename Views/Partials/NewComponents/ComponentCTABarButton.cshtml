@@ -1,0 +1,86 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("button");
+    var theme = Model.Value<string>("theme");
+
+}
+
+@if (theme == "light")
+{
+<section class="py-md-5 py-4 pipeline-gray ctaData">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="head-h3 dark-gray fw-300 mb-3">@Model.Value("title")</h3>
+                        <div class="text fw-300 dark-gray">
+                            @Model.Value("copy")
+                        </div>
+                    </div>
+                    @if (button != null)
+                    {
+                        <div class="col-md-4">
+                            <a class="btn btnOrange mt-3 d-flex justify-content-center align-items-center" href="@button.Url">@button.Name</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+}
+else if (theme == "light back blue btn")
+{
+<section class="py-md-5 py-4 ctabar-light-bule margin-bottom-lower">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="head-h3 ctabar-light-bule-heading fw-300 mb-3">@Model.Value("title")</h3>
+                        <div class="text fw-300 ctabar-light-bule-details">
+                            @Model.Value("copy")
+                        </div>
+                    </div>
+                    @if (button != null)
+                    {
+                        <div class="col-md-4">
+                            <a class="btn btn-blue mt-3 d-flex justify-content-center align-items-center" href="@button.Url">@button.Name</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+}
+else
+{
+
+<section class="py-md-5 py-4 ctabar-dark-bule">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="head-h3 ctabar-dark-bule-heading fw-300 mb-3">@Model.Value("title")</h3>
+                        <div class="text fw-300 ctabar-dark-bule-details">
+                            @Model.Value("copy")
+                        </div>
+                    </div>
+                    @if (button != null)
+                    {
+                        <div class="col-md-4">
+                            <a class="btn btnOrange mt-3 d-flex justify-content-center align-items-center" href="@button.Url">@button.Name</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+}

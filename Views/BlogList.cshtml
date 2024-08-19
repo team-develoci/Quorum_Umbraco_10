@@ -1,0 +1,251 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+        Layout = "Master.cshtml";
+        bool isAllPost = false;
+        IPublishedContent category = null;
+        IEnumerable<IPublishedContent> blogItems = null;
+        IEnumerable<IPublishedContent> topBlogs = null;
+        IPublishedContent topBlog = null;
+        IEnumerable<IPublishedContent> bI = null;
+
+        IPublishedContent dBlogPosts = Model.DescendantOfType("BlogPosts");
+        IPublishedContent dBlogCategory = Model.DescendantOfType("BlogCateogries");
+        IPublishedContent dBlogAuthor = Model.DescendantOfType("BlogAuthor");
+
+        IEnumerable<IPublishedContent> blogPosts = null;
+        IEnumerable<IPublishedContent> categories = null;
+        IEnumerable<IPublishedContent> authors = null;
+        
+        int categoryFilter = 0;
+        string categoryName = "All Posts";
+        if (Model.ContentType.Alias == "BlogCategory")
+        {
+            category = Model;
+            categoryFilter = category.Id;
+            categoryName = category.Name;
+            dBlogPosts = category.Parent.Parent.DescendantOfType("BlogPosts");
+            dBlogCategory = category.Parent.Parent.DescendantOfType("BlogCateogries");
+            dBlogAuthor = category.Parent.Parent.DescendantOfType("BlogAuthor");
+        }
+
+        if (dBlogPosts != null)
+        {
+            blogPosts = dBlogPosts.Children();
+        }
+        if (dBlogCategory != null)
+        {
+            categories = dBlogCategory.Children();
+        }
+        if (dBlogAuthor != null)
+        {
+            authors = dBlogAuthor.Children();
+        }
+
+        var pageSize = 6;
+        
+        var page = 1; int.TryParse(HttpContextAccessor?.HttpContext?.Request.Query["page"], out page);
+    var totalPages = 0;
+
+    if (blogPosts != null && blogPosts.Any())
+    {
+        if (categoryFilter != 0)
+        {
+            blogPosts = blogPosts.Where(x => x.Value<IPublishedContent>("category") != null && x.Value<IPublishedContent>("category").Id == categoryFilter && x.IsVisible()).ToList();
+
+        }
+        topBlogs = blogPosts.Where(x => x.IsVisible()).OrderByDescending(x => x.CreateDate).Skip(1).Take(3).ToList();
+        topBlog = blogPosts.Where(x => x.IsVisible()).OrderByDescending(x => x.CreateDate).Take(1).FirstOrDefault();
+
+        blogItems = blogPosts.Where(x => x.IsVisible()).OrderByDescending(x => x.CreateDate).Skip(4).ToList();
+        totalPages = (int)Math.Ceiling((double)blogItems.Count() / (double)pageSize);
+        bI = blogItems.Skip(page * 6).Take(6).ToList();
+        if (page > totalPages)
+        {
+            page = totalPages;
+        }
+        else if (page < 1)
+        {
+            page = 1;
+        }
+    }
+}
+
+
+<div class="blog-breadcrumbs">
+    <div class="blog-topnav">
+        <div>
+            <a class="blog-link me-2" href="/blog">Blog</a>
+            @if(categoryFilter != 0){
+                 <a class="all-post-link text-dark"> <span class="me-2">/</span> @categoryName</a>
+            }
+        </div>
+        <div style="margin-right: 100px;">
+            <i style="font-size: 15px;color: #009DE2;" class="fa">&#xf1de;</i>
+            <div class="dropdown active">
+                <span class="blog-filter">Filter Posts</span>
+                <div class="dropdown-content">
+
+                    <div class="dropdown-container form-group margin-bottom-filter">
+                        <a href="/blog" class="@(categoryFilter==0 ? "active":string.Empty)">All Posts</a>
+                    </div>
+                    @{
+                        if (categories != null && categories.Any())
+                        {
+                            foreach (var cType in categories)
+                            {
+                                <div class="dropdown-container form-group margin-bottom-filter">
+                                    <a href="@cType.Url()" class="@(cType.Id ==categoryFilter?"active":string.Empty)">@cType.Name</a>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<section class="blog-page py-lg-4 py-5 ">
+    <div class="container-lg">
+        <div class="row">
+
+            @if (topBlog != null)
+            {
+                @Html.Partial("~/Views/Partials/NewComponents/ComponentTopBlogPost.cshtml", topBlog);
+            }
+
+        </div>
+    </div>
+
+
+    @if (topBlogs != null && topBlogs.Any())
+    {
+        <section class="post-section py-5">
+            <div class="container-lg">
+                <div class="content-wrapper mb-5">
+                    <h6 class="fw-bold mb-4 text-start" style="color: #000;">Top Posts</h6>
+                </div>
+                <div class="blog-cards">
+                    <div class="row">
+
+
+                        @foreach (var post in topBlogs)
+                        {
+                            @Html.Partial("~/Views/Partials/NewComponents/ComponentBlogPostCard.cshtml", post);
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (bI != null && bI.Any())
+    {
+        <section class="post-section py-3 margin-bottom-lower">
+            <div class="container-lg">
+                <div class="content-wrapper mb-5">
+                    <h6 class="fw-bold mb-4 text-start" style="color: #000;">All Posts</h6>
+
+                </div>
+                <div class="blog-cards">
+                    <div class="row">
+
+                        @foreach (var post in bI)
+                        {
+                            @Html.Partial("~/Views/Partials/NewComponents/ComponentBlogPostCard.cshtml", post);
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+
+</section>
+
+<div class="blog-pagination">
+    <div class="blog-pages">
+        @if (page > 1)
+        {
+            var prevPage = "?page=" + (page - 1);
+
+            <p class="blog-pagination-text no-bottom-all"><a href="@prevPage"><img loading="lazy" src="~/images/Blog_post_left.svg" alt="left" /> <span>Previous Page</span></a></p>
+        }
+    </div>
+    <div class="pagination">
+        @{
+            if (totalPages > 1)
+            {
+
+                int PageLeft = 3;
+                int PageRight = 2;
+                string pageQueryString = string.Empty;
+
+                // get first page befor ...
+                var fromPage = Math.Max(1, page - PageLeft);
+
+                // get last page after ...
+                var toPage = Math.Min(totalPages, page + PageRight);
+
+                if (totalPages - toPage == 1)
+                {
+                    toPage = totalPages;
+                }
+
+                if (fromPage > 1)
+                {
+                    // view First page
+                    pageQueryString = "?page=" + 1;
+                    <a href="@pageQueryString" class="@(1 ==page?"active":string.Empty)">1</a>
+
+                    if (fromPage > 2)
+                    {
+                        // view first ...
+                        // calculate number page for link ..., it's middle between first page and fromPage
+                        var middleNumber = (int)Math.Ceiling((double)(fromPage - 2) / 2) + 1;
+
+                        pageQueryString = "?page=" + middleNumber;
+                        <a href="@pageQueryString" class="@(middleNumber ==page?"active":string.Empty)">...</a>
+                    }
+                }
+
+                // view paginator between currentPage
+                for (int pNo = fromPage; pNo <= toPage; pNo++)
+                {
+                    pageQueryString = "?page=" + pNo;
+                    <a href="@pageQueryString" class="@(pNo ==page?"active":string.Empty)">@pNo</a>
+                }
+
+                // view second ...
+                if (toPage < totalPages)
+                {
+                    int middleNumber = (int)Math.Ceiling((double)(totalPages - toPage) / 2) + toPage;
+
+                    pageQueryString = "?page=" + middleNumber;
+                    <a href="@pageQueryString" class="@(middleNumber ==page?"active":string.Empty)">...</a>
+
+                    // view last page
+                    if (toPage < totalPages - 1)
+                    {
+                        pageQueryString = "?page=" + totalPages;
+                        <a href="@pageQueryString" class="@(totalPages ==page?"active":string.Empty)">@totalPages</a>
+                    }
+
+                }
+            }
+        }
+    </div>
+    <div class="blog-pages">
+        @if (page < totalPages)
+        {
+            var nextPage = "?page=" + (page + 1);
+            <p class="blog-pagination-text no-bottom-all"><a href="@nextPage"><span>Next Page </span><img loading="lazy" src="~/images/Blog_post_arrow.svg" alt="Blog Arrow" /></a></p>
+
+        }
+    </div>
+</div>

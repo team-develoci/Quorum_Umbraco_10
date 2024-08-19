@@ -1,0 +1,31 @@
+﻿@inherits UmbracoViewPage<GridWrapperModel>
+@*
+    Widget:  Grid - used on bootstrap grid to pass components in
+    Description: Can include 1-N # of slides.  
+*@
+
+<div class="c-repeater-grid @(!string.IsNullOrEmpty(Model.WrapperComponentModifier) ? "c-repeater-grid--" + Model.WrapperComponentModifier : "")">
+    @{
+        var iterator = 0;
+        for (int i = 0; i < Model.NumberOfRows; i++)
+        {
+            if (!Model.NoRowWrappers)
+            {
+                @:<div class="row c-repeater-grid__row">
+            }
+            for (var j = 0; j < Model.NumberOfItemsPerRows && iterator < Model.ComponentModel.Count(); j++)
+            {
+                var item = (object)Model.ComponentModel.ElementAt(iterator);
+                <div class="@Model.Classes c-repeater-grid__row__column">
+                    @Html.Partial(Model.ComponentView, item)
+                </div>
+                iterator++;
+            }
+            if (!Model.NoRowWrappers)
+            {
+                @:</div>
+            }
+        }
+}
+</div>
+

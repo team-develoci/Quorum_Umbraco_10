@@ -1,0 +1,111 @@
+﻿@model IPublishedContent
+
+
+@{
+    string marginTopClass = Model.HasValue("marginTopClass") ? Model.Value<string>("marginTopClass") : string.Empty;
+    string columnClass = Model.HasValue("columnClass") ? Model.Value<string>("columnClass") : string.Empty;
+    var featuredItems = Model.Value<IEnumerable<IPublishedElement>>("featuredItems");
+    string colClass = "col-md-8";
+
+    if (columnClass.Equals("relatedProductsTwo"))
+    {
+        colClass = "col-md-6";
+    }
+    else if (columnClass.Equals("relatedProductsThree"))
+    {
+        colClass = "col-lg-4 col-sm-6";
+
+    }
+    else if (columnClass.Equals("relatedProductsFour"))
+    {
+        colClass = "col-lg-3 col-md-4 col-sm-6 mb-4";
+    }
+
+}
+
+<section class="relatedProducts mt-0 py-5 @columnClass @marginTopClass">
+    <div class="container-lg">
+        @if(Model.HasValue("title"))
+        {
+            <h5 class="paragraph-text fw-600 dark-gray mb-3 mb-md-4 text-uppercase">@Model.Value("title")</h5>
+        }
+        <div class="row">
+            
+            @foreach (var item in featuredItems)
+            {
+                var link = item.Value<IEnumerable<Link>>("link").FirstOrDefault();
+
+                if (columnClass.Equals("relatedProductsOne"))
+                {
+                    <div class="col-xl-8">
+                        @if(Model.HasValue("title"))
+                        {
+                            <h5 class="paragraph-text fw-600 dark-gray mb-3 mb-md-4 text-uppercase d-block">@Model.Value("title")</h5>
+                        }
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+								@if (item.HasValue("title"))
+                                {
+                                    <h3 class="secondaryh1 dark-gray fw-300 mb-3">@item.Value("title")</h3>
+                                }
+                                @if (item.HasValue("content"))
+                                {
+                                    <div class="text fw-300">
+                                        @Html.Raw(item.Value("content"))
+                                    </div>
+                                }
+                            </div>
+                            @if (link != null)
+                            {
+                                <div class="col-md-4 mb-5">
+                                    <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (columnClass.Equals("relatedProductsTwo"))
+                {
+                
+                    <div class="col-md-4 mb-4">
+								@if (item.HasValue("title"))
+                                {
+                                    <h3 class="head-h3 dark-gray fw-300 mb-3">@item.Value("title")</h3>
+                                }
+                                @if (item.HasValue("content"))
+                                {
+                                    <div class="text fw-300">
+                                        @Html.Raw(item.Value("content"))
+                                    </div>
+                                }
+                        @if (link != null)
+                        {
+                            <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="@colClass">
+                        
+								@if (item.HasValue("title"))
+                                {
+                                    <h3 class="head-h3 dark-gray fw-300 mb-3">@item.Value("title")</h3>
+                                }
+                                @if (item.HasValue("content"))
+                                {
+                                    <div class="text fw-300">
+                                        @Html.Raw(item.Value("content"))
+                                    </div>
+                                }
+							
+                        @if (link != null)
+                        {
+                            <a href="@link.Url" target="@link.Target" class="btn btnPage btnBlue">@link.Name</a>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

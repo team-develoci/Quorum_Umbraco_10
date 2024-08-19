@@ -1,0 +1,10 @@
+@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var button = Model.Value<CTA>("button");
+}
+
+@if (button != null)
+{
+    <a href="@button.Link" target="@button.Target" class="c-sticky-contact-button">@button.Caption</a>
+}

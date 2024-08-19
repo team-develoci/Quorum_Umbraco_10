@@ -1,0 +1,47 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+@{
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("heroComponent");
+    var solutionmenus = Model.Value<IList<IPublishedElement>>("NavigationMenu");
+    var multiTextButton = Model.Value<IEnumerable<IPublishedElement>>("multiTextButtonComponent");
+
+}
+
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentBackgroundHeroNoSpacing.cshtml", HeroComponent.FirstOrDefault())
+}
+
+<section class="Event-page py-lg-4 py-5 my-0">
+    <div class="container-lg">
+        <div class="row">
+
+
+            <div class="col-md-3">
+                @if (solutionmenus != null)
+                {
+                    foreach (var menu in solutionmenus)
+                    {
+                        @Html.Partial("~/Views/ComponentVerticalNavigation.cshtml", menu);
+                    }
+                }
+            </div>
+
+            <div class="col-md-9">
+                <section class="py-3 pt-0 border-1 border-bottom">
+                    @if (multiTextButton != null && multiTextButton.Any())
+                    {
+                        foreach (var button in multiTextButton)
+                        {
+                        @Html.Partial("~/Views/ComponentMultiTextButton.cshtml", button)
+                        }
+                    }
+
+                </section>
+            </div>
+        </div>
+    </div>
+
+</section>

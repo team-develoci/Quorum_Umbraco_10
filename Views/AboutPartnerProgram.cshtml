@@ -1,0 +1,57 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+@{
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("hero");
+    var solutionmenus = Model.Value<IList<IPublishedElement>>("navigation");
+    var cards = Model.Value<IList<IPublishedElement>>("partnerCard");
+     var images = Model.Value<IList<IPublishedElement>>("partnerImage");
+    var form =Model.Value<IList<IPublishedElement>>("form");
+}
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentBackgroundHeroNoSpacing.cshtml", HeroComponent.FirstOrDefault())
+}
+<section class="about-us-page py-lg-4 py-5">
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-3">
+                @if (solutionmenus != null)
+                {
+                    foreach (var menu in solutionmenus)
+                    {
+                        @Html.Partial("~/Views/ComponentVerticalNavigation.cshtml", menu);
+                    }
+                }
+            </div>
+            <div class="col-md-9">
+                @if (cards != null && cards.Any())
+                {
+                    foreach (var card in cards)
+                    {
+                        @Html.Partial("~/Views/Partials/NewComponents/ComponentPartnerCard.cshtml", card)
+                    }
+
+                }
+                @if (images != null && images.Any())
+                {
+                    foreach (var image in images)
+                    {
+                        @Html.Partial("~/Views/Partials/NewComponents/ComponentImagePartnerCard.cshtml", image)
+                    }
+
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+       @if (form != null)
+                {
+                    IPublishedContent typedContentPicker = form.FirstOrDefault().Value<IPublishedContent>("component");
+				if(typedContentPicker!=null)
+				{
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentPardotForm.cshtml", typedContentPicker)
+                }
+                }

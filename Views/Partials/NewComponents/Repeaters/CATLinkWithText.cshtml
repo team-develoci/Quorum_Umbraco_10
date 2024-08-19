@@ -1,0 +1,19 @@
+﻿@inherits UmbracoViewPage<SimpleWrapperModel>
+@*
+    Widget:  Simple Wrapper.  Will wrap each item in it's own container.  Used if each item in the Model should be it's own row on the page
+
+*@
+@if (Model.ComponentModel != null && Model.ComponentModel.Any())
+{
+   <div class="solutions-wrapper">
+        <div class="sub-solution-grid">
+            @for (int i = 0; i < Model.ComponentModel.Count(); i++)
+            {
+                var item = (object)Model.ComponentModel.ElementAt(i);
+                @Html.Partial(Model.ComponentView, item)
+            }
+        </div>
+    </div>
+
+}
+

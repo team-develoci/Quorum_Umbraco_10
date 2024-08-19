@@ -1,0 +1,43 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var heading = Model.Value("headline");
+    var subHeading = Model.Value("copy");
+    var cards = Model.Value<List<IPublishedElement>>("cards");
+}
+
+@*padding-top:104px;
+style="padding-bottom:120px"*@
+<div  class="bg-grey">
+    <p class="portfolio-wrapper">
+        @heading
+    </p>
+    <p class="portfolio-sub-text"> @subHeading</p>
+    <div class="portfolio-column-card">
+
+
+
+        @foreach (var card in cards)
+        {
+
+            <div class="portfolio-cards-wrapper">
+                <div class="portfolio-cards">
+                    <p class="portfolio-heading">@card.Value("title")</p>
+                    <p class="portfolio-description"> @Html.Raw(card.Value("copy"))</p>
+                    @try
+                    {
+                        var ln = card.Value<Link>("links");
+                        <p class="portfolio-learnmore"><a href="@ln.Url">@ln.Name  @*<img src="~/images/arrow-1.svg" alt="Learn More" />*@</a>
+                   
+                    </p>
+
+                    }
+                    catch { }
+
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

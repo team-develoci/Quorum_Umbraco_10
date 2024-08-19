@@ -1,0 +1,51 @@
+﻿
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+
+@{
+    var cards = Model.Value<IList<IPublishedElement>>("imageCard");
+
+}
+
+<section class="py-2">
+    <div class="container-lg">
+        <div class="row content-wrapper Partner-description solutionContent mb-4">
+            <div class="col-lg-11">
+                <h1 class="headingContent fw-200 mb-0 text-start dark-blue">@Model.Value("heading")</h1>
+                <div class="paragraph-text fw-500 text-start dark-gray">
+                    <p>@Model.Value("subHeading")</p>
+                </div>
+            </div>
+        </div>
+        <div class="company-logos">
+            <h3 class="fs-3 secondary-color fw-600 mb-0">@Model.Value("title")</h3>
+            <div class="row">
+                @if (cards != null)
+                {
+                    foreach (var card in cards)
+                    {
+                        var link = card.Value<List<Link>>("text");
+                        var backgroundImage = card.Value<IPublishedContent>("image");
+                <div class="col-sm-6 col-xl-4 col-md-6 mb-4">
+                    @if (link != null && backgroundImage!=null)
+                    {
+                        <a class="shadow-lg py-4 pt-0 px-3 text-center bg-white d-block text-decoration-none" href="@link.FirstOrDefault().Url">
+                            <img loading="lazy" src="@backgroundImage.Url()" class="mb-4 logo-image" alt="@(!string.IsNullOrEmpty(backgroundImage.Value<string>("altText"))?backgroundImage.Value<string>("altText"): string.Empty)">
+                            <p class="paragraph-text mb-0 secondary-color fw-normal">@link.FirstOrDefault().Name</p>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="shadow-lg py-4 pt-0 px-3 text-center bg-white d-block text-decoration-none" href="#">
+                            <img loading="lazy" src="/media/qhrnu4e0/boxley-group-logo-1.png" class="mb-4 logo-image">
+                            <p class="paragraph-text mb-0 secondary-color fw-normal">Boxley Group</p>
+                        </a>
+                    }
+                </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</section>

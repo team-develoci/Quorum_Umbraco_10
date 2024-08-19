@@ -1,0 +1,91 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    Layout = null;
+    Response.ContentType = "text/xml";
+    var showMediaType = Request.QueryString["mediatypes"] == "true";
+    int mediaTypeId = 0;
+    int.TryParse(Request.QueryString["mediatypeid"], out mediaTypeId);
+    var showDocType = Request.QueryString["doctypes"] == "true";
+    var showTemplate = Request.QueryString["templates"] == "true";
+}
+@if (showDocType || showTemplate)
+{
+    var home = Umbraco.ContentAtRoot().FirstOrDefault();
+    var docTypes = new System.Collections.Generic.Dictionary<string, int>();
+    <h2>Site Pages (@(showDocType ? "Doctype" : "") @(showDocType && showTemplate ? " - " : "")@(showTemplate ? "Template" : ""))</h2>
+    <ul>
+        @ListNodeAndChildren(home, docTypes, showDocType, showTemplate)
+    </ul>
+
+    <h2>Summary (Doctype @(showTemplate ? " - Template" : ""))</h2>
+    <table>
+        @foreach (var docType in docTypes.OrderByDescending(d => d.Value))
+        {
+            <tr><td>@docType.Key</td><td>@docType.Value</td></tr>
+        }
+    </table>
+    @helper ListNodeAndChildren(IPublishedContent content, System.Collections.Generic.Dictionary<string, int> dic, bool showDocType, bool showTemplate)
+    {
+var excludedDocTypes = new List<string>() { };
+if (excludedDocTypes.Contains(content.GetTemplateAlias()))
+{
+    return;
+}
+var docTypeName = (showDocType ? content.GetTemplateAlias() : "") + (showDocType && showTemplate ? " - " : "") + (showTemplate ? content.GetTemplateAlias() : "");
+
+if (dic.ContainsKey(docTypeName))
+{
+    dic[docTypeName]++;
+}
+else
+{
+    dic.Add(docTypeName, 1);
+}
+
+        <li><a href="@content.Url()">@content.Name</a> (@docTypeName)</li>
+if (content.Children.Any())
+{
+        <ul>
+            @foreach (IPublishedContent child in content.Children)
+            {
+                @ListNodeAndChildren(child, dic, showDocType, showTemplate)
+            }
+        </ul>
+}
+}
+
+}
+
+else
+{
+    Layout = null;
+    //umbraco.library.ChangeContentType("text/xml");
+    int level = 6;
+    // var home = @CurrentPage.AncestorOrSelf(1);
+    var home = Umbraco.ContentAtRoot().FirstOrDefault();
+    var pages = @home.Descendants().Where(x => !Convert.ToBoolean(x.Value("excludeFromSearchEngines")));
+        
+
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.google.com/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        <url>
+            <loc>@Request.Url.Scheme://@Request.Url.Host</loc>
+            <lastmod>@home.UpdateDate.ToString("yyyy-MM-ddTHH:mm:00")+00:00</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.8</priority>
+        </url>
+
+        @foreach (var page in pages)
+        {
+        if (page.Level <= @level && page.TemplateId > 0 && page.HasProperty("excludeFromSearchEngines"))
+        {
+            <url>
+                <loc>@Request.Url.Scheme://@Request.Url.Host@page.Url</loc>
+                <lastmod>@page.UpdateDate.ToString("yyyy-MM-ddTHH:mm:00")+00:00</lastmod>
+                <changefreq>weekly</changefreq>
+                <priority>0.5</priority>
+            </url>
+        }
+    }
+    </urlset>
+}

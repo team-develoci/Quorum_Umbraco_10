@@ -1,0 +1,82 @@
+﻿@model IPublishedContent
+
+
+@{
+
+    string Title = Model.HasValue("title") ? Model.Value<string>("title") : string.Empty;
+	string column = Model.HasValue("column") ? Model.Value<string>("column") : string.Empty;
+    var benefitItems = Model.Value<IEnumerable<IPublishedElement>>("benefitItems");
+    
+
+}
+@if(column == "twoColumn")
+{
+<section class="mt-5 py-5 py-md-0"> @*mb-120*@
+        <div class="container-lg">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-12">
+                    <h1 class="text-center mb-3 mb-md-5 head-h1 text-dark fw-normal">@Title</h1>
+                    <div class="row">
+					@foreach (var item in benefitItems)
+					{
+					 var linkValue = item.Value<IEnumerable<Link>>("link").FirstOrDefault();
+					 
+
+                        <div class="col-md-6 mb-4">
+							@if (linkValue != null)
+                            {
+                            <a href="@linkValue.Url" class="link-title mb-3 d-block">
+                                @item.Value("title")
+                            </a>
+							}
+							else if(item.HasValue("title"))
+							{
+								<h1 class="uc-title mb-3 d-block">@item.Value("title")</h1>
+							}
+                            @if (item.HasValue("description"))
+                            {
+								<div class="uc-text">
+                                    @Html.Raw(item.Value("description"))
+								</div>
+                            }
+						</div>
+					}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else if(column == "threeColumn")
+{
+    
+<section class="mt-5 mb-5 py-0 py-md-0 mar"> @*mb-120*@
+        <div class="container-lg">
+                    <h1 class="text-center mb-5 head-h1 text-dark fw-normal">@Title</h1>
+                    <div class="row">
+					@foreach (var item in benefitItems)
+					{
+					 var linkValue = item.Value<IEnumerable<Link>>("link").FirstOrDefault();
+                        <div class="col-md-6 col-lg-4 mb-5 mar">
+							@if (linkValue != null)
+                            {
+                            <a href="@linkValue.Url" class="link-title mb-3 d-block">
+                                @item.Value("title")
+                            </a>
+							}
+							else if(item.HasValue("title"))
+							{
+								<h2 class="uc-title mb-4">@item.Value("title")</h2>
+							}
+							@if (item.HasValue("description"))
+                                {
+								<div class="uc-text mb-3">
+                                    @Html.Raw(item.Value("description"))
+								</div>
+                                }
+                        </div>
+					}
+                    </div>
+        </div>
+    </section>
+}

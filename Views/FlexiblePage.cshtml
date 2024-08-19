@@ -1,0 +1,8 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+@*@CurrentPage.GetGridHtml("grid", "GlgGridCustom")*@
+@Html.GetGridHtml(Model, "grid", "GlgGridCustom")
+@*@Model.GetGridHtml("grid", "GlgGridCustom")*@

@@ -1,0 +1,27 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+
+    var textPosition = Model.HasValue("textPosition") ? Umbraco.GetPreValueAsString(Model.Value<int>("textPosition")) : "center";
+    var textAlignment = Model.HasValue("textAlignment") ? Umbraco.GetPreValueAsString(Model.Value<int>("textAlignment")) : "center";
+    var textColor = Model.HasValue("textColor") ? Umbraco.GetPreValueAsString(Model.Value<int>("textColor")) : "dark";
+
+    var background = Model.Value<string>("backgroundStyle", "Image Centered Aligned");
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId + " .c-background-hero-blade__wrapper")
+
+<div id="@elemntId" class="c-background-hero-blade  background-style--@(background.ToLower().Replace(" ", "-"))">
+    <div class="c-background-hero-blade__wrapper">
+        <div class="container">
+            <div class="c-background-hero-blade__wrapper__copy text-@textAlignment text-position--@textPosition text-color--@textColor">
+                <h2>@Model.Value("headline")</h2>
+                @Html.Raw(Model.Value("copy"))
+            </div>
+        </div>
+    </div>
+</div>

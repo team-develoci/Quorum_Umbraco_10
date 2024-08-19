@@ -1,0 +1,10 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = null;
+    var responseContentType = Model.Value<string>("responseContentType");
+    if (!string.IsNullOrEmpty(responseContentType))
+    {
+        Response.ContentType = responseContentType;
+    }
+
+}@Html.Raw(Model.Value<string>("pageContent"))

@@ -1,0 +1,7 @@
+﻿@model IPublishedContent
+
+
+@{
+	string html = Model.HasValue("customHTML") ? Model.Value<string>("customHTML") : string.Empty;
+}
+@Html.Raw(html)

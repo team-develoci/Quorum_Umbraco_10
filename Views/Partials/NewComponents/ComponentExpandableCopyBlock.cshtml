@@ -1,0 +1,44 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+    var expandedState = Umbraco.GetPreValueAsString(Model.Value<int>("expanderState"));
+    var expandedStateClass = "expandible-state_" + "not-expandable"; //"expanded", "collapsed" // DEFAULT VALUE
+    if (!string.IsNullOrEmpty(expandedState))
+    {
+        expandedStateClass = "expandible-state_" + expandedState.Replace(" ", "-").ToLower();
+    }
+
+}
+<div class="copy-block copy-block--expandible @expandedStateClass">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9">
+                <h2 class="copy-block--expandible__headline">@Model.Value("headline") @expandedState</h2>
+                <div class="copy-block--expandible__abstract">@Html.Raw(Model.Value("abstract"))</div>
+                @if (Model.HasValue("expandedCopy") && (expandedState == "Collapsed" || expandedState == "Expanded"))
+                {
+                    <h3><a class="copy-block--expandible__link @(expandedState == "Expanded" ? "minus": "")" href="#expand" onclick="$(this).parents('.copy-block--expandible').find('.collapsed-section').toggle(); $(this).toggleClass('minus')">@Model.Value("expanderLinkText") @*@expandedState*@</a></h3>
+                }
+            </div>
+        </div>
+
+        @if (Model.HasValue("expandedCopy"))
+        {
+            <div class="row @(expandedState == "Collapsed" || expandedState == "Expanded" ? "collapsed-section" : "")" style="@(expandedState == "Collapsed" ? "display:none;" : "")">
+                <div class="col-sm-9">
+                    @Html.Raw(Model.Value("expandedCopy"))
+                </div>
+                <div class="col-sm-3">
+                    @if (Model.HasValue("callout"))
+                    {
+                        <div class="copy-block--expandible__callout">@Html.Raw(Model.Value("callout"))</div>
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+

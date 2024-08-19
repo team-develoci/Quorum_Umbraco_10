@@ -1,0 +1,24 @@
+@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var heading = Model.Value<Link>("heading");
+    var subheading = Model.Value<List<Link>>("subHeading");
+}
+
+@if (heading != null)
+{
+    <p><a class="solution-subhead" href="@heading.Url">@heading.Name</a></p>
+    @*<div class="solution-header"> </div>*@
+    <ul>
+        @if (subheading != null && subheading.Any())
+        {
+            foreach (var subhead in subheading)
+            {
+                <p><a href="@subhead.Url" class="solution-subhead">@subhead.Name</a></p>
+            }
+        }
+    </ul>
+}
+
+

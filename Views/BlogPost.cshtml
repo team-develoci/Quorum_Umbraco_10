@@ -1,0 +1,138 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@{
+    Layout = "Master.cshtml";
+
+    IPublishedContent author = Model.Value<IPublishedContent>("author");
+    IPublishedContent category = Model.Value<IPublishedContent>("category");
+    IEnumerable<IPublishedContent> relatedPosts = null;
+    var postDate = Model.Value<DateTime>("itemDate");
+    IPublishedContent prevPage = null, nextPage = null;
+
+    var posts = Model.Parent<IPublishedContent>().Children();
+    relatedPosts = Model.Value<IEnumerable<IPublishedContent>>("relatedPosts");
+    var currentIndex = posts.FindIndex(x => x.Id == Model.Id);
+    prevPage = posts.ElementAtOrDefault(currentIndex - 1);
+    nextPage = posts.ElementAtOrDefault(currentIndex + 1);
+
+    var breadcrumbs = Model.Breadcrumbs(2);
+    var image = Model.Value("teaserImage");
+    IPublishedContent teaserImage = Model.Value<IPublishedContent>
+            ("teaserImage");
+            DateTime itemDate = Model.Value<DateTime>("itemDate");
+  
+}
+
+<div class="blog-breadcrumbs">
+    <div class="blog-topnav">
+        <div>
+            @{
+                int count = 1;
+                foreach (var item in breadcrumbs)
+                {
+                    if (count == 1)
+                    {
+                        <a class="blog-link me-3" href="@item.Url()">@item.Name</a>
+                    }
+                    else
+                    {
+                        <a class="all-post-link text-dark me-3"> <span class="me-3">/</span>@item.Name</a>
+                    }
+                    ++count;
+                }
+            }
+        </div>
+    </div>
+</div>
+<section class="blog-page-detail py-lg-0 py-0 ">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-8 col-lg-8 P-0"> <img loading="lazy" srcset="@(teaserImage!=null?teaserImage.Url(): string.Empty)" alt="@(teaserImage!=null?teaserImage.Value<string>
+                    ("altText"): string.Empty)" class="w-100 mw-100 blog-teaser-img"> </div>
+			<div class="col-md-4 col-lg-4 P-0">
+				<div class="h-100 primary-bg-color">
+					<div class="content py-5 px-5 position-relative">
+						<div class="fs-6 mb-1 text-white fw-600 px-3 pt-5">@(category !=null ?category.Name:string.Empty)</div>
+						<h1 class="blogBanner heading-h1 text-white pt-4 fw-200 mb-0 ps-3 pe-5">@Model.Value("headline")</h1> </div>
+					<div class="content py-0 px-5 position-relative">
+						<div class="fs-6 mb-1 text-white fw-600 px-3">
+							<p class="text-white pb-2 mb-0 fs-7">By<span class="secondary-color ps-2">@(author !=null?author.Name: string.Empty)</span> </p>
+							<p class="text-white fs-7">@itemDate.ToString("MMMM dd, yyyy")</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@{
+	var newsletterPicker = Umbraco.Content(56624);//Model.Value<IPublishedContent>("newsLetterComponent");
+	}
+	@if(newsletterPicker!=null)
+	{
+	@Html.Partial($"~/Views/Partials/Components/{newsletterPicker.ContentType.Alias.ToFirstUpperInvariant()}.cshtml", newsletterPicker)
+	}
+
+
+	</section>
+<!--@Html.Partial("~/Views/Partials/NewComponents/ComponentTopBlogPost.cshtml", Model);-->
+
+
+
+<div class="container-fluid  full-container bg-white py-5">
+    <div class="container nape-header-img">
+        <div class="blogContent blog-post-wrapper bg-white">
+            <div class="row blog-post-cards">
+                <div class="col-sm-12 blog-post-content right-padding">
+                    <div class="rte-content">
+                      @Html.Raw(Model.Value("bodyContent"))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <div class="container blog-pagination justify-content-between" >
+                <div class="blog-pages">
+                    @if (prevPage != null)
+                    {
+                         
+            <p class="blog-pagination-text no-bottom-all"><a href="@prevPage.Url()"><img loading="lazy" src="~/images/Blog_post_left.svg" alt="Blog Left" class="me-2"/>Previous Page</a></p>
+                    }
+
+                </div>
+
+                <div class="blog-pages">
+                    @if (nextPage != null)
+                    {
+                        <p class="blog-pagination-text no-bottom-all"><a href="@nextPage.Url()">Next Page<img loading="lazy" src="~/images/Blog_post_arrow.svg" alt ="Blog Arrow" class="ms-2"/></a></p>
+            
+                    }
+                </div>
+               
+            </div>
+            <div class="container mt-5" style="border-bottom: 2px solid #E9EBEC;">
+                 
+            </div>
+@{
+    if (relatedPosts != null && relatedPosts.Any())
+    {
+        <section class="all-post-page py-lg-4 py-5 mb-5">
+            <div class="container-lg">
+                <div class="content-wrapper mb-5">
+                    <h6 class="fw-bold mb-4 text-start" style="color: #000;">Related Posts</h6>
+                </div>
+                <div class="blog-cards">
+                    <div class="row">
+
+                        @foreach (var post in relatedPosts)
+                        {
+                        @Html.Partial("~/Views/Partials/NewComponents/ComponentBlogPostCard.cshtml", post);
+                        }
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+        }
+    }

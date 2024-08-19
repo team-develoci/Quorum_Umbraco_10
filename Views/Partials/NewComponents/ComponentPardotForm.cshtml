@@ -1,0 +1,110 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{  var pardotFormURL = Model.Value("pardotFormURL").ToString();
+	var eventLabel  = Model.Value("eventLabel").ToString();
+    var formHeight  = Model.Value("formHeight").ToString();
+    var solutionInterestParam = "";
+}
+
+<div class="c-contact-form" id="anchor-partner-form" style="background-color: #F9F9FA;position: relative;
+    bottom: 35px">
+    <div class="container">
+        <div class="row">
+            <div class="contact-Wrapper">
+                @*Need to make sure that "Data Forwarding" is checked on the form handler so we know when to show the success message*@
+
+                        @{  var isPreview = Request.Form.AllKeys.Contains("editorAlias");
+                            var success = false;
+                            var errors = "";
+                            var allFields = "";
+                            var errorMessage = "";
+                            var solutionInterest="";
+
+                            if (!isPreview)
+                            {
+                                success = Request.Params["success"] == "true" || (Request.Form.AllKeys.Any());
+                                errors = Request.Params["errors"];
+                                allFields = Request.Params["allFields"];
+                                errorMessage = Request.Params["errorMessage"];
+                                solutionInterest = Request.Params["solutionInterest"];
+                            }
+                        }
+
+                        @if (success){
+                            <div class="contourFieldSet">
+                               @Html.Raw(Model.Value("thankYouMessage"))
+                            </div> 
+                        }
+                        else{
+                          <div class="contact-form">
+                                <div class="row contact-rows">
+                                   <div class="inner-row-contact-left">
+                                    <div class="contact-col">
+                                        @if (Model.HasValue("copy")){
+                                            <p class="contact-heading"> @Model.Value("title")</p>
+                                            <p class="contact-subpara ">@Model.Value("copy")</p>
+                                        }
+                                        @if (errors != null && errors.ToLower() == "true"){
+                                            <span class="error">@errorMessage</span>
+                                        }
+                                    </div>
+                                  </div>
+                                  @{var style = "";
+                                    if(formHeight != null){
+                                        style = "style=height:"+formHeight;
+                                    }
+                                  }  
+                                  <div class="inner-row-contact-right" @style>
+                                        <div class="contact-col">
+                                            @if(solutionInterest != ""){
+                                                solutionInterestParam = "?solution_URL="+solutionInterest;
+                                            }
+                                            @*Load the pardot form*@
+                                            <noscript>
+                                                <iframe src="@pardotFormURL@solutionInterestParam" title="@eventLabel" id="contactFormID" scrolling="no" width="100%" height="100%" type="text/html" frameborder="0" allowTransparency="true" style="border: 0"></iframe> 
+                                            </noscript>
+
+                                            <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.5/iframeResizer.min.js" integrity="sha512-glYEJjC39tirr+uPPFaVOqhVHlkaonkEKf8SKgVuXxKklbv2t5Fj5vk97xIKXHqc89nyVxD9GCzjKxxBIsB3Cg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                            <script type="text/javascript">
+                                                function loadForm(){
+                                                    iFrameResize({log:false});
+                                                }
+                                                var params = window.location.search.replace('?', '');
+                                                var referringURL = '';
+                                                if(document.referrer){
+                                                    referringURL='Solution_URL='+document.referrer;
+                                                }
+                                                if(params && params.length > 0){
+                                                  params='?'+params+'&'+referringURL;  
+                                                }
+                                                else{
+                                                   params = '?'+referringURL; 
+                                                }
+                                                var formUrl = '@pardotFormURL';
+                                                var thisScript = document.scripts[document.scripts.length - 1];
+                                                var iframe = document.createElement('iframe');                                              
+                                                iframe.setAttribute('src', formUrl + params);
+                                                iframe.setAttribute('title', '@eventLabel');
+                                                iframe.setAttribute('id', 'contactFormID');
+                                                iframe.setAttribute('class', 'utm-src');
+                                                iframe.setAttribute('onload', 'loadForm()');
+                                                iframe.setAttribute('scrolling', 'no');
+                                                iframe.setAttribute('width', '100%');
+                                                iframe.setAttribute('height','100%');
+                                                iframe.setAttribute('type', 'text/html');
+                                                iframe.setAttribute('frameborder', 0);
+                                                iframe.setAttribute('allowTransparency', 'true');
+                                                iframe.style.border = '0';
+
+                                                thisScript.parentElement.replaceChild(iframe, thisScript);
+                                            </script>    
+                                        </div> 
+                                  </div>
+                              </div>
+                          </div>
+                        }           
+            </div>
+        </div>
+    </div>
+</div>
+

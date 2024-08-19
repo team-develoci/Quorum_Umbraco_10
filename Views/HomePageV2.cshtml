@@ -1,0 +1,118 @@
+﻿@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    ViewBag.TealiumTags = new Dictionary<string, string>() {
+        { "page_type", "home"} ,
+        { "site_section", "home"} 
+    };
+}
+
+@if (Model.HasValue("grid"))
+{
+    var grid1 = Model.Value("grid");
+    // List<IPublishedElement> griddd = JsonConvert.DeserializeObject<List<IPublishedElement>>(grid1.ToString());
+    @Html.GetGridHtml(Model, "grid", "GlgGridCustom")
+}
+else
+{
+    <div>
+        @*Marquee*@
+        @{
+            var marquee = Model.Value<IList<IPublishedContent>>("marquee").FirstOrDefault(); ;
+        }
+        @if (marquee != null)
+        {
+            @Html.Partial("~/views/partials/newcomponents/ComponentImageHeroMarquee.cshtml", marquee)
+        }
+
+
+
+        @*Logo Carousel*@
+        @{
+            var logoCarousel = Model.Value<IList<IPublishedContent>>("logoCarousel").FirstOrDefault(); ;
+        }
+        @if (logoCarousel != null)
+        {
+            @Html.Partial("~/views/partials/newcomponents/componentlogoCarouselBlade.cshtml", logoCarousel)
+        }
+
+        @*Valuechain illistration *@
+        <div class="padding-md-def-md-def">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <h2>Enhance efficiency.  Mitigate risk.  Improve your bottom line.</h2>
+                        <p>From exploration to distribution, Quorum transforms every step of the energy value chain.</p>
+                    </div>
+                </div>
+            </div>
+
+            @{
+                var valueChainInfographicComponent = Model.Value<IPublishedContent>("valueChainInfographicComponent");
+            }
+            @if (valueChainInfographicComponent != null)
+            {
+                <div class="padding-sm-def-def-def">
+                    @Html.Partial("~/views/partials/newcomponents/" + valueChainInfographicComponent.GetTemplateAlias() + ".cshtml", valueChainInfographicComponent)
+                </div>
+            }
+
+        </div>
+
+        @*Leadership *@
+        <div class="background-dark padding-md-def-md-def margin-def">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2 text-center">
+                        <h2>@Model.Value("thoughtLeadershipHeadline")</h2>
+                        @Html.Raw(Model.Value("thoughtLeadershipDescription"))
+                    </div>
+                </div>
+            </div>
+
+            @*Thought Leadership tiles*@
+            @{
+                var thoughtLeadershipTiles = Model.Value<IList<IPublishedContent>>("thoughtLeadershipTiles");
+            }
+            <div class="container">
+                @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = thoughtLeadershipTiles, ComponentView = "~/Views/Partials/NewComponents/ComponentThoughtLeadershipTile.cshtml", SColumns = 3, MColumns = 3, ComponentSettings = new { } })
+            </div>
+        </div>
+
+
+
+        <div class="padding-lg-def-lg-def platform-tiles">
+            <div class="container customStyle">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2 text-center">
+                        <div class="padding-def-def-sm-def">
+                            <h2>@Model.Value("platformHeadline")</h2>
+                            @Html.Raw(Model.Value("platformDescription"))
+                        </div>
+                    </div>
+                </div>
+                @*Platform body tiles *@
+                @{
+                    var platformTiles = Model.Value<IList<IPublishedContent>>("platformTiles");
+                }
+                @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = platformTiles, ComponentView = "~/Views/Partials/NewComponents/ComponentBodyTile.cshtml", MColumns = 4, SColumns = 2, ComponentSettings = new { } })
+
+            </div>
+        </div>
+
+        @*Case study blade*@
+        <div class="padding-def-def-lg-def">
+            @{
+                var caseStudy = Model.Value<IList<IPublishedContent>>("caseStudy").FirstOrDefault(); ;
+            }
+            @if (caseStudy != null)
+            {
+                @Html.Partial("~/views/partials/newcomponents/componentcasestudyblade.cshtml", caseStudy)
+            }
+        </div>
+    </div>
+}
+
+
+

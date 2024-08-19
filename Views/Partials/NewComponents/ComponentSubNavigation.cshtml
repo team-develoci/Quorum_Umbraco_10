@@ -1,0 +1,15 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+<div class="hidden-xs hidden-sm">
+    <nav class="c-sub-nav js-sub-nav" role="navigation" id="sub-nav">
+        <div class="container">
+            <ul class="c-product-sticky-nav-ul">
+                @if (Request.QueryString["dtgePreview"] == "1")
+                {
+                <h1>Sub Navigation</h1>
+                @Model.Value("display")
+                }
+            </ul>
+        </div>
+    </nav>
+</div>

@@ -1,0 +1,183 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+
+
+
+
+
+<div class="c-value-chain-infographic-blade">
+    <div class="container">
+        
+        @*Copied from ComponentTooltipImage*@
+        
+        <div id="" class="c-tooltip-image image">
+        @*<div id="@elemntId" class="c-tooltip-image image">*@
+            
+            <div class="wrapper hidden-xs airwave-animations">
+                <div class="airwave airwave1">
+                    <img src="~/images/icons_used/airwave.svg">
+                </div>
+                <div class="airwave airwave2">
+                    <img src="~/images/icons_used/airwave.svg">
+                </div>
+                <div class="airwave airwave3">
+                    <img src="~/images/icons_used/airwave.svg">
+                </div>
+                <div class="airwave airwave4">
+                    <img src="~/images/icons_used/airwave.svg">
+                </div>
+                <div class="airwave airwave5">
+                    <img src="~/images/icons_used/airwave.svg">
+                </div>
+                <img src="~/images/value-chain-inforgraphic.gif" class="infographic" alt="">
+                @{
+                    var tooltips = Model.Value<IList<IPublishedContent>>("toolTips");
+                }
+                @foreach (var tooltip in tooltips)
+                {
+                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="@tooltip.GetPropertyValue("textPlacement")" title="" class="tooltip-anchor product" style="top:@(tooltip.GetPropertyValue<int>("topPosition", 0))%; left:@(tooltip.GetPropertyValue<int>("leftPosition",0))%;" data-original-title="@tooltip.GetPropertyValue("text")"></a>
+                }
+
+            </div>
+            <div class="wrapper hidden-xs">
+                <!-- TABBED SECTION -->
+                @{
+                    var tabs = Model.Value<IList<IPublishedContent>>("tabs");
+                    var tabNo = 0;
+                }
+
+                <ul class="nav nav-tabs infographic-tabs" role="tablist">
+
+                    @foreach (var tab in tabs)
+                    {
+                        <li role="presentation" class=""><a data-target="#item_@tabNo" aria-controls="item_@tabNo" role="tab" data-toggle="tab" aria-expanded="falsehttp://l1-qbs-website.azurewebsites.net/images/FPO/fpo-value-chain-mobile.jpg">@tab.GetPropertyValue("name")</a></li>
+                        tabNo++;
+                    }
+                </ul>
+
+                @{
+                    tabNo = 0;
+                }
+                <div class="tab-content">
+                    
+                    @foreach (var tab in tabs)
+                    {
+                        var tabImage = tab.GetPropertyValue<IPublishedContent>("image");
+                        <div role="tabpanel" class="tab-pane fade" id="item_@tabNo">
+                            <div class="close-btn">
+                                <button type="button" class="close" aria-label="Close">
+                                    <span class="closer"></span>
+                                </button>
+                            </div>
+                            <div class="c-tabbed-benefits-blade__panel">
+                                <div class="col-sm-5 c-tabbed-benefits-blade__image">
+                                    @if (tabImage != null)
+                                    { 
+                                    <img class="" src="@tabImage.Url" alt="@(tabImage!=null?tabImage.Value<string>("altText"): string.Empty)">
+                                    }
+                                </div>
+                                <div class="col-sm-7 col-lg-6 c-tabbed-benefits-blade__copy">
+                                    @if (tab.HasValue("headline"))
+                                    { <h3>@tab.GetPropertyValue("headline")</h3>}
+                                    @Html.Raw(tab.GetPropertyValue("copy"))
+
+                                    <ul class="icon-list">
+                                        @{
+                        var products = tab.GetPropertyValue<IList<IPublishedContent>>("productCallouts", new List<IPublishedContent>());
+                                        }
+                                        @foreach (var product in products)
+                                        {
+                                            var cta = product.GetPropertyValue<CTA>("headline");
+                                            var image = product.GetPropertyValue<IPublishedContent>("image");
+                                            if (cta != null && cta.HasLink)
+                                            {
+                                                <li>
+                                                    <a href="@cta.Link" target="@cta.Target">
+                                                        <h4>@cta.Caption</h4>
+                                                        @if (image != null)
+                                                        {
+                                                            <img src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)"/>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                            else if (cta != null)
+                                            {
+                                                <li>
+                                                    <h4>@cta.Caption</h4>
+                                                    @if (image != null)
+                                                    {
+                                                        <img src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)"/>
+                                                    }
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        tabNo++;
+                    }
+                </div>
+
+
+                <!-- END TABBED SECTION -->
+            </div>
+
+            <div class="visible-xs">
+                <div id="carousel_element_b45f7903-c10e-40d7-a129-353e5da6b4b4" class="carousel slide c-repeater-carousel" data-ride="carousel" data-interval="false" data-wrap="false">
+                     @if (tabs.Count() > 1)
+                    {
+                    <div class="vertical-item_inner-wrap">
+                        <ol class="carousel-indicators">
+                          @for (var i = 0; i < tabs.Count(); i++)
+                          {
+                                <li data-target="#carousel_element_b45f7903-c10e-40d7-a129-353e5da6b4b4" data-slide-to="@i" class="@((i==0)?" active":"")"></li>
+                            }
+                        </ol>
+                    </div>
+                     }
+                    <div class="carousel-inner ie-fix" role="listbox">
+                        @for (var i = 0; i < tabs.Count(); i++)
+                        {
+                            var item = tabs.ElementAt(i);
+                            var itemImage = item.GetPropertyValue<IPublishedContent>("image");
+
+                            <div class="item @((i==0)?" active":"")">
+                                <div class="c-tooltip-image__mobile-slide">
+                                    <div class="c-tooltip-image__mobile-slide__image">
+                                        @if(itemImage != null)
+                                        { 
+                                        <img src="@itemImage.Url" alt="@(itemImage!=null?itemImage.Value<string>("altText"): string.Empty)">
+                                        }
+                                    </div>
+                                    <div class="c-tooltip-image__mobile-slide__copy">
+                                        @if (item.HasValue("headline"))
+                                        { <h3>@item.GetPropertyValue("headline")</h3>}
+                                        @Html.Raw(item.GetPropertyValue("copy"))
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                
+            </div>
+
+            @{
+                var button = Model.Value<CTA>("button");
+            }
+            @if (button != null)
+            {
+                <div class="padding-sm-def-def-def text-center value-chain-cta">
+                    <a href="@button.Link" class="btn btn-default" target="@button.Target">@button.Caption</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+

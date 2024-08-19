@@ -1,0 +1,31 @@
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var button = Model.Value<Link>("button");
+    var date = Convert.ToDateTime(Model.Value("date"));
+    var title = Model.Value("title");
+    var content = Model.Value("content");
+}
+
+<section class="py-3 pt-0 border-1 border-bottom mb-5">
+    <div class="fw-normal text fw-500 text-start pipeline-gray-color">
+        <p>@date.ToString("MMMM dd, yyyy")</p>
+    </div>
+    <div class="">
+        <h4 class="head-h4 dark-blue fw-300">@title</h4>
+    </div>
+
+    <div class="fw-500 dark-gray pt-4 fs-6">
+        <p>
+            @content
+        </p>
+    </div>
+
+    <div class="py-4">
+        @if(button!=null)
+        {
+        <a href="@button.Url" class="text-decrotion-none"> <button class="learnBtn">@button.Name</button></a>
+    }
+    </div>
+</section>

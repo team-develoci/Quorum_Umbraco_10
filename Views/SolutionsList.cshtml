@@ -1,0 +1,95 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+<section class="container">
+    <div class="row">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("pageHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { IsH1 = true } })
+    </div>
+</section>
+
+
+@{
+    var segments = Model.Content.Site().Descendants("IndustrySegment");
+    var solutions = Model.Content.Site().Descendants("Solution");
+    var businessNeedIds = Model.Value<string>("businessNeeds").Split(',').ToList();
+}
+
+<section class="container">
+    
+    <div class="text-center solutions-tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#category" class="no-scroll-to-anchor" aria-expanded="false">By Category</a></li>
+            <li><a data-toggle="tab" href="#alphabetical" class="no-scroll-to-anchor" aria-expanded="true">Alphabetical</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="category" class="tab-pane fade active in">
+                <div class="row margin-bottom-30">
+                    <div class="col-sm-4">
+                        <h4>Industry Segments</h4>
+                        <ul>
+                            @foreach (IPublishedContent contentItem in segments)
+                            {
+                                <li><a href="@contentItem.Url">@contentItem.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <hr class="row" />
+
+                @for (var i = 0; i < businessNeedIds.Count; i += 3)
+                {
+                    <div class="row margin-bottom-40">
+                        @for (var j = 0; j < 3 && i + j < businessNeedIds.Count; j++)
+                        {
+                            var businessNeed = Umbraco.Content(businessNeedIds[i + j]);
+                            if (businessNeed != null)
+                            {
+                                <div class="col-sm-4">
+                                    <h4>@businessNeed.Name</h4>
+                                    <ul>
+                                        @foreach (IPublishedContent contentItem in solutions.Where(s => s.GetPropertyValue<string>("businessNeed").Contains(businessNeed.Id.ToString())).OrderBy(s => s.Name))
+                                        {
+                                            <li><a href="@contentItem.Url">@contentItem.Name</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+            <div id="alphabetical" class="tab-pane fade">
+
+                    <h4>All Products</h4>
+                    <div class="columns-3 row">
+                        
+                        <ul>
+                            @foreach (IPublishedContent contentItem in solutions.OrderBy(s => s.Name))
+                            {
+                                <li><a href="@contentItem.Url">@contentItem.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                    
+
+            </div>
+            
+        </div>
+
+    </div>
+    
+    
+    
+    
+ 
+</section>
+
+
+
+
+
+
+

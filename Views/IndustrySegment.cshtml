@@ -1,0 +1,101 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+@section Marquee {
+    @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("marquee"), ComponentView = "~/Views/Partials/Components/skewedMarquee.cshtml", ComponentSettings = new { IsH1 = true, MarqueeType = "primary" } })
+}
+
+<section class="container-fluid">
+    <div class="row larger overview align-left">
+        <div class="copy-block copy-block--section-head col-xs-12">
+            @{
+                var overviewImageId = Model.Value<string>("overviewImage");
+                var overviewImage = !string.IsNullOrEmpty(overviewImageId) ? Umbraco.TypedMedia(overviewImageId) : null;
+            }
+            @if (overviewImage != null)
+            {
+                <img src="@overviewImage.Url" alt="@overviewImage.GetPropertyValue("altText")">
+            }
+            <p>@Html.Raw(Model.Value("overviewCopy"))</p>
+        </div>
+    </div>
+</section>
+
+<section class="container-fluid">
+    <div class="row">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("demoBlade"), ComponentView = "~/Views/Partials/Components/DemoBlade.cshtml", ComponentSettings = new { } })
+    </div>
+</section>
+
+@if ((Model.Content.HasProperty("businessNeedsHead") && Model.Value<ArchetypeModel>("businessNeedsHead").Count() > 0) || (Model.Content.HasProperty("businessNeeds") && Model.Value<ArchetypeModel>("businessNeeds").Count() > 0))
+{
+<section class="container">
+    <div class="row larger">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("businessNeedsHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { } })
+    </div>
+    <div class="row icon-blocks">
+
+        @{
+    var businessNeedTileIds = Model.Value<string>("businessNeeds").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+    var businessNeedTiles = Umbraco.Content(businessNeedTileIds).Where(x => x != null);
+        }
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = businessNeedTiles, ComponentView = "~/Views/Partials/Components/FeatureBusinessSection.cshtml", SColumns = 3@*, ComponentSettings = new { HideDescription = true }*@ })
+    </div>
+</section>
+
+<div class="container">
+    <hr class="row"/>
+</div>
+}
+
+@if ((Model.Content.HasProperty("trustedImages") && Model.Value<ArchetypeModel>("trustedImages").Count() > 0))
+{ 
+    <section class="container trusted simple">
+        <div class="row">
+            <h2 class="text-center">@Model.Value("trustedHeadline")</h2>
+        </div>
+        <div class="row trust-tiles">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("trustedImages"), ComponentView = "~/Views/Partials/Components/ImageBlock.cshtml", SColumns = 4, ComponentSettings = new { } })
+        </div>
+    </section>
+
+
+    <div class="container">
+        <hr class="row" />
+    </div>
+}
+    
+@if (Model.Content.HasProperty("storyBlade") && Model.Value<ArchetypeModel>("storyBlade").Count() > 0)
+{
+<section class="container pullout-blade">
+    <div class="row">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("storyBlade"), ComponentView = "~/Views/Partials/Components/Textblock.cshtml", ComponentSettings = new { } })
+    </div>
+</section>
+
+<div class="container">
+    <hr class="row"/>
+</div>
+}
+
+<section class="container">
+    <div class="row">
+        <h2 class="text-center resource-tile-head">@Model.Value("resourcesHeadline")</h2>
+        @{
+            var resourceIds = Model.Value<string>("resources").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+            var resources = Umbraco.Content(resourceIds).Where(x => x != null);
+        }
+
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = resources, ComponentView = "~/Views/Partials/NewComponents/ComponentResourceTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+    </div>
+</section>
+
+<section class="contact-container">
+    <div class="container">
+        <div class="row no-margin">
+            @Html.Partial("~/Views/Partials/Components/contactform.cshtml")
+        </div>
+    </div>
+</section>

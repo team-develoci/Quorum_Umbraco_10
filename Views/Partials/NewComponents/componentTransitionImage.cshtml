@@ -1,0 +1,14 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var image = Model.Value<IPublishedContent>("image");
+    var position = Model.Value<string>("position", "top-left");
+}
+
+@if (image != null)
+{
+<div class="c-transition-image hidden-xs image-position--@position">
+    <div class="c-transition-image__wrapper">
+        <img loading="lazy" src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)" />
+    </div>
+</div>
+}

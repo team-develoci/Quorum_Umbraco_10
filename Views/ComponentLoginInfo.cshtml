@@ -1,0 +1,31 @@
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    
+    var cards = Model.Value<List<IPublishedElement>>("card");
+    //var link = Model.Properties.Where(x => x.Alias == "loginLink").FirstOrDefault().Value<Link>("loginLink");
+
+}
+<div class="container-fluid">
+   
+        <div class="login-section">
+            @foreach (var card in cards)
+            {
+
+                <div class="login-option" >
+                    <div class="login-col">
+                        <h3>  @card.Value("title")</h3>
+                        @card.Value("description")
+                        @try
+                        {
+                            var ln = card.Value<Link>("loginLink");
+                    <a href="@ln.Url" class="learnbtn"> @ln.Name </a>
+                        }
+                        catch { }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    

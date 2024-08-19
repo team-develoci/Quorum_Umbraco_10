@@ -1,0 +1,12 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    var date = Convert.ToDateTime(Model.Value("date"));
+    var title = Model.Value("title");
+    var content = Model.Value("content");
+}
+
+<div class="event-details">
+    <p class="event-date">@date.ToString("MMMM dd, yyyy")</p>
+    <p class="event-subhead">@title</p>
+    <p class="event-sub-description">@content</p>
+</div>

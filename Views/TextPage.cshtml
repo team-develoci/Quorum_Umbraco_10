@@ -1,0 +1,13 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+<div class="padding-md-def-md-def">
+    <div class="container">
+        <div class="col-lg-8">
+            <h1>@Model.Value("headline")</h1>
+            @Html.Raw(Model.Value("bodyText"))
+        </div>
+    </div>
+</div>
+

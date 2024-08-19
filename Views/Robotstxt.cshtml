@@ -1,0 +1,30 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Web.Composing
+@{
+    Layout = null;
+	Response.ContentType = "text/plain";
+    var home = Model.AncestorOrSelf(1);
+    var pages = home.Descendants().Where(x => x.Value<bool>("excludeFromSearchEngines") == true);
+}
+@* Our main site robots *@
+User-agent: *
+Disallow: /aspnet_client/
+Disallow: /bin/
+Disallow: /config/
+Disallow: /data/
+Disallow: /macroScripts/
+Disallow: /umbraco_client/
+Disallow: /usercontrols/
+Disallow: /configuration/
+Disallow: /install/
+Disallow: /masterpages/
+Disallow: /python/
+Disallow: /umbraco/
+Disallow: /xslt/
+Disallow: /cgi-bin/
+Disallow: /blog/categories/
+@foreach (var page in pages)
+{
+<text>Disallow: @page.Url</text>
+}
+Sitemap: @Request.Url.Scheme://@Request.Url.Host/sitemap

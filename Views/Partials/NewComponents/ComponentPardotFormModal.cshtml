@@ -1,0 +1,97 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{ 
+    var enableModal = Model.Value("enableModal").ToString();
+}
+@if(enableModal == "1"){
+
+var name  = Model.Value("modalName").ToString();
+var title  = Model.Value("title").ToString();
+var pardotFormURL = Model.Value("pardotFormURL").ToString();
+var eventLabel  = Model.Value("eventLabel").ToString();
+var formHeight  = Model.Value("formHeight").ToString();
+    
+@* Modal *@
+<div class="modal fade" id="@name" tabindex="-1" aria-labelledby="@name"Label"" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-lg ">
+    <div class="p-contact-form modal-content">
+      <div class="modal-header">
+        <div></div>
+        <div class="p-contact-form-title"><h5 class="modal-title" id="modalLabel">@title</h5></div>
+        <div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      </div>
+      <div class="modal-body">
+
+            @{  var isPreview = Request.Form.AllKeys.Contains("editorAlias");
+                var success = false;
+                var errors = "";
+                var allFields = "";
+                var errorMessage = "";
+               
+                if (!isPreview)
+                {
+                    success = Request.Params["success"] == "true" || (Request.Form.AllKeys.Any());
+                    errors = Request.Params["errors"];
+                    allFields = Request.Params["allFields"];
+                    errorMessage = Request.Params["errorMessage"];
+                }
+            }
+
+            @if (success){
+                <div>
+                    @Html.Raw(Model.Value("thankYouMessage"))
+                </div> 
+            }
+            else{  
+                var style = "";
+                if(formHeight != null){
+                  style = "style=height:"+formHeight;
+                }  
+                <div id="pardotFormID" @style>  
+                
+                    @if (errors != null && errors.ToLower() == "true"){
+                        <span class="error">@errorMessage</span>
+                    }
+                
+                    @*Load the pardot form*@
+                    <noscript>
+                        <iframe src="@pardotFormURL" class="utm-src" title="@eventLabel" id="@name" scrolling="no" width="100%" height="100%" type="text/html" frameborder="0" allowTransparency="true" style="border: 0"></iframe> 
+                    </noscript> 
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.5/iframeResizer.min.js" integrity="sha512-glYEJjC39tirr+uPPFaVOqhVHlkaonkEKf8SKgVuXxKklbv2t5Fj5vk97xIKXHqc89nyVxD9GCzjKxxBIsB3Cg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    <script type="text/javascript">
+                        function loadForm(){
+                            iFrameResize({log:false});
+                        }
+                        var params = window.location.search.replace('?', '');
+                        var referringURL =  'solution_URL='+window.location.search;
+                        if(params && params.length > 0){
+                            params='?'+params+'&'+referringURL;  
+                        }
+                        else{
+                            params = '?'+referringURL; 
+                        }
+                        var formUrl = '@pardotFormURL';
+                        var thisScript = document.scripts[document.scripts.length - 1];
+                        var iframe = document.createElement('iframe');
+                        iframe.setAttribute('src', formUrl + params);
+                        iframe.setAttribute('class', 'utm-src');
+                        iframe.setAttribute('title', '@eventLabel');
+                        iframe.setAttribute('id', '@name');
+                        iframe.setAttribute('onload', 'loadForm()');
+                        iframe.setAttribute('scrolling', 'no');
+                        iframe.setAttribute('width', '100%');
+                        iframe.setAttribute('height','100%');
+                        iframe.setAttribute('type', 'text/html');
+                        iframe.setAttribute('frameborder', 0);
+                        iframe.setAttribute('allowTransparency', 'true');
+                        iframe.style.border = '0';
+                        thisScript.parentElement.replaceChild(iframe, thisScript);
+                    </script>
+                </div>
+            }
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>
+}

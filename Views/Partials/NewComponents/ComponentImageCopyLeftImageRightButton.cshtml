@@ -1,0 +1,40 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("downloadLink");
+    var image = Model.Value<IPublishedContent>("leftImage");
+    var logoimage = Model.Value<IPublishedContent>("logo");
+}
+
+<section class="py-5 my-4 mb-5 pt-4">
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6 p-0">
+                        <div class="blueBox h-100">
+                            <img  loading="lazy" class="section-col-image mb-4" src="@logoimage.Url" alt="@(!string.IsNullOrEmpty(logoimage.Value<string>("altText"))?logoimage.Value<string>("altText"): string.Empty)">
+                            <h2 class="head-h2 fw-200 text-white mb-3 mb-md-5">@Model.Value("title")</h2>
+                            <h5 class="head-h5 fw-300 mb-5"> @Html.Raw(Model.Value("copy"))</h5>
+                           @if (button != null)
+                           {
+                            <a href="@button.Url" class="btn btnOrange d-flex justify-content-center align-items-center">@button.Name</a>
+                           }
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-7 p-0">
+                        <a class="navbar-brand m-0" href="/">
+                            <picture>
+                                <source srcset="@image.Url()">
+                                <img loading="lazy" srcset="@image.Url()" alt="Quorum" width="100%" class="client-img">
+                            </picture>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

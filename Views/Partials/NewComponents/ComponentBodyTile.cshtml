@@ -1,0 +1,32 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta = Model.Value<Link>("cta");
+
+    var image = Model.Value<IPublishedContent>("image");
+}
+@*<div class="c-body-tile">
+
+    @if (image != null)
+    {
+        <div>
+            <img src="@image.Url()" alt="@image.Value("altText")">
+        </div>
+    }
+    <h3 class="c-body-tile__headline bodyTileHeight">@Model.Value("headline")</h3>
+    @Html.Raw(Model.Value("description"))
+
+    @if (cta != null)
+    {
+        <div class="align-bottom">
+            <a href="@cta.Url" target="@cta.Target" class="cta">@cta.Name</a>
+        </div>
+    }
+
+</div>*@
+
+
+

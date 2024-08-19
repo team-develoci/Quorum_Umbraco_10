@@ -1,0 +1,37 @@
+﻿@inherits UmbracoViewPage<ComponentItemModel>
+@{
+    var headline = Model.GetValue<string>("headline");
+    var copy = Model.GetValue<string>("copy");
+    var headlineImage = Umbraco.Media(Model.GetValue<string>("headlineImage", ""));
+    var isH1 = Model.GetSettingsValue<bool>("IsH1");
+    var overviewImage = Umbraco.Media(Model.GetValue<string>("overviewImage", ""));
+}
+
+<div class="copy-block copy-block--section-head col-xs-12 @(!string.IsNullOrEmpty(Model.Modifier) ? "copy-block--section-head--" + Model.Modifier : "")">
+
+    @if (overviewImage != null)
+    {
+        <img loading="lazy"src="@overviewImage.Url()" alt="@(!string.IsNullOrEmpty(overviewImage.Value<string>("altText"))?overviewImage.Value<string>("altText"): string.Empty)" />
+
+    }
+    @if (headlineImage != null)
+    {
+        <img loading="lazy" src="@headlineImage.Url()" alt="@(!string.IsNullOrEmpty(headlineImage.Value<string>("altText"))?headlineImage.Value<string>("altText"): string.Empty)" />
+    }
+    else if (!string.IsNullOrEmpty(headline))
+    {
+        if (isH1)
+        {
+            <h1>@headline</h1>
+        }
+        else
+        {
+            <h2>@headline</h2>
+        }
+    }
+    @if (!string.IsNullOrEmpty(copy))
+    {
+        <p>@Html.Raw(copy)</p>
+    }
+</div>
+

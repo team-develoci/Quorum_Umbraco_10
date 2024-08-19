@@ -1,0 +1,99 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    IContentType contentType = null;
+    var contentTypeAlias = ViewBag.ComponentName != null ? ViewBag.ComponentName as string : Model.Value<string>("componentDocTypeAlias");
+
+    if (!string.IsNullOrEmpty(contentTypeAlias))
+    {
+        contentType = ApplicationContext.Current.Services.ContentTypeService.GetContentType(contentTypeAlias);
+    }
+}
+
+
+
+
+@if (contentType != null)
+{
+    <div class="c-component-schema-info" id="@contentTypeAlias">
+        <hr />
+        <div class="container">
+            <h2 class="text-center"><i class="@contentType.Icon"></i> @contentType.Name.Replace("Component--", "")  </h2>
+            @if (ViewBag.ShowDetails != true)
+            {
+            <p class="text-center"><a href="#" onclick="$(this).parent().parent().find('.details').toggle(); return false;">Details</a></p>
+            }
+
+            <div class="details" style="@(ViewBag.ShowDetails == true ? "display:block;" : "display:none;")">
+           
+                @DisplayPropInfo(contentType)
+            </div>
+        </div>
+    </div>
+    
+    
+    @helper DisplayPropInfo(IContentType contentType, bool showLables= true)
+    {
+        <p><strong></strong> @contentType.Description</p>
+        <table class="table">
+            @if (showLables)
+            { 
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type (baseType)</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            }
+            @foreach (var prop in contentType.PropertyGroups.SelectMany(g => g.PropertyTypes).OrderBy(p => p.SortOrder))
+            {
+                IDataTypeDefinition dataType = ApplicationContext.Current.Services.DataTypeService.GetDataTypeDefinitionById(prop.DataTypeDefinitionId);
+                var isImage = dataType.PropertyEditorAlias == "Umbraco.MediaPicker2";
+                var isFPO = dataType.Name == "Media Picker - FPO";
+                <tr>
+                    <td>@prop.Name</td>
+                   
+                    @if (dataType.PropertyEditorAlias == "Our.Umbraco.NestedContent")
+                    {
+                         var props = ApplicationContext.Current.Services.DataTypeService.GetPreValuesByDataTypeId(dataType.Id);
+                        if (props != null)
+                        {
+                            var nestedVal = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(props.First());
+                            var nestedAlias = @nestedVal[0].ncAlias.ToString();
+                            var nestedContentType = ApplicationContext.Current.Services.ContentTypeService.GetContentType(nestedAlias);
+                           
+                            <td>
+                                <a href="#" onclick="$(this).parent().find('.details-@dataType.Id').toggle(); return false;">@dataType.Name</a>
+                                <div class="details-@dataType.Id" style="display:none;">
+                                    @DisplayPropInfo(nestedContentType, true)
+                                </div>
+                            </td>                        
+                        }
+                        else
+                        {
+                            <td>ERROR: @dataType.Key </td>
+                        }
+
+                    }
+                    else
+                    {
+                        <td style="">
+                            @dataType.Name  (@dataType.PropertyEditorAlias)
+                        </td>
+                    }
+
+                    <td>@prop.Description</td>
+                </tr>
+            }
+        </table>
+        
+}
+    
+  
+    
+}
+else
+{ 
+    <h2>No contenttype found for @contentTypeAlias</h2>
+}
+

@@ -1,0 +1,93 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var imageCols = Model.Value("imageSize") == "large" ? 8 : 6;
+    var textCols = 11 - imageCols;
+    var image = Model.Value<IPublishedContent>("image");
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+    var imagePosition = Model.HasValue("imagePosition") ? Model.Value<string>("imagePosition") : "right";
+    var imageRight = imagePosition == "right";
+    var textColor = Model.HasValue("textColor") ? Model.Value<string>("textColor") : "dark";
+    var link = Model.Value<Link>("link");
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId + "")
+
+@*<div id="@elemntId" class="c-storytelling-blade c-storytelling-blade--image-@imagePosition">
+    <div class="container text-color--@textColor">
+        <div class="row c-storytelling-blade__wrapper @imageRight.ToString()">
+            <div class="c-storytelling-blade__image col-sm-@imageCols @(imageRight ? "col-sm-push-" + imageCols : "")">
+                @if (image != null)
+                {
+                    <img src="@image.Url()" alt="@image.Value("altText")" class="col-md-push-1" />
+                }
+            </div>
+            <div class="c-storytelling-blade__copy col-sm-6 col-md-5 @(imageRight ? "col-sm-pull-6 col-md-pull-5" : "col-md-push-0")">
+
+
+                @if (Model.HasValue("eyebrowText"))
+                {<p class="c-storytelling-blade__copy__eyebrow">@Model.Value("eyebrowText")</p>}
+
+                @if (Model.HasValue("headline"))
+                {<h2>@Html.Raw(Model.Value("headline"))</h2>}
+                @Html.Raw(Model.Value<string>("copy"))
+
+                @if (link != null)
+                {
+                    <a href="@link.Url" target="@link.Target" class="btn btn-primary">@link.Name</a>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>*@
+
+@*<div class="quorumWrapper">
+    <div class="container desktop-footer qm-grid">
+        <div class="quorumTitle">Quorum in the News</div>
+        <p>Follow top stories in the energy industry.</p>
+        <div class="row QuorumCards">
+            <div class="col-sm-4 cards">
+                <div class="QuorumImg">
+                    <picture>
+                        <source srcset="/images/Card-1.png" media="(min-width: 1024px)">
+                        <img srcset="/images/Card-1.png" alt="Quorum" width="100%">
+                    </picture>
+                </div>
+                <div class="QuorumDetails">
+                    <p class="subTitle"> Market & Technology Trends </p>
+                    <p class="cardDescription"> News Headline Goes in This Bottom Section News Headline Goes in This Bottom Section</p>
+                </div>
+            </div>
+            <div class="col-sm-4 cards">
+                <div class="QuorumImg">
+                    <picture>
+                        <source srcset="/images/Card-2.png" media="(min-width: 1024px)">
+                        <img srcset="/images/Card-2.png" alt="Quorum" width="100%">
+                    </picture>
+                </div>
+                <div class="QuorumDetails">
+                    <p class="subTitle"> Upstream </p>
+                    <p class="cardDescription"> News Headline Goes in This Bottom Section News</p>
+                </div>
+            </div>
+            <div class="col-sm-4 cards">
+                <div class="QuorumImg">
+                    <picture>
+                        <source srcset="/images/Card-3.png" media="(min-width: 1024px)">
+                        <img srcset="/images/Card-3.png" alt="Quorum" width="100%">
+                    </picture>
+                </div>
+                <div class="QuorumDetails">
+                    <p class="subTitle"> Upstream </p>
+                    <p class="cardDescription"> News Headline Goes in This Bottom Section News</p>
+                </div>
+            </div>
+        </div>
+        <button class="new-stories">See all News Stories</button>
+    </div>
+</div>*@    

@@ -1,0 +1,153 @@
+﻿@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var searchPage = Model.Value<IPublishedContent>("searchPage");
+
+}
+<nav class="navbar-default navbar-static-top" role="navigation" id="component-navigation">
+    <div class="top-navbar">
+        <div class="margin-right-top-nav">
+            <div class="navbar-header">
+
+            </div>
+            <div class="upper-wrapper">
+
+                <div class="topnav" id="myTopnav">
+                    @*<a href="#" id="demo-btn">Request a Demo</a>*@
+                    @{
+                        //Show all all locations under the locations apge
+                        
+                        var topNavItems = Model.Value<IEnumerable<Link>>("topNavLinks");
+                        var mobileNavLinks = Model.Value<IEnumerable<Link>>("mobileNavLinks");
+                        var demolink = Model.Value<Link>("demoLink");
+                    }
+                    @if (topNavItems != null)
+                    {
+                        foreach (var item in topNavItems)
+                        {
+
+                            <a class="" href="@item.Url" target="@item.Target">@item.Name</a>
+                        }
+                    }
+
+                    @*This is the new search*@
+                    @if (searchPage != null)
+                    {
+                        <a href="@searchPage.Url()"><img src="~/images/search-2.svg" alt ="search" /></a>
+                    }
+                    @if (demolink != null)
+                    {
+                        <a class="" href="@demolink.Url" target="@demolink.Target"><button class="btn-primary-new">@demolink.Name</button></a>
+                    }
+                    @*@if (searchPage != null)
+                        {
+
+                            <div class="desktop-search-container search-hidden">
+                                <span class="search-btn glyphicon glyphicon-search"></span>
+                                <input id="desktop-search-box" class="search-box" type="text" maxlength="40" name="query" data-search-url="@searchPage.Url" />
+                                <input id="desktop-search-button" type="submit" class="submit-btn search-submit-btn" value="Go" />
+                            </div>
+
+                        }*@
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="main-nav-container">
+        <div>
+            <div class="navbar-wrap  navbar-collapse" id="navbar">
+                @*@if (searchPage != null)
+                    {
+                        <div class="search-bar mobile search-mobile">
+                            <div class="container">
+                                <input id="mobile-search-box" class="search-box" type="text" placeholder="Search..." maxlength="40" name="query" data-search-url="@searchPage.Url" />
+                                <input type="submit" class="submit-btn search-submit-btn" value="Go" />
+                            </div>
+                        </div>
+                    }*@
+
+                <div class="pinned-nav-container margin-wrapper">
+                    <div>
+                        <a class="navbar-brand" href="/">
+                            <picture>
+                                <source srcset="/images/QuorumLogo-1.svg" media="(min-width: 1024px)">
+                                <img srcset="/images/QuorumLogo-1.svg" alt="Quorum">
+                            </picture>
+                        </a>
+                    </div>
+                    <div class="topnav" id="myTopnav"></div>
+
+                    @*ul starts*@
+                    <ul class="nav navbar-navs mobile-nav">
+                        <li class="pinned-brand pinned-menu">
+
+                        </li>
+
+                        @{
+                            var mainnavitems = Model.Value<IEnumerable<Link>>("mainNavItems");
+                            if (mainnavitems != null)
+                            {
+                                foreach (var navSection in mainnavitems)
+                                {
+                                    <li class="menu-large">
+                                        <a href="@navSection.Url" target="@navSection.Target">@navSection.Name </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-mobile">
+        <a href="/"><img src="~/images/mobilelogo-1.svg" alt= "Mobile Image" /></a>
+        <div class="hamburg-dropdown">
+            <img src="~/images/Hamburger.svg" alt="Hamburger" />
+            <div class="hamburg-dropdown-content">
+                @if (demolink != null)
+                {
+                    <div class="hamburg-dropdown-content-header">
+                        <a href="@demolink.Url">@demolink.Name</a>
+                    </div>
+                }
+                    <ul class="list-group">
+                        @{
+                        if(mobileNavLinks!=null && mobileNavLinks.Any())
+                        {
+                            foreach (var item in mobileNavLinks)
+                                {
+                                    <li class="list-group-item">
+                                        <a href="@item.Url" target="@item.Target">@item.Name</a>
+                                    </li>
+                                }
+                        }
+                        }
+                        @*<li class="list-group-item">Solutions</li>
+                <li class="list-group-item">Services</li>
+                <li class="list-group-item">Case Studies</li>
+                <li class="list-group-item">About</li>
+                <li class="list-group-item">Events</li>
+                <li class="list-group-item">Resources</li>
+                <li class="list-group-item">Blog</li>
+                <li class="list-group-item">Training</li>
+                <li class="list-group-item">Contact</li>
+                <li class="list-group-item">Careers</li>
+                <li class="list-group-item">Login</li>*@
+                    </ul>
+                </div>
+        </div>
+    </div>
+</nav>
+
+
+

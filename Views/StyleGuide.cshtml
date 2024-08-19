@@ -1,0 +1,608 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Core;
+@using Umbraco.Core.Models;
+@using Umbraco.Core.Services;
+
+
+@if (Request.QueryString["schema"] == "true")
+{
+    IContentTypeService contentTypeService = Services.ContentTypeService;
+    var contentTypes = contentTypeService.GetAll();
+
+    <h1>Component Marquees</h1>
+    foreach (var contentType in contentTypes.Where(c => c.Name.ToLower().StartsWith("component--") && c.Name.ToLower().Contains("marquee")).OrderBy(c => c.Alias))
+    {
+        @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+
+    <h1>Component Blades</h1>
+    foreach (var contentType in contentTypes.Where(c => c.Name.ToLower().StartsWith("component--") && c.Name.ToLower().Contains("blade")).OrderBy(c => c.Alias))
+    {
+        @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+    <h1>Component Tiles</h1>
+    foreach (var contentType in contentTypes.Where(c => c.Name.ToLower().StartsWith("component--") && c.Name.ToLower().Contains("tile") && !c.Name.ToLower().Contains("blade")).OrderBy(c => c.Alias))
+    {
+        @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+    <hr />
+    <h1>Component Misc</h1>
+    foreach (var contentType in contentTypes.Where(c => c.Name.ToLower().StartsWith("component--") && (!c.Name.ToLower().Contains("blade") && !c.Name.ToLower().Contains("marquee") && !c.Name.ToLower().Contains("tile"))).OrderBy(c => c.Alias))
+    {
+        @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+    <hr />
+    <h1>Objects</h1>
+    foreach (var contentType in contentTypes.Where(c => c.Name.ToLower().StartsWith("object--")).OrderBy(c => c.Alias))
+    {
+       @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+    <hr />
+    <h1>Content Types</h1>
+    
+    foreach (var contentType in contentTypes.Where(c => !c.Name.ToLower().StartsWith("component--") && !c.Name.ToLower().StartsWith("object")).OrderBy(c => c.Alias))
+    {
+       @Html.Partial("~/views/partials/newcomponents/ComponentComponentSchemaInfo.cshtml", null, new ViewDataDictionary { { "ComponentName", contentType.Alias }, { "ShowDetails", true } })
+    }
+
+    <style>
+
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+    </style>
+    <link href="/css/umbracoicons.css" rel="stylesheet" />
+}
+else if (Request.QueryString["grids"] == "true")
+{
+    var home = Model.AncestorOrSelf(1);
+    var docTypes = new System.Collections.Generic.Dictionary<string, int>();
+    <h2>Site Pages</h2>
+    <div>
+        @ListNodeAndChildren(home, docTypes, true, true)
+    </div>
+
+    
+    @helper ListNodeAndChildren(IPublishedContent content, System.Collections.Generic.Dictionary<string, int> dic, bool showDocType, bool showTemplate)
+    {
+        var excludedDocTypes = new List<string>() { };
+        if (excludedDocTypes.Contains(content.ContentType.Alias))
+        {
+            return;
+        }
+        var docTypeName = (showDocType ? content.ContentType.Alias : "") + (showDocType && showTemplate ? " - " : "") + (showTemplate ? content.GetTemplateAlias() : "");
+
+        if (dic.ContainsKey(docTypeName))
+        {
+            dic[docTypeName]++;
+        }
+        else
+        {
+            dic.Add(docTypeName, 1);
+        }
+
+        if (content.HasProperty("grid"))
+        {
+            var gridString = content.Value<string>("grid");
+            var grid  = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(gridString);
+            if (grid != null && grid.sections != null)
+            {
+                <h2><a href="@content.Url">@content.Name</a> (@docTypeName)</h2>
+
+    <table style="width:1200px">
+        @foreach (var section in grid.sections)
+        {
+            foreach (var row in section.rows)
+            {
+                var rowSum = 0;
+                <tr>
+                    @foreach (var area in row.areas)
+                    {
+                        if(rowSum >= 12)
+                        {
+                        <text>@Html.Raw("</tr><tr>")</text>
+                        
+                        rowSum = 0;
+                        }
+                        
+                        <td colspan="@area.grid">
+                            <h1><span title="@row.name">@area.grid col</span></h1>
+                            @foreach (var control in area.controls)
+                            {
+                                if (control != null && control.editor != null && control.editor.view != null)
+                                {
+                                   
+                                    if (control.editor.view == "/App_Plugins/DocTypeGridEditor/Views/doctypegrideditor.html")
+                                    {
+                                        <p><i class="@control.editor.icon"></i> @control.value.dtgeContentTypeAlias (@control.editor.alias)</p>
+                                    }
+                                    else
+                                    {
+                                        <p><i class="@control.editor.icon"></i> @control.editor.alias</p>
+                                    }
+                                    <p class="detials" style="display:none">@Newtonsoft.Json.JsonConvert.SerializeObject(control)</p>
+                                }
+                            }
+                        </td>
+                        rowSum += int.Parse(area.grid.ToString());
+                    }
+                </tr>
+
+            }
+        }
+    </table>
+            }
+
+        }
+
+        if (content.Children.Any())
+        {
+            foreach (IPublishedContent child in content.Children)
+            {
+                @ListNodeAndChildren(child, dic, showDocType, showTemplate)
+            }
+        }
+    }
+
+    <link href="/css/umbracoicons.css" rel="stylesheet" />
+
+}
+else
+{
+    Layout = "Master.cshtml";
+    Response.OutputCache(60);
+@section Styles{
+    <link type="text/css" href="~/css/styleguide.css" rel="stylesheet" />
+}
+<script>
+    function getHex(rgb) {
+        var hexChars = '0123456789ABCDEF';
+        var r = parseInt(rgb[0]).toString(16);
+        var g = parseInt(rgb[1]).toString(16);
+        var b = parseInt(rgb[2]).toString(16);
+        return '#' + r + g + b;
+    }
+</script>
+
+<div class="container text-center">
+    <h1>Style Guide</h1>
+</div>
+
+<div class="container">
+    
+    <a name="buttons"></a>
+    <section class="styleguide__buttons">
+        <p style="font-size:20px; font-weight:normal;">Buttons</p>
+        <p>Primary Button</p>
+        <div class="row">
+            <div class="col-md-3">
+                <a href="#" class="btn btn-default">Read the case study</a>
+            </div>
+        </div>
+        <p>Secondary Button</p>
+        <div class="row">
+            <div class="col-md-3">
+                <a href="#" class="btn btn-secondary">Read the case study</a>
+            </div>
+        </div>
+    </section>
+
+
+    <br />
+    <br />
+
+
+    <a name="links"></a>
+    <section class="styleguide__links">
+        <p style="font-size:20px; font-weight:normal;">Links</p>
+        <a href="#" class="cta">Use our tool</a>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit <a href="#">this is an inline link</a>. Fugiat, quam alias voluptatem tempora minus dolor facere cumque necessitatibus placeat velit aliquid ab dolore beatae. Neque ipsam in a illum repellendus?</p>
+
+    </section>
+
+
+    <br />
+    <br />
+
+
+    <section class="styleguide__links">
+        <div class="row">
+            <div class="col-md-3">
+                <p style="font-size:20px; font-weight:normal;">Product Tooltips</p>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." class="tooltip-anchor product"></a>
+            </div>
+            <div class="col-md-3 col-md-offset-1">
+                <p style="font-size:20px; font-weight:normal;">Regular Tooltips</p>
+                <a href="#" data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." class="tooltip-anchor regular"></a>
+            </div>
+        </div>
+    </section>
+
+
+    <br />
+    <br />
+
+
+    <a name="forms"></a>
+    <div class="styleguide__forms">
+        <div class="row">
+            <form>
+                <div class="col-md-3">
+                    <p style="font-size:20px; font-weight:normal;">Radio Buttons</p>
+                    <div class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                        <label for="optionsRadios1">
+                            Radio option 1
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                        <label for="optionsRadios2">
+                            Radio option 2
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios3" value="option2">
+                        <label for="optionsRadios3">
+                            Radio option 3
+                        </label>
+                    </div>
+                    <div class="radio disabled">
+                        <input type="radio" name="optionsRadios" id="optionsRadios4" value="option3" disabled>
+                        <label for="optionsRadios4">
+                            Option 4 is disabled
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-offset-1">
+                    <p style="font-size:20px; font-weight:normal;">Checkboxes</p>
+                    <div class="checkbox">
+                        <input type="checkbox" id="check1" value="option1">
+                        <label for="check1">
+                            Checkbox option 1
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="check2" value="option2">
+                        <label for="check2">
+                            Checkbox option 2
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="check3" value="option3">
+                        <label for="check3">
+                            Checkbox option 3
+                        </label>
+                    </div>
+                    <div class="checkbox disabled">
+
+                        <input type="checkbox" value="" disabled>
+                        <label>
+                            Option 4 is disabled
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-9 form-group">
+                    <br />
+                    <br />
+                    <p style="font-size:20px; font-weight:normal;">Input Fields</p>
+                </div>
+
+                <div class="col-md-9 form-group">
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="field1">First Name*</label>
+                            <input type="text" class="form-control" id="field1" required>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="field2">Last Name*</label>
+                            <input type="text" class="form-control" id="field2" required>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>Interested in &hellip;</label>
+                            <select class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="field4">Email address</label>
+                            <input type="email" class="form-control" id="field4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9 form-group">
+                    <label>Comments</label>
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-md-9">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <br />
+    <br />
+    <br />
+
+
+    <a name="typography"></a>
+    <section class="styleguide__typography">
+        <p style="font-size:20px; font-weight:normal;">Typography</p>
+        <p style="font-size:20px; font-weight:normal;">Headings</p>
+        <div class="row">
+            <div class="col-md-9">
+                <h1 class="heading-1">Heading Level 1 Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h1>
+                <h2 class="heading-2">Heading Level 2 Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h2>
+                <h3 class="heading-3">Heading Level 3 Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h3>
+                <h4 class="heading-4">Heading Level 4 Lorem ipsum dolor sit amit, consectetur adipiscing elit Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h4>
+                <h5 class="heading-5">Heading Level 5 Lorem ipsum dolor sit amit, consectetur adipiscing elit Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h5>
+                <h6 class="heading-6">Heading Level 6 Lorem ipsum dolor sit amit, consectetur adipiscing elit Lorem ipsum dolor sit amit, consectetur adipiscing elit: <span></span></h6>
+                <script type="text/javascript">
+                    var heading1 = document.getElementsByClassName("heading-1")[0];
+                    heading1.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading1, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading1, null)["font-size"];
+                    var heading2 = document.getElementsByClassName("heading-2")[0];
+                    heading2.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading2, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading2, null)["font-size"];
+                    var heading3 = document.getElementsByClassName("heading-3")[0];
+                    heading3.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading3, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading3, null)["font-size"];
+                    var heading4 = document.getElementsByClassName("heading-4")[0];
+                    heading4.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading4, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading4, null)["font-size"];
+                    var heading5 = document.getElementsByClassName("heading-5")[0]
+                    heading5.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading5, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading5, null)["font-size"];
+                    var heading6 = document.getElementsByClassName("heading-6")[0];
+                    heading6.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(heading6, null)["line-height"] + " size " + document.defaultView.getComputedStyle(heading6, null)["font-size"];
+                </script>
+            </div>
+        </div>
+
+        <br />
+        <br />
+
+
+        <p style="font-size:20px; font-weight:normal;">Quote</p>
+        <div class="row">
+            <div class="col-md-4">
+                <blockquote>
+                    <p class="blockquote">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.  <span></span></p>
+                    
+                    <footer>
+                        <cite class="blockquote-cite">A wise man  - (NOTE, CITATIONS ARE NOT IN THE INVISION COMPS) <span></span></cite>
+                    </footer>
+                </blockquote>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var blockquote = document.getElementsByClassName("blockquote")[0];
+            blockquote.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(blockquote, null)["line-height"] + " size " + document.defaultView.getComputedStyle(blockquote, null)["font-size"];
+
+            var blockquoteCite = document.getElementsByClassName("blockquote-cite")[0];
+            blockquoteCite.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(blockquoteCite, null)["line-height"] + " size " + document.defaultView.getComputedStyle(blockquoteCite, null)["font-size"];
+            </script>
+
+    <br />
+    <br />
+
+    <p style="font-size:20px; font-weight:normal;">Paragraphs</p>
+    <div class="row">
+        <div class="col-md-6">
+            <p class="large">Large Text. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  <span></span></p>
+            <p class="base">Normal Text. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  <span></span></p>
+            <p class="small">Small Text. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  <span></span></p>
+            <p class="x-small">X-Small Text.  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  <span></span></p>
+
+            <script type="text/javascript">
+    var xsmallFont = document.getElementsByClassName("x-small")[0];
+    xsmallFont.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(xsmallFont, null)["line-height"] + " size " + document.defaultView.getComputedStyle(xsmallFont, null)["font-size"];
+    var smallFont = document.getElementsByClassName("small")[0];
+    smallFont.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(smallFont, null)["line-height"] + " size " + document.defaultView.getComputedStyle(smallFont, null)["font-size"];
+    var baseFont = document.getElementsByClassName("base")[0];
+    baseFont.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(baseFont, null)["line-height"] + " size " + document.defaultView.getComputedStyle(baseFont, null)["font-size"];
+    var largeFont = document.getElementsByClassName("large")[0];
+    largeFont.getElementsByTagName("span")[0].innerHTML = "lh " + document.defaultView.getComputedStyle(largeFont, null)["line-height"] + " size " + document.defaultView.getComputedStyle(largeFont, null)["font-size"];
+        </script>
+
+            </div>
+        </div>
+
+    </section>
+
+    <br />
+    <br />
+
+    <a name="lists"></a>
+    <section class="styleguide__lists">
+        <div class="row rte" style="margin:0;">
+            <p style="font-size:20px; font-weight:normal;">Unordered List</p>
+
+            <div class="col-md-4">
+                <ul>
+                    <li>Dicta optio cumque dolore hic ea facilis</li>
+                    <li>Dicta optio cumque dolore hic ea facilis</li>
+                    <li>
+                        Lorem ipsum dolor sit amet.
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul>
+                    <li><a href="#">Dicta optio cumque dolore hic ea facilis</a></li>
+                    <li><a href="#">Dicta optio cumque dolore hic ea facilis</a></li>
+                    <li>
+                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                        <ol>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                        </ol>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <br />
+        <br />
+        <div class="row rte" style="margin:0;">
+            <p style="font-size:20px; font-weight:normal;">Ordered List</p>
+            <div class="col-md-4">
+                <ol>
+                    <li>Dicta optio cumque dolore hic ea facilis</li>
+                    <li>Dicta optio cumque dolore hic ea facilis</li>
+                    <li>
+                        Lorem ipsum dolor sit amet.
+                        <ol>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                        </ol>
+                    </li>
+
+                </ol>
+            </div>
+            <div class="col-md-4">
+                <ol>
+                    <li><a href="#">Dicta optio cumque dolore hic ea facilis</a></li>
+                    <li><a href="#">Dicta optio cumque dolore hic ea facilis</a></li>
+                    <li>
+                        <a href="#">Lorem ipsum dolor sit amet.</a>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                            <li>Lorem ipsum dolor sit amet.</li>
+                        </ul>
+                    </li>
+
+                </ol>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </section>
+
+    <br />
+    <br />
+
+    <a name="colors"></a>
+    <section class="styleguide__colors">
+        <p style="font-size:20px; font-weight:normal;">Colors</p>
+        <ul class="styleguide__colors--list">
+            <li>
+                <span class="innovation-blue-block block"></span>
+                <span>Innovation Blue</span>
+                <span class="innovation-blue color-code"></span>
+            </li>
+            <li>
+                <span class="electric-blue-block block" style=""></span>
+                <span>Electric Blue</span>
+                <span class="electric-blue color-code"></span>
+            </li>
+            <li>
+                <span class="ocean-blue-block block" style=""></span>
+                <span>Ocean Blue</span>
+                <span class="ocean-blue color-code"></span>
+            </li>
+            <li>
+                <span class="technology-blue-block block" style=""></span>
+                <span>Technology Blue</span>
+                <span class="technology-blue color-code"></span>
+            </li>
+            <li>
+                <span class="midnight-blue-block block" style=""></span>
+                <span class="">Midnight Blue</span>
+                <span class="midnight-blue color-code"></span>
+            </li>
+        </ul>
+        <ul class="styleguide__colors--list">
+            <li>
+                <span class="text-gray-block block"></span>
+                <span>Text</span>
+                <span class="text-gray color-code"></span>
+            </li>
+            <li>
+                <span class="background-light-block block" style=""></span>
+                <span>Background Light</span>
+                <span class="background-light color-code"></span>
+            </li>
+            <li>
+                <span class="background-dark-block block" style=""></span>
+                <span>Background Dark</span>
+                <span class="background-dark color-code"></span>
+            </li>
+            <li>
+                <span class="pipeline-gray-block block" style=""></span>
+                <span>Pipeline Gray</span>
+                <span class="pipeline-gray color-code"></span>
+            </li>
+            <li>
+                <span class="steel-gray-block block" style=""></span>
+                <span class="">Steel Gray</span>
+                <span class="steel-gray color-code"></span>
+            </li>
+            <li>
+                <span class="shale-gray-block block" style=""></span>
+                <span class="">Shale Gray</span>
+                <span class="shale-gray color-code"></span>
+            </li>
+        </ul>
+        <ul class="styleguide__colors--list">
+            <li>
+                <span class="energy-yellow-block block"></span>
+                <span>Energy Yellow</span>
+                <span class="energy-yellow color-code"></span>
+            </li>
+        </ul>
+        <script type="text/javascript">
+            var primaryColor = document.getElementsByClassName("innovation-blue")[0];
+            primaryColor.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("innovation-blue-block")[0], null)["background-color"].match(/\d+/g));
+            var secondaryColor = document.getElementsByClassName("electric-blue")[0];
+            secondaryColor.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("electric-blue-block")[0], null)["background-color"].match(/\d+/g));
+            var tertiaryColor = document.getElementsByClassName("ocean-blue")[0];
+            tertiaryColor.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("ocean-blue-block")[0], null)["background-color"].match(/\d+/g));
+            var accentColor1 = document.getElementsByClassName("technology-blue")[0];
+            accentColor1.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("technology-blue-block")[0], null)["background-color"].match(/\d+/g));
+            var accentColor2 = document.getElementsByClassName("midnight-blue")[0];
+            accentColor2.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("midnight-blue-block")[0], null)["background-color"].match(/\d+/g));
+            var accentColor3 = document.getElementsByClassName("text-gray")[0];
+            accentColor3.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("text-gray-block")[0], null)["background-color"].match(/\d+/g));
+            var backgroundLight = document.getElementsByClassName("background-light")[0];
+            backgroundLight.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("background-light-block")[0], null)["background-color"].match(/\d+/g));
+            var backgroundDark = document.getElementsByClassName("background-dark")[0];
+            backgroundDark.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("background-dark-block")[0], null)["background-color"].match(/\d+/g));
+            var grayColor = document.getElementsByClassName("pipeline-gray")[0];
+            grayColor.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("pipeline-gray-block")[0], null)["background-color"].match(/\d+/g));
+            var blackColor = document.getElementsByClassName("steel-gray")[0];
+            blackColor.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("steel-gray-block")[0], null)["background-color"].match(/\d+/g));
+            var shaleGray = document.getElementsByClassName("shale-gray")[0];
+            shaleGray.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("shale-gray-block")[0], null)["background-color"].match(/\d+/g));
+            var energyYellow = document.getElementsByClassName("energy-yellow")[0];
+            energyYellow.innerHTML = getHex(document.defaultView.getComputedStyle(document.getElementsByClassName("energy-yellow-block")[0], null)["background-color"].match(/\d+/g));
+        </script>
+
+    </section>
+
+
+
+
+</div>
+}

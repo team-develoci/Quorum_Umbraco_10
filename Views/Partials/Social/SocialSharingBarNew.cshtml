@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+}
+
+<ul class="share-page-links">
+
+    <li><a class="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@Model.Content.NiceUrlWithDomain()" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" data-event-category="Facebook Share" data-event-label="@Model.Content.UrlWithDomain()" data-event-name="social_share">Facebook</a></li>
+
+    <li><a class="twitter" target="_blank" href="http://twitter.com/share?text=@Model.Name&url=@Model.Content.NiceUrlWithDomain()" onclick="window.open(this.href, 'twitter-share', 'width=550,height=450'); return false;" data-event-category="Twitter Share" data-event-label="@Model.Content.UrlWithDomain()" data-event-name="social_share">Twitter</a></li>
+
+    <li><a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=@Model.Content.NiceUrlWithDomain()&title=@Model.Name" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=550');return false;" data-event-category="Linkedin Share" data-event-label="@Model.Content.UrlWithDomain()" data-event-name="social_share">LinkedIn</a></li>
+   
+</ul>
+

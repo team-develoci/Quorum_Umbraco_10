@@ -1,0 +1,132 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{ var companyOptions = Model.Value<IList<string>>("companyTypeOptions");
+	var dynamicClass = Model.Value("dynamicClass").ToString();
+	var CountryList  = Model.Value("countryList").ToString();
+	List<string> countries = new List<string>(CountryList.Split('|'));
+    var postUrl = Model.Value<string>("pardotPosturl"); }
+<iframe id="pardot_target" name="pardot_target" style="width:0;height:0;border:0px solid #fff;"></iframe>
+<div class="c-contact-form" style="background-color: #F9F9FA;position: relative;
+    bottom: 35px">
+    <div class="container">
+        <div class="row">
+            <div class="contact-Wrapper">
+                @*Need to make sure that "Data Forwarding" is checked on the form handler so we know when to show the success message*@
+                <form action="@postUrl" id="contact" target="pardot_target" class = "@dynamicClass" method="post" data-form-type="contact" data-event-label="@Model.Value("eventLabel")" data-loop-analytics-action="@Model.Value("loopAnalyticsAction")">
+                    <fieldset class="contourPage">
+                        @{ var isPreview = Request.Form.AllKeys.Contains("editorAlias");
+                            var success = false;
+                            var errors = "";
+                            var allFields = "";
+                            var errorMessage = "";
+
+                            if (!isPreview)
+                            {
+                                success = Request.Params["success"] == "true" || (Request.Form.AllKeys.Any());
+                                errors = Request.Params["errors"];
+                                allFields = Request.Params["allFields"];
+                                errorMessage = Request.Params["errorMessage"];
+                            }
+                        }
+
+                        @if (success)
+                        {
+                            <fieldset class="contourFieldSet">
+                               @Html.Raw(Model.Value("thankYouMessage"))
+                            </fieldset> }
+                        else
+                        {
+
+                            <div class="contact-form">
+                                <div class="row contact-rows">
+                                    <div class="inner-row-contact-left">
+                                        <div class="contact-col">
+                                            @if (Model.HasValue("copy"))
+                                            {
+                                                <p class="contact-heading"> @Model.Value("tile")</p>
+                                                <p class="contact-subpara ">@Model.Value("copy")</p>
+                                            }
+                                            @if (errors != null && errors.ToLower() == "true")
+                                            {
+                                                <span class="error">@errorMessage</span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="inner-row-contact-right">
+                                        <div class="contact-col">
+
+
+                                            <input type="hidden" name="success_location" value="@Url.Encode((isPreview ? "" : Request.Url.GetLeftPart(UriPartial.Path)) +  "?success=true")" />
+                                            <input type="hidden" name="error_location" value="@Url.Encode((isPreview ? "" : Request.Url.GetLeftPart(UriPartial.Path))+ "?success=false")" />
+
+                                            <div class="contourField textfield mandatory ">
+                                                <input class="text form-control form-style" placeholder="First name" type="text" id="form-firstname" name="first_name" value="@(isPreview ? "" : Request.Params["first_name"])" required />
+                                            </div>
+                                            <div class="contourField textfield mandatory ">
+                                                <input class="text form-control form-style" type="text" placeholder="Last name" name="last_name" value="@(isPreview ? "" : Request.Params["last_name"])" required />
+                                            </div>
+                                            <div class="contourField textfield mandatory ">
+                                                <input class="text form-control form-style" type="email" id="form-email" placeholder="Email" name="email" value="@(isPreview ? "" : Request.Params["email"])" required />
+                                            </div>
+
+                                            <div class="contourField textfield mandatory ">
+
+                                                <input class="text form-control form-style" type="text" placeholder="Company" name="company" value="@(isPreview ? "" : Request.Params["company"])" required />
+                                            </div>
+                                            <div class="contourField textfield mandatory ">
+
+                                                <input class="text form-control form-style" type="text" placeholder="Job title" name="job_title" value="@(isPreview ? "" : Request.Params["job_title"])" required />
+                                            </div>
+                                            <div class="contourField textfield mandatory ">
+                                                <input class="text form-control form-style" type="tel" placeholder="Phone number" name="phone" value="@(isPreview ? "" : Request.Params["phone"])" required title="Please enter a valid Phone Number" />
+                                            </div>
+											@if(countries!=null && countries.Any())
+											{
+												<select  name="country" class="form-control form-style" required>
+                                                    <option value="">Country</option>
+                                                        @foreach (var country in countries)
+                                                        {
+                                                            <option @Html.Raw(isPreview ? "" : (Request.Params["country"] == country ? "selected=\"selected\"" : ""))>@country</option>
+                                                        }
+                                                    
+                                                </select>
+											}
+											else
+											{
+                                            <div class="contourField textfield mandatory ">
+                                                <input class="text form-control form-style" type="text" name="country" value="@(isPreview ? "" : Request.Params["country"])" placeholder="Country" required/>
+                                            </div>
+											}
+                                            <div class="contourField textfield mandatory">
+
+                                                <select id="company_type" name="company_type" class="form-control form-style" required>
+                                                    <option value="">Solution Interest</option>
+                                                    @if (companyOptions != null)
+                                                    {
+                                                        foreach (var companyOption in companyOptions)
+                                                        {
+                                                            <option @Html.Raw(isPreview ? "" : (Request.Params["industry"] == companyOption ? "selected=\"selected\"" : ""))>@companyOption</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="contourField textfield">
+                                                <textarea class="text form-control form-style" type="text" placeholder="Comments (optional)" name="comments">@(isPreview ? "" : Request.Params["comments"])</textarea>
+                                            </div>
+
+                                            <div class="contourField ">
+                                                <button type="submit" class="btn btn-default contact-btn learnBtn w-100" value="Send Now" name="submitbtn">Send Now</button>
+                                            </div>
+                                        </div>
+                                </div>
+                                   
+                                </div>
+                            </div>
+                        }
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+<div class="padding-md-def-def-def">
+    <section class="container leadership-grid larger">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("pageHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { IsH1 = true } })
+
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("leadership"), ComponentView = "~/Views/Partials/Components/LeadershipItem.cshtml", SColumns = 3, ComponentSettings = new { } })
+
+    </section>
+</div> 
+
+    <div class="container">
+        <hr class="row" />
+    </div>
+
+    <section class="container">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("boardOfDirectorsHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { } })
+
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("boardOfDirectors"), ComponentView = "~/Views/Partials/Components/LeadershipItem.cshtml", SColumns = 3, ComponentSettings = new { } })
+    </section>
+
+
+    @section Scripts {
+
+        <div class="modal fade leadership-details-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="container modal-container">
+                <div class="leadership-modal-wrapper row">
+                    <div class="col-xs-12 button-wrapper">
+                        <div class="row">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span class="closer" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-dialog modal-lg leadership-modal">
+                        <div class="leadership-modal-content row">
+                            <div class="col-md-5 modal-img">
+                                <img loading="lazy" class="lm-image" src="" />
+                            </div>
+                            <div class="col-md-7 modal-copy">
+                                <h3 class="lm-name">Name</h3>
+                                <h5 class="lm-title">Title</h5>
+                                <div class="lm-description">bio</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    }
+

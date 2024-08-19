@@ -1,0 +1,20 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var image = Model.Value<IPublishedContent>("image");
+}
+
+<div class="success-stories-cards case-study-cards">
+    <div class="success-story-details">
+        @if (image != null)
+        {
+             <div class="blog-cards-logo">
+                 <img loading="lazy" srcset="@image.Url()" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)" class="">
+            </div>
+        }
+        <div class="case-study-arrow-icon">
+            <p class="blog-quote">@Model.Value("headline")</p>
+        </div>
+        <p class="story-sub-title"> @Model.Value("subhead")</p>
+    </div>
+</div>

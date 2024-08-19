@@ -1,0 +1,41 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("heroComponent");
+    string html = Model.HasValue("customCode") ? Model.Value<string>("customCode") : string.Empty;  
+}
+@Html.Raw(html)
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentBackgroundHeroNoSpacing.cshtml", HeroComponent.FirstOrDefault())
+}
+<div class="container-lg solution-margin m-auto">
+    <div class="solutions-wrapper row justify-content-md-start justify-content-center">
+        @*Case study blade*@
+        @{
+            var solutiontitle = Model.Value<IList<IPublishedElement>>("solutionTitle");
+            var solutionmenus = Model.Value<IList<IPublishedElement>>("solutionMenus");
+        }
+        @if (solutionmenus != null && solutionmenus.Any())
+        {
+            @Html.Partial("~/Views/Partials/NewComponents/Repeaters/NavigationMenu.cshtml", new SimpleWrapperModel {
+        ComponentModel = solutionmenus, ComponentView = "~/Views/Partials/NewComponents/ComponentNavigationMenu.cshtml"
+        })
+        }
+
+        @{
+            var solutionmenusbyName = Model.Value<IList<IPublishedElement>>("navigationByName");
+        }
+        @if (solutionmenusbyName != null && solutionmenusbyName.Any())
+        {
+            @Html.Partial("~/Views/Partials/NewComponents/Repeaters/NavigationMenu.cshtml", new SimpleWrapperModel {
+        ComponentModel = solutionmenusbyName, ComponentView =
+        "~/Views/Partials/NewComponents/ComponentNavigationMenuSingleCol.cshtml" })
+        }
+    </div>
+</div>
+
+
+
+
+

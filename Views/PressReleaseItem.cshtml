@@ -1,0 +1,47 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var itemDate = Model.Value<DateTime>("itemDate");
+
+    ViewBag.TealiumTags = new Dictionary<string, string>() { 
+        { "content_publish_date",  itemDate.ToString("yyyy/MM/dd")},
+        { "page_type",  "content" },
+        { "content_type",  "press release" },
+    };
+    
+    
+    var minDate = Model.Parent.Children.Select(item => item.Value<DateTime>("itemDate")).Where(d => d != DateTime.MinValue).Min();
+    var maxDate = Model.Parent.Children.Select(item => item.Value<DateTime>("itemDate")).Max();
+}
+
+
+<section class="press-releasesDetail-page py-lg-4 py-5 my-0">
+	<div class="container-lg">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="sideBar-company pt-0">
+					<div class="solution-header companyOverview"><a href="/about/press-releases/" class="text-dark">Current Press Releases</a> </div>
+                    <ul class="px-0">
+                        @for (var y = maxDate.Year - 1; y >= minDate.Year; y--)
+                        {
+                            <li class="solution-subhead px-2"><a href="@Model.Parent.Url()?y=@y" class="w-100">@y @Model.Parent.Value("groupLabel")</a></li>
+                        }
+                    </ul>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<section class="mb-5 py-5 pt-0">
+					<div class="fw-normal text fw-500 text-start pipeline-gray-color">
+						<p>@(itemDate.ToString("MMMM dd, yyyy"))</p>
+					</div>
+					<div class="">
+						<h1 class="heading-h1 dark-blue fw-200 pb-4">@Model.Name</h1>
+					<div class="fw-500 dark-gray pt-4 fs-6">
+					    <p class="pb-4">  @Html.Raw(Model.Value("bodyCopy"))</p>
+                    </div>
+				</section>
+			</div>
+		</div>
+	</div>
+</section>

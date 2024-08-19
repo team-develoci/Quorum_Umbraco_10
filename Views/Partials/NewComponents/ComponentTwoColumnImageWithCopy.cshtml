@@ -1,0 +1,72 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("link");
+    var image = Model.Value<IPublishedContent>("image");
+    var imageAlt = "";
+    if(image != null){
+       imageAlt = !string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty;
+    }
+    var LEFT = "Left";
+    var RIGHT = "Right";
+    var imagePosition =  Model.Value<string>("imagePosition");
+    var FULL = "Full";
+    var CENTER = "Centered";
+    var componentWidth = Model.Value<string>("componentWidth");
+    var title = Model.Value("title");
+    var copy = Model.Value("copy");
+    var styleClasses = "container desktop-footer";
+    if(componentWidth==FULL){
+        styleClasses = styleClasses+ " container-fullWidth";
+    }
+}
+
+<div class="futureWrapper-left-image margin-bottom-lower" role="contentinfo">
+    <div class="@styleClasses">
+        <div class="row">
+        @if(imagePosition==RIGHT){
+            <div class="col-md-6 grid-col-client-story">
+            @if(title != null){
+                <h1>@title</h1>
+            }
+            @if(copy != null){
+                <div class="client-desription">@Html.Raw(copy)</div>
+            }
+            @if(button != null){
+                <a href="@button.Url" class="text-decrotion-none"> <button class="learnBtn">@button.Name</button></a>
+            }
+            </div>
+            <div class="col-md-6 qm-video client-img-big">
+            @if(image!=null){
+                <picture>
+                    <source srcset="@image.Url()">
+                    <img loading="lazy" srcset="@image.Url()" alt="@imageAlt" class="client-img">
+                </picture>
+            }
+            </div>
+        }
+        else{
+            <div class="col-md-6 qm-video client-img-big">
+            @if(image!=null){
+                <picture>
+                    <source srcset="@image.Url()">
+                    <img loading="lazy" srcset="@image.Url()" alt="@imageAlt" class="client-img">
+                </picture>
+            }
+            </div>
+            <div class="col-md-6 grid-col-client-story">
+            @if(title != null){
+                <h1>@title</h1>
+            }
+            @if(copy != null){
+                <div class="client-desription">@Html.Raw(copy)</div>
+            }
+            @if(button != null){
+                <a href="@button.Url" class="text-decrotion-none"> <button class="learnBtn">@button.Name</button></a>
+            }
+            </div>
+        }
+        </div>
+    </div>
+</div>

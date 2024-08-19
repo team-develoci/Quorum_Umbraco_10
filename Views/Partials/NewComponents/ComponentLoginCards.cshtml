@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var title = Model.Properties.Where(x => x.Alias == "title").FirstOrDefault().Value<string>("title");
+    var copy = Model.Properties.Where(x => x.Alias == "description").FirstOrDefault().Value<string>("description");
+    var link = Model.Properties.Where(x => x.Alias == "loginLink").FirstOrDefault().Value<Link>("loginLink");
+}
+
+<div class="login-option " >
+    <div class="login-col">
+        <h3> @title</h3>
+        @Html.Raw(copy)
+        <a href="@link.Url" class="learnBtn"> @link.Name </a>
+    </div>
+</div>
+
+@*<div class="login-option" style="display: inline-block;
+    margin-right: 48px;">
+    <div class="login-col">
+        <h3> Software Title33</h3>
+        <p>Expedite all pre-construction land activities with proven project management software for right of way that is web based and purpose-built. Capture information with real-time insights and ensure data integrity with automated data entry workflows. </p>
+        <a href="" class="learnBtn"> Login Portal </a>
+    </div>
+</div>*@

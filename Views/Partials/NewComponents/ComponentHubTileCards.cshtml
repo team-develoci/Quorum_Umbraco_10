@@ -1,0 +1,88 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+
+@{
+    var cards = Model.Value<IList<IPublishedElement>>("hubCard");
+
+}
+<section class=" investment-section py-5" id="anchor-leader">
+    <div class="container-lg">
+        <div class="content-wrapper mb-5">
+            <h1 class="head-h1 fw-200 mb-4 text-start dark-blue">@Model.Value("heading")</h1>
+            <div class="text fw-500 text-start dark-gray">
+                <p>@Model.Value("subHeading")</p>
+            </div>
+        </div>
+        <div class="leadership-team-wrap">
+            <div class="row">
+
+                @if (cards != null)
+                {
+                    foreach (var card in cards)
+                    {
+                        var link = card.Value<List<Link>>("link");
+
+                        var backgroundImage = card.Value<IPublishedContent>("backgroundImage");
+                        var divid = card.Value<string>("description").Trim().Replace(" ", "_");
+                        <p name="@divid-hl" style="display:none;">@card.Value("headline")</p>
+                        <p name="@divid-d" style="display:none;">@card.Value("description")</p>
+                        <p name="@divid-b" style="display:none;">@card.Value("biography")</p>
+                        <p name="@divid-img" style="display:none;">@backgroundImage.Url()</p>
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-4 mb-4">
+                            <div class="h-100 bg-white shadow-sm">
+                                <img loading="lazy" class="w-100 leadership-team-image" src="@backgroundImage.Url()" alt="@(!string.IsNullOrEmpty(backgroundImage.Value<string>("altText"))?backgroundImage.Value<string>("altText"): string.Empty)" />
+                                 <a class="position-relative top-0 end-0 mt-4 me-4 text-decoration-none" name="biographymodal" name1="@divid" role="button">
+                                <div class="content py-5 px-3 pe-5 position-relative">
+                                    <div class="sub-head mb-1 secondary-color fw-600">@card.Value("headline")</div>
+                                    <p class="paragraph-text dark-blue fw-normal mb-0">@card.Value("description")</p>
+                                    <a class="position-absolute top-0 end-0 mt-4 me-4" name="biographymodal" name1="@divid" role="button">
+                                        <img loading="lazy" src="/media/csmnxr5h/arrow.png" alt="upward-right-arrow">
+                                    </a>
+                                </div>
+                                </a>
+                            </div>
+                        </div>
+
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="biographyModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+     tabindex="-1">
+    <div class=" modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header popupHeader py-0 pt-3">
+                <button type="button" id="biomodalclose" class="btn-close"  aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img loading="lazy" id="modal-img" class="w-100 px-5 py-2" src=""
+                             alt="modal-img">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="modalContent pt-2">
+                            <h4 id="modal_h" class="secondary-color fw-600"></h4>
+                            <h5 id="modal_d" class="dark-gray fs-6 fw-600 py-2"></h5>
+                            <div class="leadership-description">
+                                <p id="modal_b" class="dark-gray fs-6 fw-500">
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pb-4"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+

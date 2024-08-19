@@ -1,0 +1,109 @@
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Model.Content != null ? Model.Content.GetKey() : Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+
+    var videoSource = Model.Value<string>("videoSource");
+    var videoEmbedink = "";
+    var videoId = "";
+    var vidyardScriptSrc = "";
+    var vidyardOnClickMethodName = "";
+    var isVidyard = false;
+
+    if (videoSource.ToLower().Contains("www.youtube.com") && !videoSource.ToLower().Contains("embeded") && videoSource.Contains("?"))
+    {
+        //https://www.youtube.com/watch?v=J---aiyznGQ
+        //https://www.youtube.com/watch?time_continue=2&v=a1Y73sPHKxw
+
+        videoId = videoSource.Split('?')[1].Split('&').Where(d => d.Contains("v=")).Select(s => s.Substring(2)).FirstOrDefault();
+        videoEmbedink = string.Format("https://www.youtube.com/embed/{0}?autoplay=1&showinfo=0&rel=0&autohide=1&wmode=transparent", videoId);
+
+    }
+    else if (videoSource.ToLower().Contains("youtu.be"))
+    {
+        //https://youtu.be/J---aiyznGQ
+
+        videoId = videoSource.Substring(videoSource.LastIndexOf("/") + 1);
+        videoEmbedink = string.Format("https://www.youtube.com/embed/{0}?autoplay=1&showinfo=0&rel=0&autohide=1&wmode=transparent", videoId);
+    }
+    else if (videoSource.ToLower().Contains("wistia.net"))
+    {
+        if (!videoSource.ToLower().Contains("autoplay=true"))
+        {
+            if (videoSource.Contains("?"))
+            {
+                videoEmbedink = videoSource + "&autoPlay=true";
+            }
+            else
+            {
+                videoEmbedink = videoSource + "?autoPlay=true";
+            }
+        }
+        else
+        {
+            videoEmbedink = videoSource;
+        }
+
+    }
+    else if (videoSource.ToLower().Contains("vidyard.com"))
+    {
+        isVidyard = true;
+        // e.g. http://play.vidyard.com/GSG3eqnCunY8duxEmUkH6G.html
+        videoEmbedink = videoSource;
+        videoId = videoEmbedink.Substring(videoEmbedink.LastIndexOf("/") + 1);
+        videoId = videoId.Substring(0, videoId.IndexOf("."));
+        vidyardScriptSrc = "//play.vidyard.com/" + videoId + ".js?v=3.1.1&type=lightbox";
+        vidyardOnClickMethodName = "fn_vidyard_" + videoId + "();";
+    }
+    else
+    {
+        //DEFAULT URL LOGIC
+        //videoEmbedink = videoSource;
+    }
+
+
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId + " .c-video-blade__wrapper")
+
+
+<div id="@elemntId" class="c-video-blade">
+    <div class="c-video-blade__wrapper">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-8 col-sm-push-2">
+                    <div class="c-video-blade__wrapper__copy">
+                        <h4>@Model.Value("headline")</h4>
+                        <div class="video-line-decoration"></div>
+                        <h1>@Html.Raw(Model.Value("subhead"))</h1>
+                        @if (!string.IsNullOrEmpty(videoSource))
+                        {
+                            if (isVidyard)
+                            {
+                                // Vidyard video
+                                <script type="text/javascript" id="vidyard_embed_code_@videoId" src="@vidyardScriptSrc"></script>
+                                <a href="javascript:void(0)" class="@(!string.IsNullOrEmpty(videoEmbedink) ? "no-tealium" : "")" onclick="@vidyardOnClickMethodName">
+                                    <img loading="lazy" src="~/images/icons/video/white/w_play-circle-thin.svg" width="72px" height="72px" alt="Play" />
+                                </a>
+                            }
+                            else
+                            {
+                                // Everything else (YouTube and Wistia)
+                                <a href="@videoSource" class="@(!string.IsNullOrEmpty(videoEmbedink) ? "video-lightbox-button no-tealium" : "")" data-video-url="@videoEmbedink">
+                                    <img loading="lazy" src="~/images/icons/video/white/w_play-circle-thin.svg" width="72px" height="72px" alt="Play" />
+                                </a>
+                            }
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,399 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    var cropImages = Request.QueryString["crop"] == "true";
+
+    var ajax = Request.QueryString["ajax"] == "true";
+    if(ajax)
+    {
+        Layout = null;
+    }
+}
+
+<div class="t-smb-product-page">
+@*Marquee*@
+@{
+    var marquee = Model.HasValue("marquee") ? Model.Value<IList<IPublishedContent>>("marquee") : null;
+}
+@if (marquee != null && marquee.Any())
+{
+    <div class="tooltip-marquee">
+        @Html.Partial("~/views/partials/newcomponents/ComponentSelectorMarquee.cshtml", marquee.First())
+    </div>
+}
+
+
+<div id="pageContent">
+    @*Tooltip Image*@
+    @{
+        var tooltipImage = Model.HasValue("tooltipImage") ? Model.Value<IList<IPublishedContent>>("tooltipImage") : null;
+    }
+    @if (tooltipImage != null && tooltipImage.Any())
+    {
+        <div class="marquee-overlap">
+            <div class="@(cropImages ? "container" :"")">
+                @Html.Partial("~/views/partials/newcomponents/ComponentTooltipImage.cshtml", tooltipImage.First())
+            </div>
+        </div>
+    }
+
+    @if (Model.HasValue("topCopy"))
+    {
+        <div class="padding-md-def-md-def">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-push-2 text-center-sm">
+                        @Html.Raw(Model.Value("topCopy"))
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @* SET UP FOR DESKTOP START *@
+        @*Sticky Nav*@
+        <div class="hidden-xs hidden-sm">
+            <nav class="c-product-sticky-nav" role="navigation" id="sticky-nav">
+                <div class="container">
+                    <ul class="c-product-sticky-nav-ul">
+                        <li class="dropdown menu-large"><a href="#section1">Overview</a></li>
+                        <li class="dropdown menu-large"><a href="#section2">Features</a></li>
+                        <li class="dropdown menu-large"><a href="#section3">Benefits</a></li>
+                        <li class="dropdown menu-large"><a href="#section4">Pricing</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+
+            @*Overview / Stats Blade*@
+            <section class="" id="section1">
+                <div class="padding-def-def-md-def stats-blade">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-push-2 text-center-sm">
+                                <h2>@Model.Value("statsHeadline")</h2>
+                                @Html.Raw(Model.Value("statsCopy"))
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        var statsBlade = Model.HasValue("stats") ? Model.Value<IList<IPublishedContent>>("stats") : null;
+                    }
+                    @if (statsBlade != null && statsBlade.Any())
+                    {
+                        @Html.Partial("~/views/partials/newcomponents/ComponentStatsBlade.cshtml", statsBlade.First())
+                    }
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-push-2 text-center">
+                                @Html.Raw(Model.Value("statsFooter"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @*Features*@
+            @{
+                var featuresBackgroundImage = Model.Value<IPublishedContent>("featuresBackgroundImage");
+                var featuresTransitionImages = Model.Value<IList<IPublishedContent>>("featuresTransitionImages");
+            }
+
+            <section class="background-dark padding-md-def-sm-def features-tiles @(featuresBackgroundImage != null ? "has-background" : "")" id="section2" style="@(featuresBackgroundImage != null ? "background-image:url(" + featuresBackgroundImage.Url + ")": "")">
+                <a name="features"></a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-push-2 text-center features-copy">
+                            <h2>@Model.Value("featuresHeadline")</h2>
+                            @Html.Raw(Model.Value("featuresCopy"))
+                        </div>
+                    </div>
+                    @{
+                    var featureTiles = Model.Value<IList<IPublishedContent>>("featureTiles");
+                    }
+
+                    @if (featureTiles != null && featureTiles.Any())
+                    {
+                    @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = featureTiles, ComponentView = "~/Views/Partials/NewComponents/ComponentFeatureTileWithModal.cshtml", SColumns = 2, MColumns = 3, ComponentSettings = new { } })
+                    }
+
+                </div>
+
+                    @if (featuresTransitionImages != null && featuresTransitionImages.Any())
+                    {
+                        foreach (var transition in featuresTransitionImages)
+                        {
+                            @Html.Partial("~/views/partials/newcomponents/componentTransitionImage.cshtml", transition)
+                        }
+                    }
+
+            </section>
+
+
+            @*Benefits*@
+            <section class="container padding-md-def-sm-def" id="section3">
+                <a name="benefits"></a>
+                <div class="row">
+                    <div class="col-sm-8 col-sm-push-2 text-center">
+                        @Html.Raw(Model.Value("benefitsCopy"))
+                    </div>
+                </div>
+                @{
+                    var benefitsBlade = Model.Value<IList<IPublishedContent>>("benefitsBlade");
+                }
+                @if (benefitsBlade != null && benefitsBlade.Any())
+            {
+                    <div class="padding-sm-def-sm-def">
+                        @Html.Partial("~/views/partials/newcomponents/ComponentTabbedBenefitsBlade.cshtml", benefitsBlade.First())
+                    </div>
+                }
+            </section>
+
+            @*Pricing*@
+            <section class="background-dark padding-md-def-sm-def" id="section4">
+                <a name="pricing"></a>
+                <div class="row">
+                    <div class="col-sm-8 col-sm-push-2 text-center">
+                        @Html.Raw(Model.Value("pricingCopy"))
+                    </div>
+                </div>
+                @{
+                    var pricingDetails = Model.Value<IList<IPublishedContent>>("pricingDetails");
+                }
+                @if (pricingDetails != null && pricingDetails.Any())
+                {
+                <div class="padding-sm-def-sm-def">
+                    @Html.Partial("~/views/partials/newcomponents/ComponentPricingBlade.cshtml", pricingDetails.First())
+                </div>
+                }
+
+            </section>
+
+
+            @*Plaform Blade*@
+            @{
+                var platformBlade = Model.Value<IPublishedContent>("platform");
+            }
+            <section id="section4">
+                @if (platformBlade != null)
+            {
+                    <a name="platform"></a>
+                    @Html.Partial("~/views/partials/newcomponents/" + platformBlade.DocumentTypeAlias + ".cshtml", platformBlade)
+                }
+            </section>
+
+
+
+
+        </div>
+
+        @* END FOR DESKTOP START *@
+
+        @* SET UP FOR MOBILE START *@
+
+        <div class="hidden-md hidden-lg">
+
+            @*Overview*@
+            <div class="overview-section">
+                <div class="container">
+                    <a name="overview"></a>
+                    <button class="c-product-level-blade_button" type="button" data-toggle="collapse" data-target="#overview-accordion" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <h2>Overview</h2>
+                    </button>
+                    <div class="container collapse overview" id="overview-accordion">
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-push-2 text-center-sm">
+                                <h2>@Model.Value("statsHeadline")</h2>
+                                @Html.Raw(Model.Value("statsCopy"))
+                            </div>
+                        </div>
+
+                        @if (statsBlade != null && statsBlade.Any())
+                        {
+                            @Html.Partial("~/views/partials/newcomponents/ComponentStatsBlade.cshtml", statsBlade.First())
+                        }
+
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-push-2 text-center">
+                                @Html.Raw(Model.Value("statsFooter"))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Features*@
+
+
+            <div class="features-tiles">
+                <div class="container">
+                    <a name="features"></a>
+                    <button class="c-product-level-blade_button" type="button" data-toggle="collapse" data-target="#feature-accordion" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <h2>Features</h2>
+                    </button>
+                    <div class="container collapse features" id="feature-accordion" >
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-push-2 text-center-sm copy-wrapper">
+                                @Html.Raw(Model.Value("featuresCopy"))
+                            </div>
+                        </div>
+                        @if (featureTiles != null && featureTiles.Any())
+                        {
+                            @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = featureTiles, ComponentView = "~/Views/Partials/NewComponents/ComponentFeatureTileWithModal.cshtml", SColumns = 2, MColumns = 4, ComponentSettings = new { } })
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            @*Benefits*@
+            <div class="container">
+                <a name="benefits"></a>
+                <button class="c-product-level-blade_button" type="button" data-toggle="collapse" data-target="#benefit-accordion" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h2>Benefits</h2>
+                </button>
+            </div>
+            <div class="container collapse benefits" id="benefit-accordion">
+                <div class="copy-wrapper">
+                    @Html.Raw(Model.Value("benefitsCopy"))
+                </div>
+                @if (benefitsBlade != null && benefitsBlade.Any())
+            { <div class="padding-def-def-sm-def">
+                @Html.Partial("~/views/partials/newcomponents/ComponentTabbedBenefitsBlade.cshtml", benefitsBlade.First())
+            </div>
+                }
+            </div>
+
+            @*Pricing*@
+            <div class="container">
+                <button class="c-product-level-blade_button" type="button" data-toggle="collapse" data-target="#pricing-accordion" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h2>Pricing</h2>
+                </button>
+            </div>
+            <div class=" collapse pricing" id="pricing-accordion">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-push-2 text-center">
+                            @Html.Raw(Model.Value("pricingCopy"))
+                        </div>
+                    </div>
+                </div>
+                @if (pricingDetails != null && pricingDetails.Any())
+                {
+                    <div class="padding-sm-def-sm-def">
+                        @Html.Partial("~/views/partials/newcomponents/ComponentPricingBlade.cshtml", pricingDetails.First())
+                    </div>
+                }
+            </div>
+
+
+
+
+        </div>
+
+        @* END FOR MOBILE START *@
+
+        @*Case Study*@
+        @{
+            var caseStudy = Model.Value<IList<IPublishedContent>>("caseStudy", new List<IPublishedContent>());
+        }
+        <div>
+            @if (caseStudy != null && caseStudy.Any())
+            {
+                <a name="casestudy"></a>
+                @Html.Partial("~/views/partials/newcomponents/componentcasestudyblade.cshtml", caseStudy.First())
+            }
+        </div>
+
+    @*Resource Blade*@
+    @{
+        var resourceBlade = Model.Value<IList<IPublishedContent>>("resourceBlade", new List<IPublishedContent>());
+    }
+    <div>
+        @if (resourceBlade != null && resourceBlade.Any())
+            {
+            <div class="background-light">
+                @Html.Partial("~/views/partials/newcomponents/componentstorytellingblade.cshtml", resourceBlade.First())
+             </div>
+        }
+    </div>
+
+
+
+
+        @*Resource*@
+        @{
+            var resources = Model.Value<IList<IPublishedContent>>("resources");
+        }
+        @if (resources != null && resources.Any())
+        {
+            <div class="padding-md-def-md-def">
+                <div class="container">
+                    @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = resources, ComponentView = "~/Views/Partials/NewComponents/ComponentResourceTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+                </div>
+            </div>
+        }
+
+
+        @*Resource Uberflip  Tiles*@
+        @{
+            var resourceUberflipTiles = Model.Value<IList<IPublishedContent>>("resourceUberflipTiles", new List<IPublishedContent>());
+        }
+        @if (resourceUberflipTiles != null && resourceUberflipTiles.Any())
+        {
+            <div class="padding-md-def-md-def">
+                @Html.Partial("~/views/partials/newcomponents/componentUberflipTileBlade.cshtml", resourceUberflipTiles.First())
+            </div>
+        }
+
+
+        @*Logo Carousel*@
+        @{
+            var logoCarousel = Model.Value<IPublishedContent>("logos");
+        }
+        @if (logoCarousel != null)
+        {
+            @Html.Partial("~/views/partials/newcomponents/" + logoCarousel.DocumentTypeAlias + ".cshtml", logoCarousel)
+        }
+
+        
+        @*Valuechain illistration *@
+        <div class="padding-md-def-md-def">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        @Html.Raw(Model.Value("illustrationCopy"))
+                    </div>
+                </div>
+            </div>
+
+            @{
+                var illustration = Model.Value<IPublishedContent>("illustration");
+            }
+            @if (illustration != null)
+            {
+                <div class="padding-sm-def-def-def">
+                    @Html.Partial("~/views/partials/newcomponents/" + illustration.DocumentTypeAlias + ".cshtml", illustration)
+                </div>
+            }
+        </div>
+        
+        
+        
+        @*Contact Blade*@
+        @{
+            var contactBlade = Model.Value<IPublishedContent>("contactBlade");
+        }
+        @if (contactBlade != null)
+        {
+            <div class="padding-md-def-def-def">
+                @Html.Partial("~/views/partials/newcomponents/" + contactBlade.DocumentTypeAlias + ".cshtml", contactBlade)
+            </div>
+        }
+    </div>
+</div>

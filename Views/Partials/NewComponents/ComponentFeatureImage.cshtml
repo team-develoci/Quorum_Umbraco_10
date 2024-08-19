@@ -1,0 +1,51 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    IPublishedContent image = Model.Value<IPublishedContent>("image");
+    CTA cta = Model.Value<CTA>("cta");
+
+    int? imageWidth = null; //Model.GetSettingsValue<int?>("ImageCropWidth", null);
+    int? imageHeight = null; //Model.GetSettingsValue<int?>("ImageCropHeight", null);
+
+}
+
+<div class="feature feature--foregroundImage">
+    @if (cta != null)
+    {
+        <a href="@cta.Link" sttarget="@cta.Target" class="zoom-hover">
+            @if (image != null)
+            {
+                <div class="img-container">
+                    <img loading="lazy" src="@image.GetCropUrl(height: imageHeight, width: imageWidth)" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)" /> @*TODO: DO CROP*@
+                </div>
+            }
+            <div class="feature--foregroundImage__caption  dark">
+                
+                <h3 class="equalHeight">@Model.Value("headline")</h3>
+                @if (Model.HasValue("subhead"))
+                {
+                    <h4>@Model.Value("subhead")</h4>
+                }
+                <span class="block-cta">@cta.Caption</span>
+            </div>
+        </a>
+        <div class="block-copy">@Html.Raw(Model.Value("copy"))</div>
+    }
+    else
+    {
+        if (image != null)
+        {
+            <img loading="lazy" src="@image.GetCropUrl(height: imageHeight, width: imageWidth)" alt="@(image!=null?image.Value<string>("alt"): string.Empty))" />
+        }
+
+        <div class="feature--foregroundImage__caption  dark">
+                <h3 class="equalHeight">@Model.Value("headline")</h3>
+                @if (Model.HasValue("subhead"))
+                {
+                    <h4>@Model.Value("subhead")</h4>
+                }
+                <div class="block-copy">@Html.Raw(Model.Value("copy"))</div>
+        </div>
+    }
+</div>
+
+

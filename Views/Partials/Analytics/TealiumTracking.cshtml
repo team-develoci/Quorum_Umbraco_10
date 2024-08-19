@@ -1,0 +1,27 @@
+@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    string trackingScript = "";
+    var configuration = Model.Descendants("configurationFolder").FirstOrDefault();
+
+    if (configuration != null)
+    {
+        trackingScript = configuration.Value<string>("tealiumScript");
+    }
+
+
+}
+
+@*//tags.tiqcdn.com/utag/quorumsoftware/main/@(useProduction ? "prod" : "dev")/utag.js';*@
+
+@if (System.Configuration.ConfigurationManager.AppSettings["ProjectEnvironment"] != "local" && !string.IsNullOrEmpty(trackingScript))
+{
+
+    <script type="text/javascript">
+    (function (a, b, c, d) {
+        a = '@Html.Raw(trackingScript)';
+        b = document; c = 'script'; d = b.createElement(c); d.src = a; d.type = 'text/java' + c; d.async = true;
+        a = b.getElementsByTagName(c)[0]; a.parentNode.insertBefore(d, a);
+    })();
+    </script>
+}

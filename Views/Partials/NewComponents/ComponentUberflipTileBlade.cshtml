@@ -1,0 +1,52 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    
+}
+
+
+<div class="c-uberflip-tile-blade">
+    @if (Model.HasValue("uberflipCode"))
+    {
+
+        if (Request.QueryString["dtgePreview"] == "1")
+        {
+            <h1>UBERFLIP TILES</h1>
+            @Model.Value("uberflipCode")
+        }
+        else
+        {
+            @Html.Raw(Model.Value("uberflipCode"))
+        }
+    }
+    else
+    {
+        <div class="container individual-tiles text-center">
+            @if (Model.HasValue("tile1Url"))
+            {
+            <iframe width="406" height="250" src="@Model.Value("tile1Url")?embedtile" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>
+            }
+
+            @if (Model.HasValue("tile2Url"))
+            {
+                <iframe width="406" height="250" src="@Model.Value("tile2Url")?embedtile" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>
+            }
+
+            @if (Model.HasValue("tile3Url"))
+            {
+                <iframe width="406" height="250" src="@Model.Value("tile3Url")?embedtile" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .c-uberflip-tile-blade .container.individual-tiles {
+        padding:0
+    }
+    .c-uberflip-tile-blade iframe {
+        margin: 0 14px 22px 14px;
+        
+    }
+
+</style>
+

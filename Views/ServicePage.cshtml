@@ -1,0 +1,42 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+@*@CurrentPage.GetGridHtml("grid", "GlgGridCustom")*@
+@Html.GetGridHtml(Model, "grid", "GlgGridCustomService")
+@*@Model.GetGridHtml("grid", "GlgGridCustom")*@
+
+
+@section Scripts {
+
+    <div class="modal fade leadership-details-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="container modal-container">
+            <div class="leadership-modal-wrapper row">
+                <div class="col-xs-12 button-wrapper">
+                    <div class="row">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span class="closer" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-dialog modal-lg leadership-modal">
+                    <div class="leadership-modal-content row">
+                        <div class="col-md-5 modal-img">
+                            <img loading="lazy" class="lm-image" src="" />
+                        </div>
+                        <div class="col-md-7 modal-copy">
+                            <h3 class="lm-name">Name</h3>
+                            <h5 class="lm-title">Title</h5>
+                            <div class="lm-description">bio</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+}

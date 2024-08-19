@@ -1,0 +1,59 @@
+@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+
+
+    IDictionary<string, string> tagData = new Dictionary<string, string>();
+
+    //CMS Fields
+    var cmsTags = Model.Value<IList<IPublishedContent>>("tealiumTags");
+    if (cmsTags != null)
+    {
+        foreach (var tag in cmsTags)
+        {
+            var name = tag.Value<string>("name");
+            var value = tag.Value<string>("value");
+            if (!tagData.ContainsKey(name)) { tagData.Add(name, value); }
+        }
+    }
+
+
+    //Code fields
+    IDictionary<string, string> codeTags = ViewBag.TealiumTags as IDictionary<string, string>;
+    if (codeTags != null)
+    {
+        foreach (var tag in codeTags.Keys)
+        {
+            if (!tagData.ContainsKey(tag)) { tagData.Add(tag, codeTags[tag]); }
+        }
+    }
+
+
+
+    //Defaults
+    if (!tagData.ContainsKey("page_friendly_url")) { tagData.Add("page_friendly_url", Model.Url); }
+    if (!tagData.ContainsKey("content_id")) { tagData.Add("content_id", Model.Id.ToString()); }
+    if (!tagData.ContainsKey("page_name")) { tagData.Add("page_name", Model.Name); }
+    if (!tagData.ContainsKey("page_type")) { tagData.Add("page_type", (Model.Level == 2 && Model.Children.Any() ? "section" : (Model.Level == 3 ? "category" : "other"))); }
+
+    if (!tagData.ContainsKey("site_section") && Model.Level >= 2) { var section = Model.AncestorOrSelf(2); tagData.Add("site_section", section != null ? section.Name : Model.Name); }
+
+    if (!tagData.ContainsKey("category_name") && Model.Level == 3) { tagData.Add("category_name", Model.Name); }
+
+
+
+    if (!tagData.ContainsKey("site_country_code")) { tagData.Add("site_country_code", "us"); }
+    if (!tagData.ContainsKey("site_language_code")) { tagData.Add("site_language_code", "en"); }
+
+
+
+
+    //"site_display_format": "mobile",
+
+
+}
+<script>
+    var utag_data = {
+        @Html.Raw(string.Join("," + Environment.NewLine, tagData.Select(s => "\"" + s.Key + "\":\"" + s.Value + "\"")))
+    };
+</script>

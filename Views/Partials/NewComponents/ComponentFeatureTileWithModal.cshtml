@@ -1,0 +1,213 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+
+    //var image = Model.Value<IPublishedContent>("image");
+    var image = Model.GetMediaItemFieldValue("image");
+    //NewFieldName
+    var modalResourceCallouts = Model.GetNestedContentFieldValue("modalResourceCallout");
+    var modalShowing = Model.GetFieldValue("ctaText");
+    var showModal = false;
+    if (!string.IsNullOrWhiteSpace(modalShowing.ToString()))
+    {
+        showModal = true;
+    }
+
+
+}
+
+<div class="c-feature-tile-with-modal @(showModal ? "content-modal-trigger has-modal" :"no-modal")" @Html.Raw(showModal ? "data-toggle=\"modal\" data-target=\".c-content-modal\"" : "")>
+    <div class="c-feature-tile-with-modal__card">
+        <div class="tile-top">
+            <h3 class="c-feature-tile-with-modal__headline featureTileHeight">@Model.GetFieldValue("headline")</h3>
+            @if (image != null)
+            {
+                <img loading="lazy" class="c-feature-tile-with-modal__image" src="@image" @*alt="@image.GetPropertyValue("altText")"*@>
+            }
+        </div>
+        <div class="c-feature-tile-with-modal__description">
+            <p>@Html.Raw(Model.GetFieldValue("copy"))</p>
+        </div>
+        @if (showModal)
+        {
+            <div class="align-bottom">
+                <h4 class="c-feature-tile-with-modal__cta">+ @Model.GetFieldValue("ctaText")</h4>
+            </div>
+        }
+    </div>
+    @if (showModal)
+    {
+        <div class="modal-contents" style="display:none;">
+            <div class="c-feature-tile-with-modal-contents">
+                <div class="row">
+                    <div class="@(modalResourceCallouts != null && modalResourceCallouts.Any() ? "col-md-7" : "col-md-12")">
+                        @Model.GetFieldValue("modalCopy")
+                        @{
+                            //newFieldName
+                            var featureDescriptions = Model.GetNestedContentFieldValue("modalCopyFeature");
+                        }
+                        @if(featureDescriptions!=null && featureDescriptions.Any())
+                        {
+                            var featureDescriptionItems = featureDescriptions.ToList();
+                            for (var i = 0; featureDescriptionItems != null && i < featureDescriptionItems.Count; i += 2)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6 rte">
+                                        <h4>@featureDescriptionItems[i].GetFieldValue("headline")</h4>
+                                        @featureDescriptionItems[i].GetFieldValue("copy")
+                                    </div>
+                                    @if (featureDescriptionItems.Count > i + 1)
+                                    {
+                                        <div class="col-md-6 rte">
+                                            <h4>@featureDescriptionItems[i + 1].GetFieldValue("headline")</h4>
+                                            @featureDescriptionItems[i + 1].GetFieldValue("copy")
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                    @if (modalResourceCallouts != null && modalResourceCallouts.Any())
+                    {
+                        var modalresourcecallList = modalResourceCallouts.ToList();
+                        <div class="col-md-5">
+                           
+                            @if (modalresourcecallList != null && modalresourcecallList.Count >= 1)
+                            {
+                                foreach (var callout in modalresourcecallList)
+                                {
+                                    var calloutImage = callout.GetMediaItemFieldValue("image");
+                                    var cta = callout.GetFieldValue<CTA>("link",null);
+                                    var videoLink = callout.GetFieldValue<string>("videoLink", cta != null ? cta.Link : "");
+                                    var isVideo = videoLink.Contains("wistia") || videoLink.Contains("youtube") || videoLink.Contains("embed") || videoLink.Contains("vidyard.com");
+
+                                    if (isVideo)
+                                    {
+                                        <div class="c-feature-tile-with-modal-contents__callout">
+                                            @if (videoLink.Contains("wistia"))
+                                            {
+                                                //See https://wistia.com/doc/embed-options for embed url options
+
+                                                var wistaUrl = videoLink;
+                                                if (!wistaUrl.ToLower().Contains("endvideobehavior="))
+                                                {
+                                                    wistaUrl = wistaUrl + (wistaUrl.Contains("?") ? "&" : "?") + "endVideoBehavior=reset";
+                                                }
+                                                if (!wistaUrl.ToLower().Contains("videofoam="))
+                                                {
+                                                    wistaUrl = wistaUrl + (wistaUrl.Contains("?") ? "&" : "?") + "videoFoam=true";
+                                                }
+                                                if (!wistaUrl.ToLower().Contains("wmode="))
+                                                {
+                                                    wistaUrl = wistaUrl + (wistaUrl.Contains("?") ? "&" : "?") + "wmode=transparent";
+                                                }
+
+                                                <div class="c-feature-tile-with-modal-contents__callout__image text-center">
+                                                    <div class="wistia_responsive_padding" style="padding:57% 0 0 0; position:relative;">
+                                                        <div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
+                                                            <iframe src="@wistaUrl" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen="allowfullscreen" mozallowfullscreen="mozallowfullscreen" webkitallowfullscreen="webkitallowfullscreen" oallowfullscreen="oallowfullscreen" msallowfullscreen="msallowfullscreen" width="100%" height="100%" style="width: 100%; height: 100%;"></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (videoLink.Contains("youtube") || videoLink.Contains("youtu.be"))
+                                            {
+                                                var youtubeLink = videoLink;
+                                                if (youtubeLink.ToLower().Contains("www.youtube.com") && !youtubeLink.ToLower().Contains("embeded") && youtubeLink.Contains("?"))
+                                                {
+                                                    //https://www.youtube.com/watch?v=J---aiyznGQ
+                                                    //https://www.youtube.com/watch?time_continue=2&v=a1Y73sPHKxw
+
+                                                    var videoId = youtubeLink.Split('?')[1].Split('&').Where(d => d.Contains("v=")).Select(s => s.Substring(2)).FirstOrDefault();
+                                                    youtubeLink = string.Format("https://www.youtube.com/embed/{0}?autoplay=0&showinfo=0&rel=0&autohide=1&wmode=transparent", videoId);
+
+                                                }
+                                                else if (youtubeLink.ToLower().Contains("youtu.be"))
+                                                {
+                                                    //https://youtu.be/J---aiyznGQ
+
+                                                    var videoId = youtubeLink.Substring(youtubeLink.LastIndexOf("/") + 1);
+                                                    youtubeLink = string.Format("https://www.youtube.com/embed/{0}?autoplay=0&showinfo=0&rel=0&autohide=1&wmode=transparent", videoId);
+                                                }
+
+
+                                                <div class="c-feature-tile-with-modal-contents__callout__image text-center">
+                                                    <iframe src="@youtubeLink" frameborder="0" allowfullscreen width="100%" height="100%"></iframe>
+                                                </div>
+                                            }
+                                            else if (videoLink.Contains("vidyard.com"))
+                                            {
+                                                var vidyardLink = videoLink; // e.g. http://play.vidyard.com/GSG3eqnCunY8duxEmUkH6G.html
+                                                var videoId = vidyardLink.Substring(vidyardLink.LastIndexOf("/") + 1);
+                                                videoId = videoId.Substring(0, videoId.IndexOf("."));
+                                                var vidyardImageSrc = vidyardLink.Substring(0, vidyardLink.LastIndexOf(".")) + ".jpg";
+
+                                                <div class="c-feature-tile-with-modal-contents__callout__image text-center">
+                                                    <img loading="lazy" class="vidyard-player-embed img-responsive"
+                                                         src="@vidyardImageSrc"
+                                                         data-uuid="@videoId"
+                                                         data-v="4"
+                                                         data-type="inline" />
+                                                </div>
+                                            }
+
+                                            <div class="c-feature-tile-with-modal-contents__callout__copy video-description">
+                                                @if (cta != null)
+                                                {
+                                                    <a href="@cta.Link" target="@cta.Target" class="cta">@cta.Caption</a>
+                                                }
+                                                <p>@callout.GetFieldValue("description")</p>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="c-feature-tile-with-modal-contents__callout">
+
+                                            <div class="col-sm-8">
+                                                @if (calloutImage != null)
+                                                {
+                                                    <div class="c-feature-tile-with-modal-contents__callout__image  text-center visible-xs">
+                                                        <img loading="lazy" src="@calloutImage" @*alt="@calloutImage.GetPropertyValue("altText")"*@ style="max-width:100%">
+                                                    </div>
+                                                }
+                                                <div class="c-feature-tile-with-modal-contents__callout__copy">
+                                                    @if (cta != null)
+                                                    {
+                                                        <a href="@cta.Link" target="@cta.Target" class="cta">@cta.Caption</a>
+                                                    }
+                                                    <p>@callout.GetFieldValue("description")</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-4 hidden-xs">
+                                                <div class="c-feature-tile-with-modal-contents__callout__image">
+                                                    @if (calloutImage != null)
+                                                    {
+                                                        <img loading="lazy" src="@calloutImage" @*alt="@calloutImage.GetPropertyValue("altText")"*@ style="max-width:100%">
+                                                    }
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    }
+                                }
+                            }
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+
+

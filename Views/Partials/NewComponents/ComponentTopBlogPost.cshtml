@@ -1,0 +1,28 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var image = Model.Value("teaserImage");
+    IPublishedContent teaserImage = Model.Value<IPublishedContent>
+            ("teaserImage");
+
+    DateTime itemDate = Model.Value<DateTime>("itemDate");
+    IPublishedContent category = Model.Value<IPublishedContent>("category");
+    IPublishedContent author = Model.Value<IPublishedContent>("author");
+
+}
+
+
+<div class="col-md-8 P-0">
+     <a href="@Model.Url()">
+        <img loading="lazy" srcset="@(teaserImage!=null?teaserImage.Url(): string.Empty)" alt="@(teaserImage!=null?teaserImage.Value<string>("altText"): string.Empty)" class="w-100 mw-100 blog-top-teaser-img">
+                    </a>
+    </div><div class="col-md-4 P-0">
+        <div class="h-100 primary-bg-color">
+            <div class="content py-5 ps-5 pe-4 position-relative">
+                <div class="fs-6 mb-1 text-white fw-600">@(category !=null ?category.Name:string.Empty)</div>
+                <h1 class="head-h2 text-white pt-4 fw-200 mb-0">@Model.Value("headline")</h1>
+
+            </div>
+        </div>
+    </div>
+    
+    

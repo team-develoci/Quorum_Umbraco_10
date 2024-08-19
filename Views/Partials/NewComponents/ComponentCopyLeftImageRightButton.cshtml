@@ -1,0 +1,52 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("downloadLink");
+    var image = Model.Value<IPublishedContent>("leftImage");
+}
+@*<div class="" role="contentinfo">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6 p-0">
+                <div class="blueBox h-100">
+                    <h2 class="head-h2 fw-200 text-white mb-3 mb-md-5">@Model.Value("title")</h2>
+                    <h5 class="head-h5 fw-300 mb-5">@Html.Raw(Model.Value("copy"))</h5>
+                    <a href="/" class="btn btnOrange d-flex justify-content-center align-items-center">@button.Name</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-7 p-0">
+                <a class=" navbar-brand" href="/">
+                    <picture>
+                        <source srcset="@image.Url()">
+                        <img srcset="@image.Url()" alt="Quorum" width="100%" class="client-img">
+                    </picture>
+                </a>
+            </div>
+                </div>
+            </div>
+        </div>
+</div>*@
+
+
+<div class="futureWrapper-left-image margin-bottom-lower" role="contentinfo">
+    <div class="container desktop-footer">
+        <div class="row">
+
+            <div class="col-md-6 grid-col-client-story">
+                <h1>@Model.Value("title")</h1>
+                <div class="client-desription">@Html.Raw(Model.Value("copy"))</div>
+                <a href="@button.Url" class="text-decrotion-none"> <button class="learnBtn"> @button.Name </button></a>
+            </div>
+            <div class="col-md-6 qm-video client-img-big">
+                <a class="navbar-brand" href="/">
+                    <picture>
+                        <source srcset="@image.Url()">
+                        <img loading="lazy" srcset="@image.Url()" alt="Quorum" class="client-img">
+                    </picture>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

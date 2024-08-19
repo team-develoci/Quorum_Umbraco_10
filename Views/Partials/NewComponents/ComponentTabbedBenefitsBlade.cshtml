@@ -1,0 +1,89 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+    var tabs = Model.Value<IList<IPublishedContent>>("tabs");
+    int tabIndex = 0;
+}
+
+
+
+
+
+@*TABBED FOR DESKTOP*@
+
+<div class="c-tabbed-benefits-blade hidden-xs hidden-sm">
+    <div class="container c-tabbed-benefits-blade__wrapper">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs init-tabs" role="tablist">
+            @foreach (var tab in tabs)
+            {
+                <li role="presentation" class="@(tabIndex == 0 ? "active" :"")">
+                    <a href="#benefit_@tabIndex" aria-controls="benefit_@tabIndex" role="tab" data-toggle="tab">@tab.GetPropertyValue("name")</a>
+                </li>
+
+                tabIndex++;
+            }
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            @{
+                tabIndex = 0;
+            }
+            @foreach (var tab in tabs)
+            {
+                var image = tab.GetPropertyValue<IPublishedContent>("image");
+                <div role="tabpanel" class="tab-pane @(tabIndex == 0 ? "active" :"")" id="benefit_@tabIndex">
+                    <div class="c-tabbed-benefits-blade__panel row">
+                        <div class="col-sm-7 c-tabbed-benefits-blade__image">
+                            @if (image != null)
+                            {
+                                <img class="" src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)">
+                            }
+                        </div>
+                        <div class="col-sm-5 c-tabbed-benefits-blade__copy">
+                            @Html.Raw(tab.GetPropertyValue("copy"))
+                        </div>
+                    </div>
+
+                </div>
+                            tabIndex++;
+            }
+        </div>
+
+    </div>
+</div>
+
+
+@*UNTABBED FOR MOBILE*@
+
+<div class="c-untabbed-benefits-blade hidden-md hidden-lg">
+    <div class="container c-untabbed-benefits-blade__wrapper">
+
+        <div class="untabbed-content">
+            @{
+                tabIndex = 0;
+            }
+            @foreach (var tab in tabs)
+            {
+                var image = tab.GetPropertyValue<IPublishedContent>("image");
+                <div class="benefit">
+                    <div class="c-untabbed-benefits-blade__panel row">
+                        <div class="col-sm-12 c-untabbed-benefits-blade__copy">
+                            @Html.Raw(tab.GetPropertyValue("copy"))
+                        </div>
+                        <div class="col-sm-12 c-untabbed-benefits-blade__image">
+                            @if (image != null)
+                            {
+                                <img class="" src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)">
+                            }
+                        </div>
+                    </div>
+                </div>
+                            tabIndex++;
+            }
+        </div>
+
+    </div>
+</div>

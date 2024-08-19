@@ -1,0 +1,49 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    // var cta = Model.Value<CTA>("link", new CTA());
+
+    string imageSrc = string.Empty;
+    string imageAlt = string.Empty;
+    var typedMediaPickerSingle = Model.Value<IPublishedContent>("image");
+    if (typedMediaPickerSingle != null)
+    {
+        imageSrc = typedMediaPickerSingle.Url();
+        imageAlt = typedMediaPickerSingle.Value<string>("alt", defaultValue: string.Empty);
+    }
+
+
+}
+@{
+    var cta = Model.Value<Link>("cTA");
+}
+@if (cta != null)
+{
+    <a href="@cta.Url" target="@cta.Target" id="@elemntId" class="c-product-solution-tile">
+        <div class="tile-top">
+            <h3 class="c-product-solution-tile__headline tileTopHeight"></h3>
+            <img class="c-product-solution-tile__image" src="@imageSrc" alt="@imageAlt">
+        </div>
+
+        <div class="c-product-solution-tile__copy rte">
+            @(Html.Raw(Model.Value("copy")))
+        </div>
+
+        <div class="align-bottom ">
+            <div class="cta">
+                <div class="c-product-solution-tile__link-area">
+                    @cta.Name
+                </div>
+            </div>
+        </div>
+    </a>
+}
+
+
+
+
+
+

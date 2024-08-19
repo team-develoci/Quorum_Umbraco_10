@@ -1,0 +1,11 @@
+@*@inherits Umbraco.Web.Macros.PartialViewMacroPage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    //var footerModel = Model.Descendants("componentFooter");
+    var footerModel = Umbraco.ContentSingleAtXPath("//componentFooter");
+}
+
+@if (footerModel != null)
+{
+    @Html.Partial("~/views/partials/newcomponents/componentFooter.cshtml", footerModel)
+}

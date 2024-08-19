@@ -1,0 +1,22 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var linkList = Model.Value<List<Link>>("link");
+    Link linkData = null;
+    if (linkList != null)
+    {
+        linkData = linkList.FirstOrDefault();
+    }
+}
+
+
+<div>
+    @{
+        if (linkData != null)
+        {
+            <div class="solution-header"><a href="@linkData.Url">@linkData.Name</a></div>
+        }
+    }
+    <div class="solution-desctiption">@Html.Raw(Model.Value("copy")) </div>
+</div>
+

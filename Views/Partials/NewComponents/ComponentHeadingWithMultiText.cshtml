@@ -1,0 +1,32 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var heading = Model.Value("heading");
+    var cards = Model.Value<List<IPublishedElement>>("copy");
+
+}
+<section class="py-5" id="anchor-value">
+    <div class="container-lg">
+        <div class="content-wrapper mb-5 mx-auto">
+            <h1 class="head-h1 fw-200 mb-3 text-center dark-blue"> @heading</h1>
+        </div>
+        <div class="row justify-content-center">
+            @if (cards != null)
+            {
+                foreach (var card in cards)
+                {
+                    <div class="col-md-6 col-lg-4 text-center mb-4">
+                        <h3 class="h3 fw-400 secondary-color mb-4"> @card.Value("heading")</h3>
+                        <div class="fw-normal">
+                            <p>@card.Value("copy")</p>
+                        </div>
+                    </div>
+
+                }
+
+            }
+
+        </div>
+    </div>
+</section>

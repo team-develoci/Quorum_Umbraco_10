@@ -1,0 +1,110 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var logo = "https://www.quorumsoftware.com/images/Quorum_Icon_3D_112x112.png";
+}
+<script type="application/ld+json">
+    {
+    "@@context": "http://schema.org/",
+    "@@type": "Organization",
+    "name": "Quorum Software",
+    "url": "https://www.quorumsoftware.com/",
+     "logo": {
+      "@@type": "ImageObject",
+      "url": "@logo"
+    }
+    }
+</script>
+@if (Model.Level > 1)
+{
+    <script type="application/ld+json">
+{
+  "@@context": "https://schema.org/",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    @foreach (IPublishedContent item in Model.AncestorsOrSelf().Where(t => t.Level > 1).Reverse())
+    {
+        if(item.Level > 2)
+        {
+            <text>,</text>
+        }
+           <text> {
+                "@@type": "ListItem",
+    "position": @(item.Level -1),
+    "name": "@item.Name",
+    "item": "@Request.Url.Scheme://@Request.Url.Host@item.Url"
+          }</text>
+    }
+    ]
+}
+    </script>
+}
+
+@if (Model.GetTemplateAlias() == "BlogPost")
+{
+    var teaserImage = Umbraco.Media(Model.Value("teaserImage"));
+    var author = Umbraco.Content(Model.Value("author"));
+    var itemDate = Model.Value<DateTime>("itemDate").ToIsoString();
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "BlogPosting",
+      "headline": "@Model.Value("headline")",
+        @if (teaserImage != null)
+            {
+                <text>"image": "@teaserImage.Url",</text>
+                }
+        @if (author != null)
+            {
+            <text>
+                "author": {
+                    "@@type": "Person",
+        "name": "@author.Name"
+                    },</text>
+            }
+            "publisher": {
+                "@@type": "Organization",
+        "name": "Quorum Software",
+        "logo": {
+                    "@@type": "ImageObject",
+          "url": "@logo"
+        }
+            },
+      "datePublished": "@itemDate;"
+    }
+    </script>
+
+}
+@if (Model.GetTemplateAlias() == "PressReleaseItem")
+{
+    var newsImage = Umbraco.Media(Model.Value("newsImage"));
+    var itemDate = Model.Value<DateTime>("itemDate").ToIsoString();
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Article",
+      "headline": "@Model.Name",
+        @if (newsImage != null)
+            {
+                <text>"image": "@newsImage.Url",</text>
+                }
+            "author": {
+                "@@type": "Organization",
+        "name": "Quorum Software",
+        "logo": {
+                    "@@type": "ImageObject",
+          "url": "@logo"
+        }
+      },
+      "publisher": {
+                    "@@type": "Organization",
+        "name": "Quorum Software",
+        "logo": {
+                        "@@type": "ImageObject",
+          "url": "@logo"
+        }
+                },
+      "datePublished": "@itemDate"
+          }
+    </script>
+
+}

@@ -1,0 +1,33 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+  Layout = "Master.cshtml";
+
+  var isThreeQtr = Model.Value<bool>("isThreeQuarter");
+}
+
+<div class="padding-md-def-md-def">
+    <div class="container">
+        <div class="row larger">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("pageHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { IsH1 = true } })
+        </div>
+    </div>
+
+    @if (Model.HasValue("topContent"))
+    {
+        <div class="container">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("topContent"), ComponentView = "~/Views/Partials/Components/ExpandibleCopyBlock.cshtml", ComponentSettings = new { IsThreeQtr = isThreeQtr } })
+        </div>
+    }
+
+    @if (Model.HasValue("middleBlade"))
+    {
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("middleBlade"), ComponentView = "~/Views/Partials/Components/backgroundimageblade.cshtml", ComponentSettings = new { } })
+    }
+
+    @if (Model.HasValue("bottomContent"))
+    {
+        <div class="container">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("bottomContent"), ComponentView = "~/Views/Partials/Components/ExpandibleCopyBlock.cshtml", ComponentSettings = new { IsThreeQtr = isThreeQtr } })
+        </div>
+    }
+</div>

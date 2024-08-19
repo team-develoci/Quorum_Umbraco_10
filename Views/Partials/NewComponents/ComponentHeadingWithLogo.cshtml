@@ -1,0 +1,46 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var heading = Model.Value("heading");
+    var cards = Model.Value<List<IPublishedElement>>("imageLogo");
+}
+<section class="logo-section py-5">
+    <div class="container-lg">
+        <div class="content-wrapper mb-5">
+            <h1 class="fs-6 fw-bold mb-4 text-start"> @heading</h1>
+        </div>
+        <div class="director-team-wrap">
+            <div class="row">
+                @if (cards != null)
+                {
+                    foreach (var card in cards)
+                    {
+                        var image = card.Value<IPublishedContent>("image");
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-4 mb-4">
+                            <div class="h-100 bg-white shadow-lg pt-5 px-3 pb-3 rounded text-center">
+                                @if (image != null)
+                                {
+                                    <img loading="lazy" src="@image.Url()" class="w-100 mb-3" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)">
+                                }
+
+
+                                <div class="content py-3 position-relative text-start">
+                                    <p class="paragraph-text dark-blue fw-normal mb-2">@card.Value("headline")</p><div class="sub -head mb-1 secondary-color fw-600">
+                                        @card.Value("subhead")
+
+                                    </div>
+                                    <div class="sub-head mb-1 dark-blue fw-600">
+                                       @card.Value("copy")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+
+            </div>
+            </div>
+        </div>
+</section>

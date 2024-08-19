@@ -1,0 +1,30 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+}
+
+
+<div id="site-selection-message" class="c-site-selection-message" role="alert" data-data-id="@Model.Content.Id" style="">
+    <div class="container">
+        <div class="row">
+            <div class="site-selection-message-cols">
+                <div class="flex site-selection-message-content c-site-selection-message__content">
+                    
+                    <div class="col-sm-4 col-md-5 col-lg-3 site-selection-message-top-content">
+                        <img src="" class="img-responsive site-selection-message-image js-data-image"/>
+                        <p class="site-selection-message-text js-data-copy">.</p>
+                    </div>
+
+                    <div class="c-site-selection-message__content__buttons">
+                        <a href="/schedule-a-demo" target="_blank" class="btn btn-primary js-data-button" data-event-category="Country Chooser" data-event-name="country_chooser">.</a>
+                        <a href="#dismiss" class="btn btn-secondary js-dismiss js-data-stay-copy" data-dismiss="alert" aria-label="Close" data-event-category="Country Chooser" data-event-action="Banner" data-event-label="" data-event-name="country_chooser">.</a>
+                    </div>
+                    
+                </div>
+                <div class="c-site-selection-message__x">
+                    <a href="#dismiss" class="close js-dismiss" data-dismiss="alert" aria-label="Close"  data-event-category="Country Chooser" data-event-name="country_chooser"  data-event-label="dismiss"><span aria-hidden="true">&times;</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

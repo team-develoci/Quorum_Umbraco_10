@@ -1,0 +1,307 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var schedule = Model.Value<IList<IPublishedContent>>("schedule");
+
+    var tracks = Model.Value<IList<IPublishedContent>>("tracks");
+
+    var tagOneLabel = Model.Value<string>("tagOneLabel");
+    var tagTwoLabel = Model.Value<string>("tagTwoLabel");
+
+    var allSessions = schedule.SelectMany(d => d.GetPropertyValue<IList<IPublishedContent>>("sessions")).Where(s => s != null).ToList();
+    var breakOuts = allSessions.SelectMany(s=>s.GetPropertyValue<IList<IPublishedContent>>("sessionBreakouts", new List<IPublishedContent>())).ToList();
+    var tagOneOptions = breakOuts.SelectMany(b => b.GetPropertyValue<string>("trackTagsOne","").Split('|').Select(s=>s.Trim()).ToList()).Distinct().Where(s=>!string.IsNullOrEmpty(s)).OrderBy(s=>s).ToList();
+    var tagTwoOptions = breakOuts.SelectMany(b => b.GetPropertyValue<string>("trackTagsTwo", "").Split('|').Select(s => s.Trim()).ToList()).Distinct().Where(s => !string.IsNullOrEmpty(s)).OrderBy(s => s).ToList();
+
+    var hasFilters = (tracks != null && tracks.Any()) && !string.IsNullOrEmpty(tagOneLabel) && !string.IsNullOrEmpty(tagTwoLabel);
+
+    }
+<div class="c-schedule-details">
+    <div class="container">
+        @if (Model.HasValue("headline"))
+        {
+        <div class="row">
+            <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2 text-center padding-def-def-sm-def">
+                <h2>@Html.Raw(Model.Value("headline"))</h2>
+            </div>
+        </div>
+        }
+
+        <div class="row">
+            @if (hasFilters)
+            {
+            <div class="col-md-4 c-schedule-details__filters">
+              
+             
+                        <!-- Mobile Filter Menu -->
+                        <div class="row hidden-md hidden-lg">
+                            <div class="d-flex">
+                                <div class="col-xs-6 align-self-center">
+                                    <a href="#" class="show-all">Show All</a>
+                                </div>
+                                <div class="col-xs-6 align-self-center text-right">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#filter-list">
+                                        Filters
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="count-checkboxes-wrapper">
+                                    <span id="count-checked-checkboxes">0</span> filter applied
+                                    <a href="#" class="clear-all clear-filters">Clear x</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex hidden-sm hidden-xs">
+                            <div class="col-sm-6">
+                                <h3>Filter</h3>
+                            </div>
+                            <div class="col-sm-6 align-self-center">
+                                <a href="#" class="clear-all clear-filters">Clear</a>
+                                <a href="#" class="show-all move-left">Show All</a>
+                            </div>
+                        </div>
+                        <!-- End Mobile Filter Menu -->
+                        <!--Desktop Filters -->
+                        <div class="filter-list hidden-sm hidden-xs js-desktop-filters" id="filters">
+                            @if (tracks != null)
+{
+    <div class="category">
+        <a href="#" class="filter-list-link down">Track</a>
+        <ul class="filter-list-stack">
+            @foreach (var track in tracks)
+            {
+            var trackNumber = track.GetPropertyValue<string>("trackNumber");
+            var trackName = track.GetPropertyValue<string>("name");
+            <li>
+                <input type="checkbox" name="track@(trackNumber)" value="track@(trackNumber)" id="track@(trackNumber)"><label for="track@(trackNumber)">Track @(trackNumber): @trackName</label> 
+                @if (track.HasValue("description"))
+                {
+
+                    var trackBreakouts = breakOuts.Where(s => s.GetPropertyValue<string>("breakoutTrackNumbers", "").Split('|').Contains(trackNumber)).ToList();
+
+                    var trackTagOneOptions = trackBreakouts.SelectMany(b => b.GetPropertyValue<string>("trackTagsOne", "").Split('|').Select(s => s.Trim()).ToList()).Distinct().Where(s => !string.IsNullOrEmpty(s)).OrderBy(s => s).ToList();
+                    var trackTagTwoOptions = trackBreakouts.SelectMany(b => b.GetPropertyValue<string>("trackTagsTwo", "").Split('|').Select(s => s.Trim()).ToList()).Distinct().Where(s => !string.IsNullOrEmpty(s)).OrderBy(s => s).ToList();
+
+                   <div class="js-track-description--@trackNumber js-track-description"  style="display:none;" data-color="@track.GetPropertyValue("color")">
+                       <h4><strong>Track @(trackNumber): @trackName</strong></h4>
+                        @Html.Raw(track.GetPropertyValue("description"))   
+                       <p><strong>@tagOneLabel</strong>: @string.Join(", ", trackTagOneOptions)</p>
+                       <p><strong>@tagTwoLabel</strong>: @string.Join(", ", trackTagTwoOptions)</p>
+                    </div>
+                
+                   <a href="#" data-toggle="modal" data-target="#track" class="js-track-modal-button" data-track-number="@trackNumber"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                
+                }
+            </li>
+            }
+        </ul>
+    </div>
+    }
+
+    <div class="category">
+        <a href="#" class="filter-list-link">@tagOneLabel</a>
+        <ul class="filter-list-stack" style="display: none;">
+            @foreach (var tag in tagOneOptions)
+            {
+                var tagName = System.Text.RegularExpressions.Regex.Replace(tag.ToLower(), "[^a-zA-Z0-9_.]+", "", System.Text.RegularExpressions.RegexOptions.Compiled);
+            <li><input type="checkbox" name="@tagName" value="@tagName" id="@tagName"><label for="@tagName">@tag</label></li>
+            }
+        </ul>
+    </div>
+
+    <div class="category">
+        <a href="#" class="filter-list-link">@tagTwoLabel</a>
+        <ul class="filter-list-stack" style="display: none;">
+            @foreach (var tag in tagTwoOptions)
+            {
+                var tagName = System.Text.RegularExpressions.Regex.Replace(tag.ToLower(), "[^a-zA-Z0-9_.]+", "", System.Text.RegularExpressions.RegexOptions.Compiled);
+            <li><input type="checkbox" name="@tagName" value="@tagName"  id="@tagName"><label for="@tagName">@tag</label></li>
+            }
+        </ul>
+    </div>
+</div>
+<!-- End Desktop Filters -->
+</div>
+            }
+      
+
+            <!-- Schedule Filter List -->
+            <div class="@(!hasFilters ? "col-md-push-2 col-md-8" :"col-md-8")  c-schedule-details__details">
+
+                @foreach (var scheduleDay in schedule)
+                {
+                    <div class="">
+                        <h3>@scheduleDay.GetPropertyValue("headline")</h3>
+                        <div class="filter-container">
+                            @foreach (var session in scheduleDay.GetPropertyValue<IList<IPublishedContent>>("sessions"))
+                            {
+                                var sessionBreakouts = session.GetPropertyValue<IList<IPublishedContent>>("sessionBreakouts");
+                                var hasDetails = (sessionBreakouts != null && sessionBreakouts.Any()) || session.HasValue("sessionDescription");
+
+                            <div class="item ">
+                                <div class="heading @(!hasDetails ? "no-details" : "")">
+                                    <p class="time">@Html.Raw(session.GetPropertyValue("time", "&nbsp;"))</p>
+                                    <p>@Html.Raw(session.GetPropertyValue("name", "&nbsp;")) </p>
+                                    <p class="location">@Html.Raw(session.GetPropertyValue("location", "&nbsp;"))</p>
+                                </div>
+                                
+                                @if(hasDetails )
+                                {
+                                    
+                                <div class="content">
+                                    @if(session.HasValue("sessionDescription"))
+                                    {
+                                        @Html.Raw(session.GetPropertyValue("sessionDescription"))
+                                    }
+                         
+                                   @if (sessionBreakouts != null && sessionBreakouts.Any())
+                                   {
+                                    <div class="c-schedule-details__session__breakouts">
+                                        @foreach (var sessionBreakout in sessionBreakouts)
+                                            {
+                                                var breakoutTrackNumbers = sessionBreakout.GetPropertyValue<string>("breakoutTrackNumbers", "");
+                                                var breakoutTrackNumbersList = breakoutTrackNumbers.Split('|').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+                                                var breakoutTagOne = sessionBreakout.GetPropertyValue<string>("trackTagsOne").Split('|').Where(s=>!string.IsNullOrEmpty(s)).ToList();
+                                                var breakoutTagTwo = sessionBreakout.GetPropertyValue<string>("trackTagsTwo").Split('|').Where(s => !string.IsNullOrEmpty(s)).ToList();
+                                                var allTagNames = breakoutTagOne.Union(breakoutTagTwo).Select(tag => System.Text.RegularExpressions.Regex.Replace(tag.ToLower(), "[^a-zA-Z0-9_.]+", "", System.Text.RegularExpressions.RegexOptions.Compiled)).ToList();
+
+
+                                                var trackItems = tracks != null ? tracks.Where(t => breakoutTrackNumbersList.Contains(t.GetPropertyValue<string>("trackNumber"))).ToList() : new List<IPublishedContent>();
+
+                                            <div class="c-schedule-details__session__breakouts__breakout js-schedule-item @string.Join(" ", breakoutTrackNumbersList.Select(s => "track" + s.ToString())) @string.Join(" ", allTagNames)">
+                                                @if (trackItems != null && trackItems.Any())
+                                        {
+                                            var start = 0;
+                                            var step = 100 / trackItems.Count();
+                                                    <div class="side-border" style="">
+
+                                                        @foreach (var trackItem in trackItems)
+                                        {
+                                                            @*TODO: Need to make color be flexible based on any number of items*@
+                                                            <div class="side-border-double" data-track="@trackItem.GetPropertyValue("trackNumber")" style="background-color: @(trackItem.GetPropertyValue("color")); top:@(start)%"></div>
+                                                            start += step;
+                                                        }
+
+                                                    </div>
+                                                }
+                                                <p class="dscr">
+                                                      @if (trackItems != null && trackItems.Any())
+                                                      {
+                                                    <strong>@(breakoutTrackNumbers.Any() ? "Track " + string.Join(", ", breakoutTrackNumbersList) + ": " : "")@sessionBreakout.GetPropertyValue("breakoutName")</strong><br />
+                                                      }
+                                                    @*<span class="location hidden-md hidden-lg"><i class="fa fa-map-marker" aria-hidden="true"></i> Location</span>*@
+                                                    @Html.Raw(sessionBreakout.GetPropertyValue("breakoutDescription"))
+                                                </p>
+
+                                                @if (!string.IsNullOrEmpty(tagOneLabel) && breakoutTagOne != null && breakoutTagOne.Any())
+                                                {
+                                                    <p><strong>@tagOneLabel:</strong> @string.Join(", ", breakoutTagOne)</p>
+                                                }
+                                                @if (!string.IsNullOrEmpty(tagTwoLabel) && breakoutTagTwo != null && breakoutTagTwo.Any())
+                                                {
+                                                    <p><strong>@tagTwoLabel:</strong> @string.Join(", ", breakoutTagTwo)</p>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                   }
+                                </div>
+                                }
+                            </div>
+
+                            }
+                            <!-- KEVIN: For Items that are not filterable and have a drop down 'no-fitler' class needs to be added to 'item' div-->
+                            @*<div class="item no-filter">
+                                <div class="heading">
+                                    <p class="time">Time</p>
+                                    <p>Event Title</p>
+                                    <p class="location hidden-xs hidden-sm">Location</p>
+                                </div>
+                                <div class="content">
+                                    <div class="session">
+                                        <p>The ability to federate and use all data typically found in organizational silos is a challenge facing our industry. Finding and analyzing E&P opportunities based on this information is crucial for business decisions. Engineers need to create type curves based on the right contributors and strategically develop fields based on these forecasts. Equally as important, analyzing project performance provides guidance for adapting plans to meet organizational goals. Learn how MOSAIC can turn information into black gold and drive greater data insight for engineers.</p>
+                                        <a href="#" class="btn btn-primary">External Link</a>
+                                    </div>
+                                </div>
+                            </div>*@
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Mobile Filter List -->
+@if (hasFilters)
+{
+
+<div class="filter-modals-body-content">
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="active"><a href="#tab-track" aria-controls="tab-track" role="tab" data-toggle="pill">Tracks</a></li>
+            <li role="presentation"><a href="#tab-product" aria-controls="product" role="tab" data-toggle="pill">Product</a></li>
+            <li role="presentation"><a href="#tab-job" aria-controls="job" role="tab" data-toggle="pill">Job Title</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="filter-list js-mobile-filters" id="filters">
+            <div class="tab-content">
+                @if (tracks != null)
+                {
+                <div role="tabpanel" class="tab-pane active" id="tab-track">
+                    <div class="category">
+                        <ul class="filter-list-stack list-unstyled">
+                            @foreach (var track in tracks)
+                            {
+                                var trackNumber = track.GetPropertyValue<string>("trackNumber");
+                                var trackName = track.GetPropertyValue<string>("name");
+                                <li><input type="checkbox" name="track@(trackNumber)" value="track@(trackNumber)" id="track@(trackNumber)"><label for="track@(trackNumber)">Track @(trackNumber): @trackName</label> 
+                            <a href="#" data-toggle="modal" data-target="#track"class="js-track-modal-button"  data-track-number="@trackNumber"><i class="fa fa-info-circle" aria-hidden="true"></i></a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                }
+
+                <div role="tabpanel" class="tab-pane" id="tab-product">
+                    <div class="category">
+                        <ul class="filter-list-stack list-unstyled">
+                            @foreach (var tag in tagOneOptions)
+                            {
+                                var tagName = System.Text.RegularExpressions.Regex.Replace(tag.ToLower(), "[^a-zA-Z0-9_.]+", "", System.Text.RegularExpressions.RegexOptions.Compiled);
+                                <li><input type="checkbox" name="@tagName" value="@tagName" id="@tagName"><label for="@tagName">@tag</label></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="tab-job">
+                    <ul class="filter-list-stack list-unstyled">
+                        @foreach (var tag in tagTwoOptions)
+                        {
+                            var tagName = System.Text.RegularExpressions.Regex.Replace(tag.ToLower(), "[^a-zA-Z0-9_.]+", "", System.Text.RegularExpressions.RegexOptions.Compiled);
+                            <li><input type="checkbox" name="@tagName" value="@tagName" id="@tagName"><label for="@tagName">@tag</label></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+}
+
+
+
+
+
+
+

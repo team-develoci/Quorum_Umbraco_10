@@ -1,0 +1,115 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Html.ViewContext.ViewBag.elementNumber as int?;
+    if(itemId.HasValue)
+    {
+        itemId = itemId.Value + 1;
+
+    }
+    else
+    {
+        itemId = 1;
+    }
+    Html.ViewContext.ViewBag.elementNumber = itemId;
+
+    var elemntId = "element_" + itemId.Value;
+
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+    var image = Model.Value<IPublishedContent>("image");
+    var rightCloudImage = Model.Value<IPublishedContent>("rightCloudImage");
+    var leftCloudImage = Model.Value<IPublishedContent>("leftCloudImage");
+
+
+    var textColor = Model.HasValue("textColor") ? Umbraco.GetPreValueAsString(Model.Value<int>("textColor")) : "light";
+
+
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@*@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId + " .c-selector-marquee__wrapper")*@
+
+
+<div id="@elemntId" class="c-selector-marquee ">
+    <div class="c-selector-marquee__wrapper text-color--@textColor" style="background-image:url('@backgroundImage.Url');">
+        <div class="dangle left hidden-xs hidden-sm">
+            <img src="@(leftCloudImage != null ? leftCloudImage.Url : "")" alt="@(leftCloudImage!=null?leftCloudImage.Value<string>("altText"): string.Empty)" class="c-selector-marquee__left-dangle-image" style="@(leftCloudImage == null ? "display:none": "")" />
+
+        </div>
+        <div class="container ">
+            
+            <div class="row">
+                <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2">
+                    <h1 class="">@Model.Value("headline")</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2">
+
+                    <div class="c-selector-marquee__wrapper__copy">
+                        <p>@Html.Raw(Model.Value("subhead"))</p>
+                    </div>
+
+                    @{ 
+                        var options = Model.Value<IList<IPublishedContent>>("options");
+                    }
+                    @if (options != null && options.Count > 0)
+                    {
+                        var index = 1;
+                    <div class="c-selector-marquee__wrapper__selectors">
+                        <div class="c-selector-marquee__wrapper__select">
+                            <select id="select-experience" class="form-control" style="">
+                                <option selected="" disabled="">Select your company type</option>
+                                @foreach (var option in options)
+                                {
+                                    var defaultAction = option.GetPropertyValue<IList<IPublishedContent>>("defaultAction").FirstOrDefault();
+                                    <option data-choices="#select-product-@index" data-sub-name="@option.GetPropertyValue("subOptionLabel")" value="@(defaultAction != null ? defaultAction.Url : "")">@option.GetPropertyValue("name")</option>
+                                    index++;
+                                }
+                            </select>
+                        </div>
+                        @*TODO: This shouuld all should probably be dynamic javscript*@
+                        @{ 
+                            index = 1;
+                        }
+
+                        @*<div class="c-selector-marquee__wrapper__select">
+                            <select id="select-product-0" class="form-control suboption-item" style="">
+                                <option selected="selected" value="default">@options.First().GetPropertyValue("subOptionLabel")</option>
+                              </select>
+                        </div>*@
+
+                        @foreach (var option in options)
+                        {
+                            var defaultAction = option.GetPropertyValue<IList<IPublishedContent>>("defaultAction").FirstOrDefault();
+                            <div class="c-selector-marquee__wrapper__select">
+                                <select id="select-product-@index" class="form-control suboption-item" style="display:none;">
+                                    <option selected="selected" value="@(defaultAction != null ? defaultAction.Url : "default")">@option.GetPropertyValue("subOptionLabel")</option>
+                                    @foreach (var subOption in option.GetPropertyValue<IList<IPublishedContent>>("subOptions"))
+                                    {
+                                        var action = subOption.GetPropertyValue<IList<IPublishedContent>>("action").FirstOrDefault();
+                                        <option value="@(action != null ?action.Url : subOption.GetPropertyValue("action").ToString())">@subOption.GetPropertyValue("name")</option>
+                                    }
+                                </select>
+                            </div>
+                            index++;
+                        }
+            
+                    </div>
+                    }
+                            
+                    <img src="@(image != null ? image.Url : "")" alt="@(image!=null?image.Value<string>("altText"): string.Empty)" class="c-selector-marquee__image" style="@(image == null ? "display:none": "")"/>
+                            
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="dangle right hidden-xs hidden-sm">
+            <img src="@(rightCloudImage != null ? rightCloudImage.Url : "")" alt="@(rightCloudImage!=null?rightCloudImage.Value<string>("altText"): string.Empty)" class="c-selector-marquee__right-dangle-image" style="@(rightCloudImage == null ? "display:none": "")" />
+        </div>
+    </div>
+</div>
+
+
+

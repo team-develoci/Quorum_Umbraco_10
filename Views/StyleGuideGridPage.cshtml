@@ -1,0 +1,90 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+
+@if (!Model.Value<bool>("hideAnchorList"))
+{ 
+<div class="container">
+    <div class="">
+        <br/>
+        <h1>@Model.Name</h1>
+    </div>
+
+    <div class="c-anchor-nav">
+        <ol></ol>
+    </div>
+</div>
+}
+@CurrentPage.GetGridHtml("grid", "GlgGridCustom")
+
+@section Scripts {
+
+<div class="modal fade leadership-details-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="container modal-container">
+        <div class="leadership-modal-wrapper row">
+            <div class="col-xs-12 button-wrapper">
+                <div class="row">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span class="closer" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-dialog modal-lg leadership-modal">
+                <div class="leadership-modal-content row">
+                    <div class="col-md-5 modal-img">
+                        <img loading="lazy" class="lm-image" src="" />
+                    </div>
+                    <div class="col-md-7 modal-copy">
+                        <h3 class="lm-name">Name</h3>
+                        <h5 class="lm-title">Title</h5>
+                        <div class="lm-description">bio</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@if (!Model.Value<bool>("hideAnchorList"))
+{
+<script>
+
+    $(function () {
+        $(".c-component-schema-info").each(function (i, item) {
+
+            var anchorId = $(item).attr("id");
+            var anchorText = $(item).find("h2").text();
+
+            var anchorLInk = $('<li><a href="#' + anchorId + '">' + anchorText + "</a></li>");
+            $(".c-anchor-nav ol").append(anchorLInk);
+        });
+    });
+
+</script>
+}
+
+
+}
+
+
+@section Styles {
+    <link href="/css/umbracoicons.css" rel="stylesheet" />
+}
+
+
+<style>
+    .show-gridlines .container {
+        border: 1px solid green;
+    }
+
+    .show-gridlines .row {
+        border: 1px solid blue;
+    }
+
+    .show-gridlines .column {
+        border: 1px solid red;
+    }
+</style>

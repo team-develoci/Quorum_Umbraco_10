@@ -1,0 +1,94 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    ViewBag.Title = "MainNavigation--OffCanvas";
+    var mainNavItems = CurrentPage.Site().Children.Where("includeInMainNavigation");
+}
+
+
+<div class="off-canvas outer-wrapper">
+    <div class="inner-wrap offcanvas-left">
+        <div class="navbar navbar-default navbar-static-top reveal">
+            <header class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="reveal" data-target=".offcanvas-left .navbar-default" aria-label="Mobile Navigation Button">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Off Canvas Nav - Logo</a>
+            </header>
+            <nav class="nav-offcanvas">
+                <ul class="nav navbar-nav">
+                    @foreach (var item in mainNavItems)
+                    {
+                        var secondaryNavItems = item.Children.Where("includeInSecondaryNavigation");
+                        if (item.Children.Count == 0 || secondaryNavItems.Count == 0)
+                        {
+                            <li><a href="@item.Url">@item.Name</a></li>
+                        }
+                        else if (true)
+                        {
+                            <li class="dropdown menu-large">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    @item.Name <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu megamenu row">
+                                    <li>
+                                        @foreach (var secondaryItem in secondaryNavItems)
+                                        {
+                                            <div class="col-sm-6 col-md-3">
+                                                <a href="@secondaryItem.Url" class="thumbnail">
+                                                    <img src="//placehold.it/150x120" alt="Placeholder Image" />
+                                                </a>
+                                            </div>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else if (true)
+                        {
+                            <li class="dropdown menu-large">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Name <b class="caret"></b></a>
+                                <ul class="dropdown-menu megamenu row">
+                                    @*Add logic here if you want to do groups for different width nav items and repeat the <li class="col-sm-3">...</li>"*@
+                                    <li class="col-sm-3">
+                                        <ul>
+                                            <li class="dropdown-header">If you want to categorize your nav lists</li>
+                                            @foreach (var secondaryItem in secondaryNavItems)
+                                            {
+                                                <li><a href="@secondaryItem.Url">@secondaryItem.Name</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                            </li>
+                        }
+                    }
+
+                </ul>
+            </nav>
+
+                <h2>Off Canvas nav</h2>
+                <section>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent suscipit lorem quis nisi elementum cursus. In tempus malesuada molestie. Quisque sagittis vulputate erat, vel mattis justo venenatis at. Proin eget urna malesuada, blandit mauris vel, mattis ex. Vivamus sed mi vel turpis mollis consectetur eu id ante. Integer vestibulum sollicitudin gravida. Integer consectetur pharetra interdum. Mauris nec ligula in massa tincidunt sodales ac eget ante. Nulla a mollis mi. Proin aliquet, ex eget semper elementum, odio lacus iaculis enim, a luctus diam leo in velit. Pellentesque euismod nisi sed elit commodo, eu venenatis ligula tempus.</p>
+
+                    <p>Cras augue sem, faucibus eget augue a, auctor maximus quam. Proin euismod tincidunt nisl, ut molestie dolor efficitur at. Cras nisi purus, feugiat nec efficitur in, sodales ac enim. Proin feugiat felis quis urna tincidunt ultricies. Fusce commodo arcu sed tortor hendrerit interdum. Fusce ac feugiat eros, non faucibus ligula. Duis egestas nunc sed urna gravida, nec rutrum dui varius. Morbi nec leo sed nisl tincidunt convallis ac non tortor.</p>
+
+                    <p>Vivamus vehicula tortor at leo efficitur, a convallis magna viverra. Sed ullamcorper, justo eget lobortis fermentum, magna augue semper augue, sed pharetra nisl nisl a ligula. In eros lorem, venenatis sit amet ante sed, convallis sagittis felis. Nunc volutpat malesuada libero. Suspendisse nec tempus libero, vitae aliquet purus. Mauris condimentum nulla quis rutrum mattis. Nullam tempor nunc at nisl lobortis euismod.</p>
+
+                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse sit amet purus vitae urna tempor vestibulum. Nam consectetur neque sed nunc fringilla lobortis. Sed elit mi, dapibus sit amet semper non, auctor et lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur pretium dapibus cursus. Curabitur aliquam, nibh sit amet fermentum iaculis, dui arcu blandit tortor, et placerat leo lectus ac lorem. Aenean blandit ut dui rhoncus aliquam. Sed ullamcorper, mi at sodales egestas, ante orci dictum nibh, eu volutpat diam nibh et ipsum. Pellentesque auctor felis vitae justo viverra vehicula. Duis sagittis elit quam, a rutrum lacus ullamcorper sed.</p>
+                </section>
+            
+
+        </div>
+    </div>
+
+</div>
+@using (Html.BeginScriptContext())
+{
+    Html.AddScriptBlock(@"$(function() { $('.navbar-toggle').click(function(e){
+            $($(this).data('target')).toggleClass('in');
+            }); });");
+}

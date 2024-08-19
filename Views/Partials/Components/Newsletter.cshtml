@@ -1,0 +1,33 @@
+﻿@model IPublishedContent
+
+
+@{
+	var contactformnode  = Model.Value<IPublishedContent>("contactFormNodePicker");
+	var solutionInterest = Model.AncestorOrSelf(3);
+	var link = Model.Value<Link>("requestDemoLink");
+}
+
+<section class="newsLetter py-3">
+    <div class="container-lg">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-xl-9">
+                <div class="row align-items-center justify-content-center">
+                    @if (Model.HasValue("title"))
+                    {
+                    <div class="col-md-4 col-lg-3 mb-3 mb-md-0 text-center text-md-end">
+                        <p>@Html.Raw(Model.Value("title"))</p>
+                    </div>
+                    }
+                    <div class="col-md-12 col-lg-4 mb-3">
+    			        <form id="newsletter-form" onsubmit="submitnewsletter()">
+                            <input type="hidden" id="solutionInterest" name="solutionInterest" value="@solutionInterest.Name"/>
+                			<a id="newsLetter-form-anchor" href="@(link!=null&&link.Url!=null?link.Url:"/request-a-demo/")" class="btn btnPage btnBlue">
+    						@(!string.IsNullOrWhiteSpace(Model.Value("submitButtonText").ToString())?Model.Value("submitButtonText"):"Request Demo")
+    						</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

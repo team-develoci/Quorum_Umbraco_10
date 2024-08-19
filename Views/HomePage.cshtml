@@ -1,0 +1,114 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    @* if you go to the path /SomeTemplateName (ie /homepage) it still loads the template, this is a 'feature' in umbraco.
+        Since this the home page we want to make sure that the only path that loads this is '/'.
+        This also works on other URLs, but just adding this here since it's more likely you'll type in just a template name.
+        This is just a temporary solution for the home page until we figure a better way out.
+    *@
+    if (Request.Url.AbsolutePath != "/")
+    {
+        Response.Redirect("/", true);
+    }
+    
+}
+
+
+@section Marquee {
+    @*@Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("marquee"), ComponentView = "~/Views/Partials/Components/skewedMarquee.cshtml", ComponentSettings = new { IsH1 = true, MarqueeType = "primary" } })*@ 
+    
+    @Html.Partial("~/Views/Partials/Components/Wrappers/Carousel.cshtml", new CarouselWrapperModel { AutoScroll=true, WrapperComponentModifier = "vertical" , ComponentModel = Model.Value<ArchetypeModel>("carouselMarquee"), ComponentView = "~/Views/Partials/Components/VerticalCarouselMarquee.cshtml", ComponentModifier = "marquee", ComponentSettings = new { } })
+}
+
+<section class="container">
+    <div class="row text-center">
+        <div class="copy-block copy-block--section-head col-xs-12">
+            @Html.Raw(Model.Value("valueStatement"))
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <hr class="row" />
+</div>
+
+<section class="container solutions-blade">
+
+    <div class="text-center solutions-tabs">
+        <h2>@Model.Value("solutionsHeadline")</h2>
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#industry" class="no-scroll-to-anchor">@Model.Value("segmentsSubhead")</a></li>
+            <li><a data-toggle="tab" href="#function" class="no-scroll-to-anchor">@Model.Value("businessNeedsSubhead")</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="industry" class="tab-pane fade in active">
+                <div class="row solutions-feature-blocks icon-blocks" id="solution-segment-tiles">
+                    @{
+                        var segmentTileIds = Model.Value<string>("segmentTiles").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+                        var segmentTiles = Umbraco.Content(segmentTileIds).Where(x => x != null);
+                    }
+                    @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = segmentTiles, ComponentView = "~/Views/Partials/Components/FeatureBusinessSection.cshtml", SColumns = 3, ComponentSettings = new { } })
+
+                </div>
+            </div>
+            <div id="function" class="tab-pane fade">
+                <div class="row solutions-feature-blocks icon-blocks" id="solution-business-needs-tiles">
+                    @{
+                        var businessNeedTileIds = Model.Value<string>("businessNeedTiles").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+                        var businessNeedTiles = Umbraco.Content(businessNeedTileIds).Where(x => x != null);
+                    }
+                    @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = businessNeedTiles, ComponentView = "~/Views/Partials/Components/FeatureBusinessSection.cshtml", SColumns = 3, ComponentSettings = new { } })
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@{
+    var backgroundImageId = Model.Value<string>("trustBackgroundImage");
+    var backgroundImage = !string.IsNullOrEmpty(backgroundImageId) ? Umbraco.TypedMedia(backgroundImageId) : null; }
+<section class="trusted" style="@(backgroundImage != null ? "background-image:url(" + backgroundImage.Url + "?sigma=1.5&threshold=5);" : "")">
+    <div class="container">
+        <div class="row">
+            <h2 class="text-center" style="color:white;">@Model.Value("trustHeadline")</h2>
+        </div>
+        <div class="row trust-tiles">
+            @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("trustImages"), ComponentView = "~/Views/Partials/Components/ImageBlock.cshtml", SColumns = 4, ComponentSettings = new { } })
+        </div>
+
+        @if (backgroundImage == null)
+        {
+            <hr class="row" />
+        }
+    </div>
+</section>
+
+<div class="container leadership-blade">
+    <div class="row">
+        <h2 class="text-center">@Model.Value("newsAndThoughtLeadershipHeadline")</h2>
+    </div>
+    <div class="row leadership-tiles">
+        
+        @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("newsAndThoughtLeadershipItems"), ComponentView = "~/Views/Partials/Components/FeatureImage.cshtml", SColumns = 3, ComponentSettings = new { ImageCropHeight = (int?)185, ImageCropWidth = (int?)330 } })
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        //$(window).resize(function () {
+        //    var width = $(window).width();
+        //    if (width < 768) {
+        //        $(".carousel").removeClass("vertical");
+        //    } else {
+        //        $(".carousel").addClass("vertical");
+        //    }
+        //});
+    </script>
+}
+

@@ -1,0 +1,31 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    //var configuration = Model.Content.Site().Descendants("configurationFolder").FirstOrDefault();
+    var configuration = Umbraco.ContentSingleAtXPath("//configurationFolder");
+
+    var facebookHandle = configuration != null ? configuration.Value<string>("facebookHandle") : "";
+    var linkedinHandle = configuration != null ? configuration.Value<string>("linkedinHandle") : "";
+    var twitterHandle = configuration != null ? configuration.Value<string>("twitterHandle", "").Replace("@", "") : "";
+    var youtubeHandle = configuration != null ? configuration.Value<string>("youtubeHandle") : "";
+
+}
+<ul class="share-page-links" style="margin:0">
+    @*<li><p class="connect">Connect with us</p></li>*@
+    @if (!String.IsNullOrEmpty(facebookHandle))
+    {
+
+        <li><a class="facebook" target="_blank" href="https://www.facebook.com/@facebookHandle" data-event-category="Social">Facebook</a></li>
+    }
+    @if (!String.IsNullOrEmpty(twitterHandle))
+    {
+        <li><a class="twitter" target="_blank" href="https://twitter.com/@twitterHandle" data-event-category="Social">Twitter</a></li>
+    }
+    @if (!String.IsNullOrEmpty(linkedinHandle))
+    {
+        <li><a class="linkedin" target="_blank" href="https://www.linkedin.com/company/@linkedinHandle" data-event-category="Social">LinkedIn</a></li>
+    }
+    @if (!String.IsNullOrEmpty(youtubeHandle))
+    {
+        <li><a class="youtube" target="_blank" href="https://www.youtube.com/channel/@youtubeHandle" data-event-category="Social">YouTube</a></li>
+    }
+</ul>

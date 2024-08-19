@@ -1,0 +1,63 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+
+    string backgroundImage = string.Empty;
+    string backgroundImageAlt = string.Empty;
+    var typedMediaPickerSingle = Model.Value<IPublishedContent>("backgroundImage");
+    if (typedMediaPickerSingle != null)
+    {
+        backgroundImage = typedMediaPickerSingle.Url();
+        backgroundImageAlt = typedMediaPickerSingle.Value<string>("alt", defaultValue: string.Empty);
+    }
+
+
+    var buttons = Model.Value<IList<Link>>("buttons");
+    var buttonURL = "";
+    var buttonName = "";
+    if(buttons != null && buttons.FirstOrDefault() != null){
+        buttonURL = buttons.FirstOrDefault().Url;
+        buttonName = buttons.FirstOrDefault().Name;
+    }
+
+    //var backgroundImage = Model.Value<IPublishedElement>("backgroundImage");
+    var image = Model.Value<IPublishedContent>("image");
+    var marqueeType = Model.Value("marqueeType", "small");
+
+    var showDiamond = Model.Value<bool>("showDiamond");
+    string textColor = Model.Value<string>("textColor");
+
+    //var textColor = Model.Value<Nullable<int>>("textColor").HasValue ? Umbraco.GetPreValueAsString(Model.Value<int>("textColor")) : (showDiamond ? "light" : "dark");
+
+    string elemntId = "element_" + typedMediaPickerSingle.Id;
+    string headLineText = Model.Value<string>("headline");
+    string copyText = Model.Value<string>("copy");
+    var name = Model.ContentType.Alias;
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(typedMediaPickerSingle, "#" + elemntId + " .c-image-hero-blade__wrapper")
+<div class="new-carousel" style="background-image:url(@backgroundImage);">  
+    <div class="container desktop-footer carousel-content home-carousel-img">
+        <div class="home-carousel-content">
+            <div class="col-sm-6 left-content">
+                <p class="carousel-heading">@headLineText</p>
+                @if(buttonName != ""){
+                    <a href="@buttonURL" >
+                        <span class="carousel-btn">@buttonName</span>
+                    </a>
+                }
+            </div>
+            <div class="col-sm-5 carousal-left-text" style="color: #FFFFFF;width:416px">
+              @if (image != null)
+                {
+                <p>
+                  <img loading="lazy" class="marquee_image float-start" src="@image.Url()" alt="@(image!=null?image.Value<string>("altText"): string.Empty)" />
+                </p>
+                }
+                @Html.Raw(copyText)
+            </div>
+        </div>
+    </div>
+</div>

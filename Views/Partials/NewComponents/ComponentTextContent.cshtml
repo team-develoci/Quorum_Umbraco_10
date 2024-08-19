@@ -1,0 +1,25 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var button = Model.Value<Link>("button");
+    var title = Model.Value("title");
+    var content = Model.Value("copy");
+}
+<section class="py-3 pt-0">
+    <div class="container-lg">
+        <div>
+            <h2 class="display-5 dark-blue fw-200">@title</h2>
+        </div>
+
+        <div class="fw-500 dark-gray pt-4 fs-6 ">
+            <p class="paragraph-text mw-25">@content</p>
+        </div>
+
+        <div class="py-4">
+            @if (button != null)
+            {
+            <a href="@button.Url" class="text-decrotion-none"> <button class="learnBtn">@button.Name</button></a>
+            }
+        </div>
+    </div>
+</section>

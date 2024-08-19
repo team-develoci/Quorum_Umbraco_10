@@ -1,0 +1,28 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var ajax = Request.QueryString["ajax"] == "true";
+    if (ajax)
+    {
+        Layout = null;
+    }
+}
+
+<div class="t-smb-hub-page">
+    @*Marquee*@
+    @{
+        var marquee = Model.HasValue("marquee") ? Model.Value<IList<IPublishedContent>>("marquee") : null;
+    }
+    @if (marquee != null && marquee.Any())
+    {
+        <div class="tooltip-marquee">
+            @Html.Partial("~/views/partials/newcomponents/ComponentSelectorMarquee.cshtml", marquee.First())
+        </div>
+    }
+
+    <div id="pageContent">
+        @CurrentPage.GetGridHtml("grid", "GlgGridCustom")
+    </div>
+
+</div>

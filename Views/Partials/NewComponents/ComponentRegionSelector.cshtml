@@ -1,0 +1,33 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{}
+@{
+    const string US = "US";
+    const string CANADA = "Canada";
+    string currentCountry = US;
+    string iconCanada = "../media/4485/canada_icon.png";
+    string iconUS = "../media/4523/us_icon.png";
+    bool isOpen = false;
+
+    string currentIcon = string.Empty;
+    if(currentCountry == US)
+    { currentIcon = iconUS; }
+    if(currentCountry == CANADA)
+    { currentIcon = iconCanada; }
+}
+
+<div class="region-selector">
+    <div class="btn region-selector-buttton">
+        <img class="country-icon" src="@currentIcon" />
+    </div>
+    <div class="region-selector-content">
+        <p class="select-country-label">Select a country</p>
+        <a href="#" class="country-select-item">
+            <img src="@iconUS" class="country-icon"/>
+            <p class="country-label">United States</p>
+        </a>
+        <a href="#" class="country-select-item">
+            <img src="@iconCanada" class="country-icon"/>
+            <p class="country-label">Canada</p>
+        </a>
+    </div>
+</div>

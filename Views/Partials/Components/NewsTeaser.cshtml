@@ -1,0 +1,21 @@
+﻿@inherits UmbracoViewPage<IPublishedContent>
+@{
+    var imageId = Model.Value<string>("teaserImage");
+    var image = !string.IsNullOrEmpty(imageId) ? Umbraco.Media(imageId) : null;
+    
+    var url = Model.HasProperty("sourceUrl") && Model.HasValue("sourceUrl") ? Model.Value<string>("sourceUrl") : Model.Url();
+    var date = Model.Value<DateTime>("itemDate").ToString("MMMM dd, yyyy");
+    
+}
+<section class="mb-5 py-5 pt-0 border-1 border-bottom">
+                    <div class="fw-normal text fw-500 text-start pipeline-gray-color">
+                        <p>@date</p>
+                    </div>
+                    <div class="">
+                        <h4 class="head-h4 dark-blue fw-300"><a class="dark-blue fw-300" href="@url" style="text-decoration:none">@Model.Name</a></h4> </div>
+                    <div class="fw-500 dark-gray pt-4 fs-6">
+                        <p>@Model.Value("teaserText")</p>
+                    </div>
+                   
+</section>
+

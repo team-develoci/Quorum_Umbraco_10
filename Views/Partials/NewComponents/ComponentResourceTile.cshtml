@@ -1,0 +1,124 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    IPublishedContent CurrentPage = Umbraco.AssignedContentItem;
+    IPublishedElement resource = Model;
+    IPublishedContent image = null;
+    var resourcedata = Model.Value<IEnumerable<IPublishedElement>>("resource");
+
+    //image = Model.Value<IPublishedContent>("image");
+    string imageUrl = string.Empty;
+    string imageAlt = string.Empty;
+    image = Model.Value<IPublishedContent>("image");
+    if (image != null)
+    {
+        imageUrl = image.Url();
+        imageAlt = image.Value<string>("altText", defaultValue: string.Empty);
+    }
+    if (resourcedata !=null && resourcedata.Count() > 0)
+    {
+        resource = resourcedata.FirstOrDefault();
+    }
+
+
+    if (image == null && resource != null)
+    {
+        image = resource.Value<IPublishedContent>("tileImage");
+    }
+    //var flagColor = resource.Parent.GetPropertyValue<string>("flagColor");
+    //if (string.IsNullOrEmpty(flagColor))
+    //{
+    //    flagColor = "c4a300";
+    //}
+
+    var name = Model.Value<string>("name");
+    if (string.IsNullOrEmpty(name) && resource != null)
+    {
+        name = CurrentPage.Name;
+    }
+
+    var categoryLabel = Model.Value<string>("category");
+
+    if (string.IsNullOrEmpty(categoryLabel) && resource != null)
+    {
+        categoryLabel = CurrentPage.Parent.HasValue("typeLabel") ? CurrentPage.Parent.Value<string>("typeLabel") : CurrentPage.Parent.Name;
+    }
+
+
+    var itemDate = Model.Value<DateTime?>("itemDate");
+    if ((itemDate == null || itemDate.Value == DateTime.MinValue) && resource != null)
+    {
+        itemDate = resource.Value<DateTime>("itemDate", CurrentPage.UpdateDate.ToString());
+    }
+
+    var description = Model.Value<string>("description");
+
+    if (string.IsNullOrEmpty(description) && resource != null)
+    {
+        description = resource.HasProperty("teaser") ? resource.Value<string>("teaser") : resource.Value<string>("tileTeaser");
+    }
+
+    var url = Model.Value<string>("link");
+    //if (string.IsNullOrEmpty(url) && resource != null)
+    //{
+    //    if (resource.HasProperty("pardotLink") && resource.HasValue("pardotLink"))
+    //    {
+    //        url = resource.Value<string>("pardotLink");
+    //    }
+    //    else if (resource.HasProperty("mediaItem") && resource.HasValue("mediaItem"))
+    //    {
+    //        var media = Umbraco.TypedMedia(resource.GetPropertyValue<string>("mediaItem"));
+    //        if (media != null)
+    //        {
+    //            url = media.Url;
+    //        }
+    //    }
+
+    //    if (string.IsNullOrEmpty(url))
+    //    {
+    //        url = resource.Url;
+    //    }
+    //}
+
+    var industryClass = "";
+    if (CurrentPage != null)
+    {
+
+        var industrysegment = "";
+        industrysegment = resource.Value<string>("industrySegment");
+        if (industrysegment != null)
+        {
+            //    var resourceIndustries = Umbraco.Content(industrysegment.Split(','));
+            //    industryClass = string.Join(" ", resourceIndustries.Select(industry => "resource-tile--industry-" + industry.Id));
+            //}
+        }
+
+        var resourcetitle = "";
+        if (CurrentPage != null && CurrentPage.Parent != null)
+        {
+            resourcetitle = "resource-tile--type-" + CurrentPage.Parent.Id;
+        }
+
+    }
+}
+<div class="resource-tile equalHeight @industryClass">
+    <a href="@url">
+        @if (image != null)
+        {
+            <img src="@(image != null ? image.GetCropUrl(height: 404, width: 720) : "")" alt="@(image!=null?image.Value<string>("alt"): string.Empty)" />
+        }
+        <div class="resource-tile-content">
+             <div class="resource-tile-front">
+                <p>@categoryLabel</p>
+                <span class="resource-tile-decoration"></span>
+                <h4>@name</h4>
+                @if (itemDate != null && itemDate.Value != DateTime.MinValue)
+                {
+                    <p class="resource-date">@(itemDate.Value.ToString("MMMM dd, yyy"))</p>
+                }
+            </div>
+            <div class="resource-tile-back">
+                <p>@description</p>
+            </div>
+        </div>
+    </a>
+</div>

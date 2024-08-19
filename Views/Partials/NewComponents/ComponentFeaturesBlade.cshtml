@@ -1,0 +1,39 @@
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+    var items = Model.Value<IList<IPublishedContent>>("items");
+}
+    <div class="c-features-blade">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10 col-sm-push-1 col-lg-8 col-lg-push-2 c-features-blade__copy">
+                    <h2>@Model.Value("headline")</h2>
+                    @Html.Raw(Model.Value("copy"))
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="c-features-blade__items text-center-sm">
+                        @foreach (var item in items)
+                        {
+                            var image = item.GetPropertyValue<IPublishedContent>("image");
+                            @*TODO: Make this a carousel on mobile*@
+                            <div class="c-features-blade__items__item">
+                                <img loading="lazy" src="@image.Url">
+                                <p>@item.GetPropertyValue("headline")</p>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8 col-sm-push-2 text-center c-features-blade__button">
+                    @Html.Raw(Model.Value("bottomCopy"))
+                </div>
+            </div>
+               
+        </div>
+    </div>
+

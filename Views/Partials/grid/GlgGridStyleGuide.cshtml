@@ -1,0 +1,410 @@
+﻿@inherits UmbracoViewPage<dynamic>
+@using Umbraco.Web.Templates
+@using Newtonsoft.Json.Linq
+@*
+    Razor helpers located at the bottom of this file
+*@
+@if (Model != null && Model.sections != null)
+{
+    var oneColumn = ((System.Collections.ICollection)Model.sections).Count == 1;
+
+    <div class="umb-grid">
+        @if (oneColumn)
+        {
+            foreach (var section in Model.sections)
+            {
+                <div class="grid-section">
+                    @foreach (var row in section.rows)
+                    {
+                        @*TODO: Figure out some way to pass things in to this*@
+                        if (true)
+                        { 
+                            foreach (var area in row.areas)
+                            {
+                                foreach (var control in area.controls)
+                                {
+                                    try
+                                    {
+                                        var contentTypeAlias = control.value.dtgeContentTypeAlias.ToString();
+                                        IContentType contentType = ApplicationContext.Current.Services.ContentTypeService.GetContentType(contentTypeAlias);
+
+
+                                        var props = @contentType.PropertyGroups.SelectMany(g => g.PropertyTypes); ;
+                                        <br/>
+                                        <br />
+                                        <hr />
+                                        <div class="container">
+                                            <a name="@contentTypeAlias"></a>
+                                            <h1 class="text-center">@contentType.Name.Replace("Component--", "")</h1>
+                                            <p class="text-center" ><a href="#" onclick="$(this).parent().parent().find('.details').toggle(); return false;">Details</a></p>
+
+                                            <div class="details" style="display:none;">
+                                                <p><strong></strong> @contentType.Description</p>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Type (baseType)</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                    </thead>
+                                                    @foreach (var prop in props)
+                                                    {
+                                                        var dataType = ApplicationContext.Current.Services.DataTypeService.GetDataTypeDefinitionById(prop.DataTypeDefinitionId);
+                                                        var isImage = dataType.PropertyEditorAlias == "Umbraco.MediaPicker2";
+                                                        var isFPO = dataType.Name == "Media Picker - FPO";
+                                                        <tr>
+                                                            <td>@prop.Name</td>
+                                                            <td style="@(isImage ? (isFPO ? "color:red" : "color:green;") : "")">@dataType.Name (@dataType.PropertyEditorAlias)</td>
+                                                            <td>@prop.Description</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
+                                        </div>
+                                    }
+                                    catch
+                                    {
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                            @renderRow(row, true);
+                       
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="container">
+                <div class="row clearfix">
+                    @foreach (var s in Model.sections)
+                    {
+                        <div class="grid-section">
+                            <div class="col-md-@s.grid column">
+                                @foreach (var row in s.rows)
+                                {
+                                    <h1>@row.areas</h1>
+                                    @renderRow(row, false);
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+@helper renderRow(dynamic row, bool singleColumn)
+{
+    
+
+    @Html.Raw(GetContainers(row));
+
+     
+    <div class="row clearfix">
+        @foreach (var area in row.areas)
+        {
+            //if area contains a push or pull or different order we need to reorder the rows
+            //How many areas?
+            <div class="@(area.grid == 4 ? "col-sm-4" : "col-sm-" + area.grid) column @GetColumnClass(area)" @RenderElementAttributes(area)>
+                @foreach (var control in area.controls)
+                {
+                    if (control != null && control.editor != null && control.editor.view != null)
+                    {
+                        <text>@Html.Partial("grid/editors/base", (object)control)</text>
+                    }
+                }
+            </div>
+        }
+    </div>
+    @Html.Raw(GetContainerClosing(row))
+
+}
+
+@functions {
+    public static MvcHtmlString RenderElementAttributes(dynamic contentItem)
+    {
+        var attrs = new List<string>();
+        JObject cfg = contentItem.config;
+
+        if (cfg != null)
+            foreach (JProperty property in cfg.Properties().Where(i => i.Name != "class" && i.Name != "padding" && i.Name != "margins"))
+            {
+                var propertyValue = HttpUtility.HtmlAttributeEncode(property.Value.ToString());
+                attrs.Add(property.Name + "=\"" + propertyValue + "\"");
+            }
+
+        JObject style = contentItem.styles;
+
+        if (style != null)
+        {
+            var cssVals = new List<string>();
+            foreach (JProperty property in style.Properties())
+            {
+                var propertyValue = property.Value.ToString();
+                if (string.IsNullOrWhiteSpace(propertyValue) == false)
+                {
+                    cssVals.Add(property.Name + ":" + propertyValue + ";");
+                }
+            }
+
+            if (cssVals.Any())
+                attrs.Add("style=\"" + HttpUtility.HtmlAttributeEncode(string.Join(" ", cssVals)) + "\"");
+        }
+
+        return new MvcHtmlString(string.Join(" ", attrs));
+    }
+
+    private static MvcHtmlString GetColumnClass(dynamic contentItem)
+    {
+        var attrs = new List<string>();
+        JObject cfg = contentItem.config;
+        if (cfg != null)
+        {
+
+            var allSettings = cfg.Properties();
+            foreach (var setting in allSettings)
+            {
+                switch (setting.Name)
+                {
+                    case "class":
+                    case "style$1":
+                        attrs.Add(setting.Value.ToString().Replace("|", ""));
+                        break;
+                    case "padding":
+                        attrs.Add(GetSpacing("padding", setting.Value));
+                        break;
+                    case "margins":
+                        attrs.Add(GetSpacing("margin", setting.Value));
+                        break;
+
+                }
+            }
+
+        }
+
+
+        return new MvcHtmlString(string.Join(" ", attrs));
+
+    }
+    private static string GetContainers(dynamic contentItem)
+    {
+        var container = "<div class=\"";
+        var className = String.Empty;
+        var attrs = new List<string>();
+        var classAttrs = new List<string>() { };
+        JObject cfg = contentItem.config;
+        string containerType = GetContainerType(contentItem);
+        
+        if (cfg != null)
+        {
+            var paddingClassToSet = String.Empty;
+            var marginsClassToSet = String.Empty;
+            //Handle all of the settings
+            var allSettings = cfg.Properties();
+            foreach (var setting in allSettings)
+            {
+                switch (setting.Name)
+                {
+                    case "class":
+                    case "style$1":
+                        classAttrs.Add(setting.Value.ToString().Replace("|", ""));
+                        break;
+                    case "padding":
+                        classAttrs.Add(GetSpacing("padding", setting.Value));
+                        break;
+                    case "margins":
+                        classAttrs.Add(GetSpacing("margin", setting.Value));
+                        break;
+
+                    default:
+                        attrs.Add(setting.Name + "=\"" + setting.Value + "\"");
+                        break;
+                }
+            }
+        }
+        
+        JObject style = contentItem.styles;
+
+        if (style != null)
+        {
+            var cssVals = new List<string>();
+            foreach (JProperty property in style.Properties())
+            {
+                var propertyValue = property.Value.ToString();
+                if (string.IsNullOrWhiteSpace(propertyValue) == false)
+                {
+                    cssVals.Add(property.Name + ":" + propertyValue + ";");
+                }
+            }
+
+            if (cssVals.Any())
+                attrs.Add("style=\"" + HttpUtility.HtmlAttributeEncode(string.Join(" ", cssVals)) + "\"");
+        }
+
+          
+     
+  
+        if (containerType == "full-bleed" || containerType == "wrapped")
+        {
+            classAttrs.Add("container-fluid");
+        }
+        else
+        {
+            classAttrs.Add("container");
+        }
+        
+        
+        container += string.Join(" ", classAttrs) + "\"";
+        
+        
+
+        container += string.Join(" ", attrs) + ">";
+        if (containerType == "wrapped")
+            container += "<div class=\"container\">";
+        return container;
+    }
+
+    private static string CheckForEmpty(string propToCheck, string propValue)
+    {
+        var truncateProperty = String.Empty;
+        switch (propValue)
+        {
+            case "none":
+                truncateProperty = "-none";
+                break;
+            case "small":
+                truncateProperty = "-sm";
+                break;
+            case "medium":
+                truncateProperty = "-md";
+                break;
+            case "large":
+                truncateProperty = "-lg";
+                break;
+            default:
+                truncateProperty = "-def";
+                break;
+
+        }
+        if (String.IsNullOrEmpty(truncateProperty) && propToCheck == "all")
+        {
+            return String.Empty;
+        }
+        else
+        {
+            return truncateProperty;
+        }
+
+    }
+
+    private static string GetSpacing(string spacingType, JToken spacingValue)
+    {
+        //var spacing = cfg.Properties().FirstOrDefault((i => i.Name == spacingType));
+        var spacingClassToSet = String.Empty;
+        if (spacingValue != null)
+        {
+
+            var all = String.Empty;
+            var top = String.Empty;
+            var right = String.Empty;
+            var bottom = String.Empty;
+            var left = String.Empty;
+
+            foreach (JProperty prop in spacingValue)
+            {
+                switch (prop.Name)
+                {
+                    case "all":
+                        all = (string)prop.Value;
+                        break;
+                    case "top":
+                        top = (string)prop.Value;
+                        break;
+                    case "right":
+                        right = (string)prop.Value;
+                        break;
+                    case "bottom":
+                        bottom = (string)prop.Value;
+                        break;
+                    case "left":
+                        left = (string)prop.Value;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+            spacingClassToSet = spacingType;
+
+            if (String.IsNullOrEmpty(all))
+            {
+                spacingClassToSet += CheckForEmpty("top", top);
+                spacingClassToSet += CheckForEmpty("right", right);
+                spacingClassToSet += CheckForEmpty("bottom", bottom);
+                spacingClassToSet += CheckForEmpty("left", left);
+            }
+            else
+            {
+                spacingClassToSet += CheckForEmpty("all", all);
+            }
+        }
+        return spacingClassToSet;
+
+    }
+    private static string GetContainerClosing(dynamic contentItem)
+    {
+        var attrs = new List<string>();
+        JObject cfg = contentItem.config;
+        var closingMarkup = "</div>";
+        var containerType = GetContainerType(contentItem);
+
+        if (containerType == "wrapped")
+        {
+            closingMarkup += "</div>";
+        }
+        
+        return closingMarkup;
+    }
+    
+    private static string GetContainerType(dynamic contentItem)
+    {
+        var isFullWidth = ((string)contentItem.name).Contains("Full Width");
+        return isFullWidth ? "full-bleed" : "wrapped";
+
+        //Old way to get container type based on grid config value
+        // JObject cfg = contentItem.config;
+        //if (cfg != null)
+        //{
+        //    var firstOrDefault = cfg.Properties().FirstOrDefault(i => i.Name == "container-width");
+        //    if (firstOrDefault != null)
+        //    {
+
+        //        return firstOrDefault.Value.ToString();
+        //    }
+        //}
+        //return "contained"; //default
+        //
+        // Grid config (for reference)
+      //        {
+      //  "label": "Full Bleed, Wrapped, or Contained?",
+      //  "description": "Indicate if you want this row to be full bleed, wrapped (a container wrapped with a full bleed container to put in a background color, or contained.",
+      //  "key": "container-width",
+      //  "view": "radiobuttonlist",
+      //  "applyTo": "row",
+      //  "prevalues": [
+      //    "contained",
+      //    "full-bleed",
+      //    "wrapped"
+      //  ]
+      //},
+        
+        
+    }
+
+}

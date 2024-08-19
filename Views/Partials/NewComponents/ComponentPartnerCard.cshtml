@@ -1,0 +1,31 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var heading = Model.Value("heading");
+    var subHeading = Model.Value("subheading");
+    var copies = Model.Value<List<IPublishedElement>>("headingCopy");
+}
+<section class="pb-0">
+    <div class="container-lg">
+        <div class="row content-wrapper Partner-description solutionContent mb-5">
+            <div class="col-lg-11">
+                <h1 class="headingContent fw-200 mb-0 text-start dark-blue">@heading</h1>
+                <div class="paragraph-text fw-500 text-start dark-gray">
+                    <p class="text-start mw-100">@subHeading</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            @foreach (var copy in copies)
+            {
+                <div class="col-md-6 col-lg-6 text-center mb-4 multi-columns">
+                    <h3 class="head-h3 fw-normal secondary-color mb-4 d-flex justify-content-center align-items-center">@copy.Value("heading")</h3>
+                    <div class="fw-normal">
+                        <p>@copy.Value("copy")</p>
+                    </div>
+                </div>
+             }
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using System.Globalization
+@using Umbraco.Web
+@{
+    Response.ContentType = "text/xml";
+    var rssRoot = Model.AncestorOrSelf("BlogList") != null ? Model.AncestorOrSelf("BlogList") : null;
+    var rssRootHeadline = rssRoot.HasProperty("headline") && rssRoot.HasValue("headline") ? rssRoot.Value<string>("headline") : rssRoot.Name;
+    var rssItems = rssRoot.Descendants("BlogPost").Any() ? rssRoot.Descendants("BlogPost") : null;
+    rssItems = rssItems.OrderByDescending(r => r.Value<DateTime>("itemDate") != DateTime.MinValue ? r.Value<DateTime>("itemDate") : r.CreateDate).ToList();
+    string lastBuildDate = @DateTime.Now.ToString("ddd, dd MMM yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture); 
+    lastBuildDate = lastBuildDate.Substring(0, lastBuildDate.Length - 3) + lastBuildDate.Substring(lastBuildDate.Length - 2);
+}	
+    <rss version="2.0"
+		xmlns:content="http://purl.org/rss/1.0/modules/content/"
+		xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+		xmlns:dc="http://purl.org/dc/elements/1.1/"
+		xmlns:atom="http://www.w3.org/2005/Atom"
+		xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+		xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+		xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:media="http://search.yahoo.com/mrss/"
+	>
+
+    <channel>
+        <title>@rssRootHeadline</title>
+        <atom:link href="@Request.Url" rel="self" type="application/rss+xml" />
+        <link>@rssRoot.Url(mode: UrlMode.Absolute)</link>
+        <description>@rssRoot.Value("pageDescription")</description>
+        <lastBuildDate>@lastBuildDate</lastBuildDate>
+        <language>@CultureInfo.CurrentCulture</language>
+        <sy:updatePeriod>hourly</sy:updatePeriod>
+        <sy:updateFrequency>1</sy:updateFrequency>
+        @foreach (var item in rssItems)
+        {
+            if(item.ContentType.Alias=="BlogPost")
+            {
+                var categoryName="";
+                if (item.HasProperty("category") && item.HasValue("category")){
+                    IPublishedContent category = item.Value<IPublishedContent>("category");
+                    if(category != null){
+                        categoryName = category.Name;
+                    }
+                }
+                else{
+                    categoryName = item.Parent.Name;
+                }
+                var authorName = "";
+                if (item.HasProperty("author") && item.HasValue("author")){
+                    IPublishedContent author = item.Value<IPublishedContent>("author");
+                    if(author != null){
+                        authorName = author.Name;
+                    }
+                }
+                var publishedDate = item.Value<DateTime>("itemDate") != DateTime.MinValue ? item.Value<DateTime>("itemDate") : item.CreateDate;
+                var formattedPublishedDate = publishedDate.ToString("ddd, dd MMM yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
+                formattedPublishedDate = formattedPublishedDate.Substring(0, formattedPublishedDate.Length - 3) + formattedPublishedDate.Substring(formattedPublishedDate.Length - 2);
+                var itemHeadline = item.HasProperty("headline") && item.HasValue("headline") ? item.Value<string>("headline") : item.Name;
+                <item>
+                    <title>@itemHeadline</title>
+                    @Html.Raw("<link>" + @item.Url(mode: UrlMode.Absolute) + "</link>")
+                    <dc:creator><![CDATA[@authorName]]></dc:creator>
+                    <pubDate>@formattedPublishedDate.ToString()</pubDate>
+                    <category><![CDATA[@Html.Raw(categoryName)]]></category>
+                    <guid isPermaLink="false">@item.Key</guid>
+                    <description><![CDATA[@Html.Raw(item.Value("pageDescription"))]]></description>
+                    @if(item.HasProperty("bodyContent"))
+                    {
+                    <content:encoded>
+                        <![CDATA[@Html.Raw(item.Value("bodyContent"))]]>
+                    </content:encoded>
+                    }
+                    else if (item.HasProperty("bodyCopy"))
+                    {
+                        <content:encoded>
+                            <![CDATA[@Html.Raw(item.Value("bodyCopy"))]]>
+                        </content:encoded>
+                    }
+                    @if(item.HasProperty("teaserImage")){
+                        var teaserImage = item.Value<IPublishedContent>("teaserImage");
+                        if(teaserImage != null){
+                            <media:thumbnail url="@teaserImage.Url(mode: UrlMode.Absolute)"/>
+                            <media:content url="@teaserImage.Url(mode: UrlMode.Absolute)">
+                                <media:title type="html">@teaserImage.Value("altText")</media:title>
+                            </media:content>
+                        }
+                    }
+                </item>
+            }
+        }
+    </channel>
+</rss>

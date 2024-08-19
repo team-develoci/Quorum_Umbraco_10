@@ -1,0 +1,35 @@
+﻿@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var rootId = string.Empty;
+	var rootNode  = Model.AncestorsOrSelf().Where(x => x.ContentType.Alias == "homePageV2").FirstOrDefault();
+	if(rootNode!=null && rootNode.Id > 0)
+	{
+		rootId = rootNode.Id.ToString();
+	}
+	else
+	{
+		var tempRootNode = Model.AncestorsOrSelf().Last();
+		rootNode = tempRootNode.Siblings().Where(x => x.ContentType.Alias == "homePageV2").FirstOrDefault();
+		rootId = rootNode.Id.ToString();
+	}
+    var configuration = UmbracoContext.ContentCache.GetByRoute(rootId + "/configuration");
+
+    string gtmId = configuration.Value<string>("googleAnalyticsID", "");
+
+    string[] tags = gtmId.ToString().Split(',');
+}
+
+@if (!string.IsNullOrEmpty(gtmId.ToString()))
+{
+    @*<!-- Google Tag Manager (Must be kept immediately after <body> -->*@
+    foreach (string tag in tags)
+    {
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@tag" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    }
+   @* <!-- End Google Tag Manager -->*@
+}
+else
+{
+    <!-- No GTM Id configured -->
+}

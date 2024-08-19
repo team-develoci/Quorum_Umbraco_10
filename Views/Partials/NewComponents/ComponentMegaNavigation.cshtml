@@ -1,0 +1,313 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var searchPage = Model.Value<IPublishedContent>("searchPage");
+    var mainnavitems = Model.Value<IEnumerable<IPublishedElement>>("navItems");
+    var topNavItems = Model.Value<IEnumerable<Link>>("topNavLinks");
+    var demolink = Model.Value<Link>("demoLink");
+}
+<nav class="navbar navbar-expand-lg navbar-default navigation-bar" id="component-navigation">
+<div class="container-fluid">
+<div class="collapse navbar-collapse navigation-div" id="navbar-content">
+    <div class="col navbar-brand">
+        <a class="navbar-brand" href="/">
+            <picture>
+                <source srcset="/images/QuorumLogo-1.svg" media="(min-width: 1024px)">
+                <img srcset="/images/QuorumLogo-1.svg" alt="Quorum">
+            </picture>
+        </a>
+    </div>  
+    <div class="col navbar-col">
+    <div class="top-navbar row">
+        <div class="margin-right-top-nav">
+            <div class="upper-wrapper">
+                <div class="topnav" id="myTopnav">
+                    <ul class="navbar-nav mr-auto mb-2 mb-lg-0">        
+                    @if (topNavItems != null)
+                    {
+                        foreach (var item in topNavItems)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="@item.Url" target="@item.Target">@item.Name</a>
+                            </li>
+                        }
+                    }
+                    @*This is the new search*@
+                    @if (searchPage != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="@searchPage.Url()"><img src="~/images/search-2.svg" alt ="search" /></a>
+                        </li>
+                    }
+                    @if (demolink != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link last" aria-current="page" href="@demolink.Url" target="@demolink.Target"><button class="btn-primary-new">@demolink.Name</button></a>
+                        </li>
+                    }                 
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-nav-container navbar-wrap navbar-collapse pinned-mega-container row">
+            @*ul starts*@
+            <ul class="navbar-nav mr-auto mb-2 mb-lg-0 nav navbar-navs"> 
+               @if (mainnavitems != null){
+                        foreach (var navSection in mainnavitems)
+                        {
+                            var title = navSection.Value("title");
+                            var hideTitle = navSection.Value("hideTitle");
+                            var isMega = navSection.HasProperty("menuType");
+                            if(!isMega){
+                                @*Check if this is a single nav item*@
+                                if(!isMega && (navSection.HasProperty("links") && navSection.Value("links") != null && navSection.Value<IEnumerable<Link>>("links").Count()==1))
+                                {
+                                    var link = navSection.Value<IEnumerable<Link>>("links").FirstOrDefault();
+                                    <li class="nav-item menu-large m-nav-item"><a class="nav-link" aria-current="page" href="@link.Url" target="@link.Target">@link.Name</a></li>
+                                }
+                                @*Check if this is a drop down*@
+                                else if(!isMega && (navSection.HasProperty("links") && navSection.Value("links") != null && navSection.Value<IEnumerable<Link>>("links").Count()>1))
+                                {
+                                    <li class="nav-item dropdown menu-large m-nav-item">
+                                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">@title</a>
+                                        <ul class="dropdown-menu shadow">
+                                            @foreach( var link in navSection.Value<IEnumerable<Link>>("links"))
+                                            {
+                                            <li class="m-drop"><a class="dropdown-item m-drop-item" aria-current="page" href="@link.Url" target="@link.Target">@link.Name</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                            else if(isMega){
+                                @*It is a full mega menu item*@
+                                var menuItems = navSection.Value<IEnumerable<IPublishedElement>>("menuItems");
+                                var menuType = navSection.Value("menuType");
+                                
+                                 <li class="nav-item dropdown position-static mega-dropdown m-nav-item">
+                                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">@title</a>
+                                    <div class="dropdown-menu mega-dropdown">
+                                    <div class="mega-content px-4">
+                                    <div class="container-fluid">
+                                    <div class="row mega-container">
+                                    @foreach (var menuItem in menuItems)
+                                    {
+                                        if(menuItem.HasProperty("heading")){
+                                            var sectionHeading = menuItem.Value("heading");
+                                            var sectionItems = menuItem.Value<IEnumerable<IPublishedElement>>("items");
+                                            @:<div class="col mega-column">
+                                            @:<div class="row mega-heading"><h5>@sectionHeading</h5></div>
+                                            @:<div class="row mega-row">
+                                            var i = 1; 
+                                            var nextItem = sectionItems.Skip(i).FirstOrDefault();
+                                            var itemCount = sectionItems.Count();
+                                            foreach (var sectionItem in sectionItems)
+                                            {
+                                                var menuTitle = sectionItem.Value("title");
+                                                var shouldHideTitle = (sectionItem.HasProperty("hideTitle")? sectionItem.Value<String>("hideTitle") :"False");
+                                                var type = sectionItem.Value<String>("type");
+                                                var sectionLinks = sectionItem.Value<IEnumerable<Link>>("links");
+                                                
+                                                var titleLink = sectionItem.Value<Link>("titleLink");
+
+                                                var useSameColAsPrev=sectionItem.Value<String>("useSameColumnAsPrevious");
+                                                var prevItem = nextItem; 
+                                                if(i > 1){
+                                                    nextItem = sectionItems.Skip(i).FirstOrDefault();
+                                                }
+                                                var previousWasSubmenu = (prevItem != null && prevItem.HasProperty("type") && (prevItem.Value<String>("type")== "submenu" || prevItem.Value<String>("type")== "link"));
+                                                var nextIsSubmenu = (nextItem != null && nextItem.HasProperty("type") && (nextItem.Value<String>("type")== "submenu" || nextItem.Value<String>("type")== "link"));
+                                                var prevUseSameColAsPrev = prevItem != null ? prevItem.Value<String>("useSameColumnAsPrevious") : null;
+                                                var nextUseSameColAsPrev = nextItem != null ? nextItem.Value<String>("useSameColumnAsPrevious") : null;
+                                                var closePrevCol = i> 1 && prevUseSameColAsPrev=="True" && useSameColAsPrev=="False";
+                                                if(closePrevCol){
+                                                    @:</div>
+                                                }   
+                                                if(useSameColAsPrev != null && useSameColAsPrev=="False"){
+                                                    @:<div class="col py-4 mega-col">
+                                                }
+                                                if(type == "menu"){
+                                                    if(shouldHideTitle=="False"){
+                                                        @:<h6>@menuTitle</h6>
+                                                    }
+                                                   
+                                                }  
+                                                @:<div class="list-group">
+                                                var submenuItemClass="";
+                                                if(type =="submenu" || type == "link"){
+                                                    if(shouldHideTitle=="False"){
+                                                        @:<span class="mega-submenu-title">
+                                                        if(titleLink != null){
+                                                            @:<a class="mega-title-link" href="@titleLink.Url" target="@titleLink.Target">@menuTitle</a>
+                                                        }
+                                                        else{
+                                                            @menuTitle
+                                                        }
+                                                        @:</span>
+                                                        submenuItemClass=" mega-submenu-item";
+                                                    }
+                                                }  
+                                                var k = 1;
+                                                var linkCount = sectionLinks.Count(); 
+                                                foreach(var link in sectionLinks)
+                                                {
+                                                    var last = "";
+                                                    if(i == itemCount && k == linkCount ){
+                                                        last=" last";
+                                                    }
+                                                    var classList="list-group-item"+submenuItemClass+last;
+                                                    @:<a class="@classList" href="@link.Url" target="@link.Target">@link.Name</a>
+                                                    k++;
+                                                }    
+                                                @:</div>     
+                                                var closeThisCol = itemCount == 1 || (nextUseSameColAsPrev != "True");
+                                                if(closeThisCol){
+                                                    @:</div>
+                                                }
+                                                i++;
+                                            }
+                                            @:</div>
+                                            @:</div>
+                                        }
+                                    }
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </li>   
+                            }
+                        } 
+                }
+            </ul>
+        </div>
+    </div>
+    </div>
+</div>
+ <div class="header-mobile">
+        <a href="/"><img src="~/images/mobilelogo-1.svg" alt= "Mobile Image" width="39px" height="40px" /></a>
+        <div class="hamburg-dropdown">
+            <img src="~/images/Hamburger.svg" alt="Hamburger" width="30px" height="18px"/>
+            <div class="hamburg-dropdown-content">
+            @if (demolink != null)
+            {
+                <div class="hamburg-dropdown-content-header">
+                    <a href="@demolink.Url">@demolink.Name</a>
+                </div>
+            }     
+            @*ul starts*@
+            <ul class="navbar-nav list-group mobile-nav"> 
+               @if (mainnavitems != null){
+                        foreach (var navSection in mainnavitems)
+                        {
+                            var title = navSection.Value("title");
+                            var hideTitle = navSection.Value("hideTitle");
+                            var isMega = navSection.HasProperty("menuType");
+                            if(!isMega){
+                                @*Check if this is a single nav item*@
+                                if(!isMega && (navSection.HasProperty("links") && navSection.Value("links") != null && navSection.Value<IEnumerable<Link>>("links").Count()==1))
+                                {
+                                    var link = navSection.Value<IEnumerable<Link>>("links").FirstOrDefault();
+                                    <li class="nav-item menu-large list-group-item"><a class="nav-link" aria-current="page" href="@link.Url" target="@link.Target">@link.Name</a></li>
+                                }
+                                @*Check if this is a drop down*@
+                                else if(!isMega && (navSection.HasProperty("links") && navSection.Value("links") != null && navSection.Value<IEnumerable<Link>>("links").Count()>1))
+                                {
+                                    <li class="nav-item dropdown menu-large mega-dropdown">
+                                        <a class="nav-link dropdown-toggle mega-dropdown" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">@title</a>
+                                        <ul class="dropdown-menu">
+                                            @foreach( var link in navSection.Value<IEnumerable<Link>>("links"))
+                                            {
+                                            <li><a class="dropdown-item list-group-item m-dd-link" aria-current="page" href="@link.Url" target="@link.Target">@link.Name</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                            else if(isMega){
+                                @*It is a full mega menu item*@
+                                var menuItems = navSection.Value<IEnumerable<IPublishedElement>>("menuItems");
+                                var menuType = navSection.Value("menuType");
+                                
+                                 <li class="nav-item dropdown position-static mega-dropdown">
+                                    <a class="nav-link dropdown-toggle mega-dropdown" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">@title</a>
+                                    <ul class="dropdown-menu">
+                                    @foreach (var menuItem in menuItems)
+                                    {
+                                        if(menuItem.HasProperty("heading")){
+                                            var sectionHeading = menuItem.Value("heading");
+                                            var sectionItems = menuItem.Value<IEnumerable<IPublishedElement>>("items");
+                                            @:<li class="dropdown-item mega-heading">@sectionHeading</li>
+                                          
+                                            var i = 1; 
+                                            var nextItem = sectionItems.Skip(i).FirstOrDefault();
+                                            var itemCount = sectionItems.Count();
+                                            foreach (var sectionItem in sectionItems)
+                                            {
+                                                var menuTitle = sectionItem.Value("title");
+                                                var shouldHideTitle = (sectionItem.HasProperty("hideTitle")? sectionItem.Value<String>("hideTitle") :"False");
+                                                var type = sectionItem.Value<String>("type");
+                                                var sectionLinks = sectionItem.Value<IEnumerable<Link>>("links");
+                                                var prevItem = nextItem; 
+                                                if(i > 1){
+                                                    nextItem = sectionItems.Skip(i).FirstOrDefault();
+                                                }
+                                                var previousWasSubmenu = (prevItem != null && prevItem.HasProperty("type") && (prevItem.Value<String>("type")== "submenu" || prevItem.Value<String>("type")== "link"));
+                                                var nextIsSubmenu = (nextItem != null && nextItem.HasProperty("type") && (nextItem.Value<String>("type")== "submenu" || nextItem.Value<String>("type")== "link"));
+                                                if(i > 1 && (type == "menu" && previousWasSubmenu)){
+                                                    @:</ul>
+                                                }   
+                                                if(type == "menu"){
+                                                    if(shouldHideTitle=="False"){
+                                                        @:<li class="dropdown m-mega-dropdown-item">
+                                                        @:<a href="#" class="dropdown-item dropdown-toggle m-mega-dropdown-heading" data-bs-toggle="dropdown">@menuTitle</a>
+                                                        @:<ul class="dropdown-menu m-mega-dropdown-menu">
+                                                   }
+                                                }  
+                                                var submenuItemClass="";
+                                                if(type =="submenu" || type == "link"){
+                                                    if(shouldHideTitle=="False"){
+                                                        submenuItemClass=" m-mega-submenu-item";
+                                                        @:<li class="dropdown-item mega-submenu mega-dropdown-item"><a class="m-mega-dropdown-link">@menuTitle</a></li>
+                                                       
+                                                    }
+                                                }  
+                                                var k = 1;
+                                                var linkCount = sectionLinks.Count(); 
+                                                foreach(var link in sectionLinks)
+                                                {
+                                                    var last = "";
+                                                    if(i == itemCount && k == linkCount ){
+                                                        last=" last";
+                                                    }
+                                                    var classList="m-mega-dropdown-link"+submenuItemClass+last;
+                                                    @:<li class="dropdown-item m-mega-dropdown-item"><a class="@classList" href="@link.Url" target="@link.Target">@link.Name</a></li>
+                                                    k++;
+                                                } 
+                                                if(!nextIsSubmenu){
+                                                    @:</ul>
+                                                }
+                                                i++;
+                                            }
+                                        }
+                                    }
+                                    </ul>
+                                    </li>   
+                            }
+                        } 
+                }
+                @if (topNavItems != null)
+                    {
+                        foreach (var item in topNavItems)
+                        {
+                            <li class="nav-item list-group-item">
+                                <a class="nav-link" aria-current="page" href="@item.Url" target="@item.Target">@item.Name</a>
+                            </li>
+                        }
+                }
+            </ul>
+                </div>
+        </div>
+    </div>
+</nav>
+

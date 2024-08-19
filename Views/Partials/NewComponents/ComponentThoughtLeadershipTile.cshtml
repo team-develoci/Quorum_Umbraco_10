@@ -1,0 +1,32 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta = Model.Value<CTA>("cta");
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+}
+@if (cta != null)
+{
+    //Testing (Will need "alternate text" for the image if we go this route)
+    <div class="c-thought-leadership-tile">
+        <a href="@cta.Link" target="@cta.Target">
+
+            @if (backgroundImage != null)
+            {
+                <img loading="lazy" src="@backgroundImage.GetCropUrl(width: 500)" alt="@(backgroundImage!=null?backgroundImage.Value<string>("altText"): string.Empty)" />
+            }
+            <div class="c-thought-leadership-tile__copy-container">
+                <h4 class="c-thought-leadership-tile__headline">@cta.Caption</h4>
+                <p class="c-thought-leadership-tile__description">@Model.Value("description")</p>
+            </div>
+
+        </a>
+    </div>
+
+
+}
+
+
+

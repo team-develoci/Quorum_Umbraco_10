@@ -1,0 +1,243 @@
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+    var priceTiles = Model.Value<IList<IPublishedContent>>("pricingTiles");
+
+    //convert items into dictionary list
+    var itemTileFeatures = new List<IDictionary<string, IDictionary<string, string>>>();
+
+    foreach (var tile in priceTiles)
+    {
+        var features = tile.GetPropertyValue<IList<IPublishedContent>>("features");
+        var itemFeatureGroups = new Dictionary<string, IDictionary<string, string>>();
+
+        if (features != null)
+        {
+            foreach (var feature in features)
+            {
+                var groupName = feature.GetPropertyValue<string>("groupName");
+                var featureDetails = feature.GetPropertyValue<IList<IPublishedContent>>("features");
+                IDictionary<string, string> featureValues = new Dictionary<string, string>();
+
+                if (featureDetails != null)
+                {
+                    foreach (var featureDetail in featureDetails)
+                    {
+                        var name = featureDetail.GetPropertyValue<string>("featureName");
+                        var value = featureDetail.GetPropertyValue<string>("featureValue");
+
+                        if (featureValues.ContainsKey(name))
+                        {
+                            featureValues.Add(name + Guid.NewGuid(), value);
+                        }
+                        else
+                        {
+                            featureValues.Add(name, value);
+                        }
+
+                    }
+
+                    if (itemFeatureGroups.ContainsKey(groupName))
+                    {
+                        itemFeatureGroups.Add(groupName + Guid.NewGuid(), featureValues);
+                    }
+                    else
+                    {
+                        itemFeatureGroups.Add(groupName, featureValues);
+                    }
+                }
+
+            }
+            itemTileFeatures.Add(itemFeatureGroups);
+        }
+    }
+
+}
+
+@if (priceTiles != null)
+{
+    <div class="c-pricing-blade">
+        <div class="container">
+            <div class="row">
+                <div class="flex">
+                    @foreach (var priceTile in priceTiles)
+                    {
+                        var popularLabel = priceTile.GetPropertyValue<string>("popularLabel");
+                        var button = priceTile.GetPropertyValue<CTA>("button");
+                        var productTileFeatures = priceTile.GetPropertyValue<IList<IPublishedContent>>("features");
+                        <div class="col-xs-12 col-md-4 tile @(!string.IsNullOrEmpty(popularLabel) ? "popular" : "")">
+                            <div class="tile-content">
+                                @if (!string.IsNullOrEmpty(popularLabel))
+                                {
+                                    <div class="popular-label">@popularLabel</div>
+                                }
+
+                                <h3>@priceTile.GetPropertyValue("headline")</h3>
+                                <div class="tile-contnet__copy">
+                                    <p>@Html.Raw(priceTile.GetPropertyValue("copy"))</p>
+                                </div>
+                                @if (button != null)
+                                {
+                                    <a href="@button.Link" target="@button.Target" class="btn btn-default">@button.Caption</a>
+                                }
+                                @if (productTileFeatures != null && productTileFeatures.Any())
+                                {
+                                    var mobileFeatureDivId = "mobileChart_" + Guid.NewGuid().ToString();
+                                    <div class="accordion-button hidden-md hidden-lg hidden-xl">
+                                        <a class="cta cta-accordion" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="@mobileFeatureDivId" data-target="#@mobileFeatureDivId" data-text-original="See features" data-text-swap="Close">See features</a>
+                                    </div>
+                                    <div id="@mobileFeatureDivId" class="hidden-md hidden-lg hidden-xl price-chart-content mobile collapse">
+                                        <div class="legend">
+                                            <div class="feature">Feature included</div>
+                                            <div class="not-included">Not included</div>
+                                            <div class="additional">Additional cost test</div>
+                                        </div>
+
+                                        @foreach (var featureGroup in productTileFeatures)
+                                        {
+                                            <div class="mobile-section">
+                                                <h4>@Html.Raw(featureGroup.GetPropertyValue("groupName"))</h4>
+                                                @foreach (var feature in featureGroup.GetPropertyValue<IList<IPublishedContent>>("features", new List<IPublishedContent>()))
+                                                {
+                                                    var name = feature.GetPropertyValue<string>("featureName");
+                                                    var value = feature.GetPropertyValue<string>("featureValue");
+
+                                                    if (value.ToLower() == "y")
+                                                    {
+                                                        <p class="feature">@Html.Raw(name)</p>
+                                                    }
+                                                    else if (value.ToLower() == "n")
+                                                    {
+                                                        <p class="not-included">@Html.Raw(name)</p>
+                                                    }
+                                                    else if (value == "$")
+                                                    {
+                                                        <p class="additional">@Html.Raw(name)</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="details">@Html.Raw(name)<br /><strong>@value</strong></p>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            @*<div class="row hidden-xs hidden-sm">
+                <div class="col-sm-12">
+
+                    <div class="price-chart-container">
+
+                        <div class="expand-button">
+                            <a class="cta cta-toggle cta-hide" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="mainChart" data-target="#mainChart">@Model.Value("compareCTAText", "Compare versions and features")</a>
+                        </div>
+                        <div class="price-chart collapse" id="mainChart">
+                            <div class="price-chart-content">
+                                <button class="btn-close cta-toggle" type="button" data-toggle="collapse" data-target="#mainChart" aria-expanded="false" aria-controls="mainChart"></button>
+                                <h3>@Model.Value("compareFeaturesHeadline")</h3>
+
+                                <table>
+                                    
+                                    <tr class="table-header">
+                                        <th colspan="2" class="section-col">
+                                            <h4>Compare the features</h4>
+                                            <div class="legend">
+                                                <div class="feature">Feature included</div>
+                                                <div class="additional">Additional cost</div>
+                                            </div>
+                                        </th>
+                                        @foreach (var pricing in priceTiles)
+                                        {
+                                            
+                                            if (!String.IsNullOrEmpty(pricing.GetPropertyValue<string>("featuresHeadline")))
+                                            {
+                                                <th class="basic-col">
+                                                    <h3>@Html.Raw(pricing.GetPropertyValue("featuresHeadline"))</h3>
+                                                    <p>@Html.Raw(umbraco.library.ReplaceLineBreaks(pricing.GetPropertyValue<string>("featureDescription", "")))</p>
+                                                </th>
+                                            }
+                                        }
+                                    </tr>
+
+                                    @{
+                                        var groups = new List<string>();
+                                    }
+
+                                    @foreach (var itemTileFeature in itemTileFeatures)
+                                    {
+                                        foreach (var featureGroup in itemTileFeature)
+                                        {
+                                            var firstItem = true;
+                                            if (!groups.Contains(featureGroup.Key))
+                                            {
+                                                groups.Add(featureGroup.Key);
+
+                                                foreach (var featureItem in featureGroup.Value)
+                                                {
+
+
+                                                    <tr class="section-start">
+                                                        @if (firstItem)
+                                                        {
+                                                            <td class="section-col" rowspan="@featureGroup.Value.Count()">
+                                                                <h4>@featureGroup.Key</h4>
+                                                            </td>
+                                                            firstItem = false;
+                                                        }
+
+                                                        <td class="features-col">
+                                                            @Html.Raw(featureItem.Key)
+                                                        </td>
+                                                        @foreach (var item in itemTileFeatures)
+                                                        {
+                                                            var val = item.ContainsKey(featureGroup.Key) && item[featureGroup.Key].ContainsKey(featureItem.Key) ? item[featureGroup.Key][featureItem.Key] : "";
+                                                            if (val.ToLower() == "y")
+                                                            {
+                                                                <td class="included"></td>
+                                                            }
+                                                            else if (val.ToLower() == "n")
+                                                            {
+                                                                <td class="not-included"></td>
+                                                            }
+                                                            else if (val == "$")
+                                                            {
+                                                                <td class="additional-cost"></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.Raw(val)</td>
+                                                            }
+
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                </table>
+                                @foreach (var pricing in priceTiles)
+                                {
+                                    if (pricing.HasValue("featuresLegal"))
+                                    {
+                                        <p>@Html.Raw(pricing.GetPropertyValue("featuresLegal"))</p>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </div>
+}
+
+

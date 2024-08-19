@@ -1,0 +1,52 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+    var itemsPerRow = Model.Value<string>("itemsPerRow") == "4" ? 4 : 3;
+    var stackOnMobile = Model.Value<bool>("stackOnMobile");
+
+
+    var tiles = Model.Value<IList<IPublishedContent>>("tiles");
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+}
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, "#" + elemntId)
+
+<div class="c-product-solution-tile-blade background-dark @(backgroundImage != null ? "has-background-image" : "")" id="@elemntId">
+    <div class="container">
+        <div class="@(!stackOnMobile ? "hidden-sm hidden-xs": "")">
+            <div class="padding-def-def-sm-def">
+                <div class="row c-product-solution-tile-blade__copy">
+                    <div class="col-sm-8 col-sm-push-2 text-center">
+                        @if (Model.HasValue("headline"))
+                        {
+                            <h2>@Model.Value("headline")</h2>
+                        }
+                        @if (Model.HasValue("copy"))
+                        {
+                            @Html.Raw(Model.Value("copy"))
+                        }
+                    </div>
+                </div>
+                <div>
+                    @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = tiles, ComponentView = "~/Views/Partials/NewComponents/ComponentProductTile.cshtml", SColumns = itemsPerRow, ComponentSettings = new { } })
+                </div>
+            </div>
+        </div>
+        @if (!stackOnMobile)
+        {
+            <div class="hidden-md hidden-lg">
+                <button class="c-product-solution-tile-blade_button" type="button" data-toggle="collapse" data-target="#mobile_@elemntId" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <h3>@Model.Value("headline")</h3>
+                </button>
+                <div class="collapse solutions-accordion" id="mobile_@elemntId">
+                    @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = tiles, ComponentView = "~/Views/Partials/NewComponents/ComponentProductTile.cshtml", SColumns = itemsPerRow, ComponentSettings = new { } })
+                </div>
+            </div>
+        }
+    </div>
+</div>

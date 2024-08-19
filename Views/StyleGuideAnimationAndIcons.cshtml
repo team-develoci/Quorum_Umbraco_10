@@ -1,0 +1,792 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+    Response.OutputCache(60);
+}
+@section Styles{
+    <link type="text/css" href="~/css/styleguide.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/animations/animations.min.css" rel="stylesheet" />
+}
+
+<div class="summary-header">
+    <div class="container">
+        <h1 class="summary-header__title">Style Guide Examples</h1>
+        <ol class="summary-header__anchor-list list-links">
+            <li><a href="#animations">Animations</a></li>
+            <li><a href="#icons">Icons</a></li>
+        </ol>
+    </div>
+
+</div>
+
+<div class="container">
+    <a name="animations"></a>
+    <section class="styleguide__animations">
+        <h2 class="styleguide__animations"><strong class="subsection-number">#1</strong> Animations</h2>
+        <h4 />
+        <style>
+            .repeat {
+                width: 80px;
+                height: 40px;
+                margin: auto;
+                background: #1a8ec9;
+            }
+        </style>
+        <div class="container">
+            <!-- bounceIn -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded go">bounceIn</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow go">&lt;h2 class='animated <span class="highlighter">bounceIn</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated bounceIn slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- bounceInDown -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded go">bounceInDown</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow go">&lt;h2 class='animated <span class="highlighter">bounceInDown</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated bounceInDown slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- bounceInRight -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded go">bounceInRight</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow go">&lt;h2 class='animated <span class="highlighter">bounceInRight</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated bounceInRight slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- bounceInUp -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded go">bounceInUp</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow go">&lt;h2 class='animated <span class="highlighter">bounceInUp</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated bounceInUp slow go"></div></div>
+            </div>
+
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- bounceInLeft -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded go">bounceInLeft</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow go">&lt;h2 class='animated <span class="highlighter">bounceInLeft</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated bounceInLeft slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+            <!-- fadeInDownShort -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInDownShort </h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInDownShort</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInDownShort go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInUpShort -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInUpShort </h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInUpShort</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInUpShort go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInLeftShort -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInLeftShort </h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInLeftShort</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInLeftShort go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInRightShort -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInRightShort </h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInRightShort</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInRightShort go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+            <!-- fadeInDown -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInDown</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInDown</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInDown go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInUp -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInUp</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInUp</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInUp go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInLeft -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInLeft</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInLeft</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInLeft go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeInRight -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeInRight</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeInRight</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeInRight go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- fadeIn -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">fadeIn</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">fadeIn</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated fadeIn slowest go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- growIn -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">growIn</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">growIn</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated growIn slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- shake -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">shake</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">shake</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated shake slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- shakeUp -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">shakeUp</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">shakeUp</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated shakeUp slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rotateIn -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rotateIn</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rotateIn</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rotateIn slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rotateInUpLeft -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rotateInUpLeft</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rotateInUpLeft</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rotateInUpLeft slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rotateInDownLeft -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rotateInDownLeft</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rotateInDownLeft</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rotateInDownLeft slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rotateInUpRight -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rotateInUpRight</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rotateInUpRight</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rotateInUpRight slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rotateInDownRight -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rotateInDownRight</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rotateInDownRight</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rotateInDownRight slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- rollIn -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">rollIn</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">rollIn</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated rollIn slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- wiggle -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">wiggle</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">wiggle</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated wiggle slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- swing -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">swing</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">swing</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated swing slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- tada -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">tada</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">tada</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated tada slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- wobble -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">wobble</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">wobble</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated wobble slow go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- pulse -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">pulse</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">pulse</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated pulse slow go"></div></div>
+            </div>
+
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- lightSpeedInRight -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">lightSpeedInRight</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">lightSpeedInRight</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated lightSpeedInRight go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- lightSpeedInLeft -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">lightSpeedInLeft</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">lightSpeedInLeft</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated lightSpeedInLeft go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- flip -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">flip</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">flip</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated flip go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- flipInX -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">flipInX</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">flipInX</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated flipInX slowest go"></div></div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- flipInY -->
+            <div class="animatedParent row article">
+
+                <div class="col-md-4">
+
+                    <h3 class="animated bounceInUp padded">flipInY</h3>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated growIn slow">&lt;h2 class='animated <span class="highlighter">flipInY</span>'&gt;It Works!&lt;/h2&gt;</pre>
+                </div>
+                <div class="col-md-2"><div class="repeat animated flipInY slowest go"></div></div>
+            </div>
+
+
+
+
+            <div class="animatedParent">
+                <h2 class="animated growIn slow go">Extra Functions</h2>
+            </div>
+
+            <!-- Sequencing -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown go">Sequencing</h3>
+                <div class="col-md-4">
+
+                    <p class="animated bounceInLeft slow go">
+                        If you want to have a set of animations start one after the other then you can set a sequence time in ms using "data-sequence" then define the order with "data-id".
+                    </p>
+                </div>
+                <div class="animatedParent col-md-8">
+                    <pre class="animated bounceInRight slow go">&lt;div class='animatedParent' <span class="highlighter">data-sequence='500'</span>&gt;
+	&lt;h2 class='animated bounceInDown' <span class="highlighter">data-id='1'</span>&gt;It Works!&lt;/h2&gt;
+	&lt;h2 class='animated bounceInDown' <span class="highlighter">data-id='2'</span>&gt;This animation will start 500ms after&lt;/h2&gt;
+	&lt;h2 class='animated bounceInDown' <span class="highlighter">data-id='3'</span>&gt;This animation will start 500ms after&lt;/h2&gt;
+&lt;/div&gt;	</pre>
+                </div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- Offset -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown go">Offset</h3>
+                <div class="col-md-6">
+                    <p class="animated bounceInLeft slow go">
+                        This will make the make the animation either start before or after it has entered the viewport by the specified ammount. So if you wanted to only start the animation after the user has scrolled 300px past it then setting an offset of -300px would achieve this.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-6">
+                    <pre class="animated bounceInRight slow go">&lt;div class='animatedParent'<span class="highlighter">data-appear-top-offset='-300'</span>&gt;
+	&lt;h2 class='animated bounceInDown'&gt;It Works!&lt;/h2&gt;
+&lt;/div&gt;	</pre>
+                </div>
+            </div>
+
+
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow go">
+            </div>
+
+            <!-- Animate Once -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown go">Animate Once</h3>
+                <div class="col-md-6">
+                    <p class="animated bounceInLeft slow go">
+                        Adding this will make sure the item only animates once and will not reset when it leaves the viewport.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-6">
+                    <pre class="animated bounceInRight slow go">&lt;div class='animatedParent <span class="highlighter">animateOnce</span>'&gt;
+	&lt;h2 class='animated bounceInDown'&gt;It Works!&lt;/h2&gt;
+&lt;/div&gt;	</pre>
+                </div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- Animate Once -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown">Animation Speed</h3>
+                <div class="col-md-6">
+                    <p class="animated bounceInLeft slow">
+                        Currently you can define 4 speeds, the default which requires nothing then slow, slower and slowest.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-6">
+                    <pre class="animated bounceInRight slow">&lt;div class='animatedParent'<span class="highlighter"></span>&gt;
+	&lt;h2 class='animated bounceInDown <span class="highlighter">slowest</span>'&gt;It Works!&lt;/h2&gt;
+&lt;/div&gt;	</pre>
+                </div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- Delay -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown">Delay (New!)</h3>
+                <div class="col-md-6">
+                    <p class="animated bounceInLeft slow">
+                        You can now add individual delays to your animations if you don't want to do it with sequencing delays, please refer to the animations css file to see all the delays available.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated bounceInRight slow">&lt;div class='animatedParent <span class="highlighter">delay-250</span>'&gt;
+	&lt;h2 class='animated bounceInDown'&gt;It Works!&lt;/h2&gt;
+&lt;/div&gt;</pre>
+                </div>
+            </div>
+
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- On Click  -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown">On Click Toggle </h3>
+                <div class="col-md-6">
+                    <p class="animated bounceInLeft slow">
+                        You can now call the animations with an on click event. You can can define an out animation for transitioning out with this. <input type="button" class="btn btn-primary animatedClick" data-target="clickExample" value="Click me!">
+                    </p>
+                    <p class="animated bounceInLeft slow">
+                        Please note that the target will only animate on view if you wrap it in an animatedParent class. If it is not in this then the animation will only trigger on click.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-6">
+<pre class="animated bounceInRight fadeOutDown slow clickExample">&lt;input type='button' class='<span class="highlighter">animatedClick</span>' <span class="highlighter">data-target='clickExample'</span>&gt;
+&lt;h2 class='animated bounceInDown <span class="highlighter">clickExample</span> <span class="highlighter">fadeOutDown</span>'&gt;It Works!&lt;/h2&gt;
+</pre>
+                </div>
+            </div>
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+            <!-- On Click Sequencing -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown">On Click With Sequencing</h3>
+                <div class="col-md-5">
+                    <p class="animated bounceInLeft slow">
+                        You can now call the animations with an on click event. You can can define an out animation for transitioning out with this.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-7">
+<pre class="animated bounceInRight slow">&lt;input type='button' class='animatedClick' data-target='clickExample' <span class="highlighter">data-sequence='500'</span>&gt;
+&lt;h2 class='animated bounceInDown clickExample fadeOutDown' <span class="highlighter">data-id='1'</span>&gt;It Works!&lt;/h2&gt;
+&lt;h2 class='animated bounceInDown clickExample fadeOutDown' <span class="highlighter">data-id='2'</span>&gt;It Works!&lt;/h2&gt;
+</pre>
+                </div>
+            </div>
+
+
+            <div class="animatedParent">
+                <hr class="animated fadeIn slow">
+            </div>
+
+
+            <!-- IE Fix -->
+            <div class="animatedParent row article">
+                <h3 class="animated bounceInDown">IE Fix</h3>
+                <div class="col-md-5">
+                    <p class="animated bounceInLeft slow">
+                        This is just a fix that will fix the elements not appearing on IE9 or less, please not that the animations will not work on IE9 or less.
+                        <br><br>
+                        Place this below the animations.css link in the head of your file.
+                    </p>
+                </div>
+                <div class="animatedParent col-md-7">
+<pre class="animated bounceInRight slow">&lt;!--[if lte IE 9]&gt;
+      &lt;link href='/PATH/TO/FOLDER/css/animations-ie-fix.css' rel='stylesheet'&gt;
+&lt;![endif]--&gt;
+</pre>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <a name="icons"></a>
+    <section class="styleguide__icons">
+        <h2 class="styleguide__icons"><strong class="subsection-number">#2</strong> Available Icons</h2>
+        <hr />
+        <style>
+            .styleguide__icons img {
+                display: block;
+            }
+        </style>
+        @foreach (var categoryDirectory in Directory.GetDirectories(Server.MapPath("~/images/icons")))
+        {
+            <h3 style="clear:both;"><u>Category: @categoryDirectory.Substring((categoryDirectory.LastIndexOf("\\") + 1), (categoryDirectory.Length - (categoryDirectory.LastIndexOf("\\") + 1))).ToUpper()</u></h3>
+            foreach (var colorDirectory in Directory.GetDirectories(categoryDirectory))
+            {
+                <h4 style="clear:both;"><b>@colorDirectory.Substring((colorDirectory.LastIndexOf("\\") + 1), (colorDirectory.Length - (colorDirectory.LastIndexOf("\\") + 1))).ToUpper()</b></h4>
+                foreach (var file in Directory.GetFiles(colorDirectory))
+                {
+                    var newUri = new Uri(file).PathAndQuery;
+                    <div class="col-md-3" style=@(colorDirectory.Contains("white")? "background-color:gray":"")>
+                        <img src='@(newUri.Substring(newUri.IndexOf("/images"), newUri.Length-newUri.IndexOf("/images")))' style="width:25px" alt="Icon" />
+                        <label>@newUri.Substring(newUri.LastIndexOf("/") + 1, newUri.Length - (newUri.LastIndexOf("/") + 1)).Replace(".svg", "").Replace("b_", "").Replace("w_", "")</label>
+                    </div>
+                }
+
+            }
+        }
+    </section>
+</div>

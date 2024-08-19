@@ -1,0 +1,47 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var link = Model.Value<CTA>("link");
+
+    //var image = Model.Value<IPublishedContent>("image");
+    string image = string.Empty;
+    string imageAlt = string.Empty;
+    var typedMediaPickerSingle = Model.Value<IPublishedContent>("image");
+    if (typedMediaPickerSingle != null)
+    {
+        image = typedMediaPickerSingle.Url();
+        imageAlt = typedMediaPickerSingle.Value<string>("alt", defaultValue: string.Empty);
+    }
+}
+
+    <div class="c-explore-blade">
+        <div class=" container">
+            <div class="c-explore-blade__wrapper">
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-4 c-explore-blade__wrapper__image">
+                        @if (image != null)
+                        {
+                            <img loading="lazy" src="@image" alt="@imageAlt">
+                        }
+                    </div>
+                    <div class="col-sm-6 c-explore-blade__wrapper__copy">
+                        @(Html.Raw(Model.Value("copy")))
+                        @if (link != null)
+                        {
+                            <div class="c-explore-blade__wrapper__link">
+                                <a href="@link.Link" target="@link.Target" class="btn btn-default">@link.Caption</a>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+

@@ -1,0 +1,57 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var id = Guid.NewGuid();
+    var leftImage = Model.Value<IPublishedContent>("leftImage");
+    var rightImage = Model.Value<IPublishedContent>("rightImage");
+    var mobileImage = Model.Value<IList<IPublishedContent>>("mobileImages"); ;
+
+    var carouselId = "carousel_" + id;
+}
+<div class="c-image-slider" style="">
+
+    <div class="c-image-slider__slider twentytwenty-slider hidden-xs">
+        <img loading="lazy" src="@leftImage.GetCropUrl(width:1300, height:500)" style="width:100%;" alt="@(!string.IsNullOrEmpty(leftImage.Value<string>("altText"))?leftImage.Value<string>("altText"): string.Empty)"/>
+        <img loading="lazy" src="@rightImage.GetCropUrl(width: 1300, height: 500)" style="width:100%;" alt="@(!string.IsNullOrEmpty(rightImage.Value<string>("altText"))?rightImage.Value<string>("altText"): string.Empty)"/>
+
+    </div>
+    <div class="c-image-slider__carousel visible-xs">
+        
+        
+        <div id="@carouselId" class="carousel slide" data-ride="carousel" data-ride="carousel" data-interval="false" data-wrap="false">
+            @if (mobileImage.Count() > 1)
+            {
+                <ol class="carousel-indicators">
+                    @for (var i = 0; i < mobileImage.Count(); i++)
+                    {
+                        <li data-target="#@carouselId" data-slide-to="@i" class="@((i==0)?" active":"")"></li>
+                    }
+                </ol>
+
+            }
+            <div class="carousel-inner" role="listbox">
+                @for (var i = 0; i < mobileImage.Count(); i++)
+                {
+                    var item = mobileImage.ElementAt(i);
+                    <div class="item @((i==0)?" active":"")">
+                        if (item!=null){
+                        <img loading="lazy" src="@item.Url" alt="@(!string.IsNullOrEmpty(item.Value<string>("altText"))?item.Value<string>("altText"): string.Empty)" style="width:100%" />
+                        }
+                    </div>
+                }
+            </div>
+            @*@if (mobileImage.Count() > 1)
+            {
+                <a class="left carousel-control" href="#@carouselId" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#@carouselId" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            }*@
+        </div>
+    </div>
+
+</div>
+

@@ -1,0 +1,26 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+
+    var button = Model.Value<Link>("button");
+ 
+}
+
+<div class="CTA-bg-bar margin-bottom-lower">
+    <div class="container desktop-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="CTA-Bar-Blue-title">@Model.Value("title")</div>
+                <div class="CTA-Bar-Blue-details " style="color: #FFFFFF;">@Model.Value("copy")</div>
+            </div>
+            <div class="col-md-6 contact">
+                <input type="text" class="solution-placeholder" placeholder="First Name" />
+                <input type="email" class="solution-placeholder" placeholder="Email Address" />
+                
+                <div class="case-study-btn"><a href="@button.Url">@button.Name</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,64 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var allnews = Model.Value<Link>("newsLink");
+    var newstories = Model.Value<List<IPublishedElement>>("news");
+    //var Stories = Umbraco.ContentAtRoot().SelectMany(x => x.ChildrenOfType("BlogList")).ToList<IPublishedContent>().SelectMany(x1 => x1.ChildrenOfType("BlogPosts")).SelectMany(s => s.ChildrenOfType("BlogPost")).OrderByDescending(d=>d.Value("itemDate")).Take(3).ToList();
+}
+
+<div class="quorumWrapper margin-bottom-lower">
+    <div class=" desktop-footer qm-grid">
+        <div class="success-stories-Title1">
+            @Model.Value("heading")
+        </div>
+        @Html.Raw(Model.Value("subHeading"))
+        <div class="row QuorumCards">
+            @foreach (var story in newstories)
+            {
+
+                //var image = story.Value<IPublishedContent>("teaserImage");
+                //var author = story.Value<IPublishedContent>("author");
+                //var category = story.Value<IPublishedContent>("category");
+
+                //var storylink = story.Value<Link>("storyLink");
+                var image = story.Value<IPublishedContent>("image");
+                var author = story.Value<string>("type");
+                var description = story.Value<string>("copy");
+
+                var storylink = story.Value<Link>("link");
+                <div class="col-sm-4 success-stories-cards">
+                    <div>
+                        @if (image != null)
+                        {
+                        <a href="@(storylink!=null?storylink.Url:string.Empty)">
+                            <picture class="story-img">
+                                <source srcset="@(image!=null?image.Url():string.Empty)" media="(min-width: 1024px)">
+                                <img loading="lazy" srcset="@(image!=null?image.Url():string.Empty)" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)" class="news-width">
+                            </picture>
+                            </a>
+                        }
+                    </div>
+                    <div class="success-story-Details">
+                        @if (author != null)
+                        {
+                        <a href="@(storylink!=null?storylink.Url:string.Empty)">
+                            <p class="story-Title">@(author != null ? author : string.Empty) @*<img src="~/images/arrow-2.svg" alt="arrow-2" />*@ </p>
+                            </a>
+                        }
+                        @if (description != null)
+                        {
+                            @*<p id="story-quote"> @(author != null ? author.Name:string.Empty)</p>*@
+                        }
+                        <blockquote id="story-Description">@Html.Raw(description)</blockquote>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <a href="@allnews.Url" class="text-decrotion-none"> <button class="new-stories">@allnews.Name</button></a>
+</div>
+
+
+
+
+

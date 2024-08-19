@@ -1,0 +1,355 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var tabs = Model.Value<IList<IPublishedContent>>("tabs");
+    var firstTabPanels = Model.Value<IList<IPublishedContent>>("panels");
+}
+@* KM: I ADDED SOME STUFF TO TEST THE COMPONENT WITH.  FEEL FREE TO TOTALLY DELETE THIS.*@
+<div class="c-upstream-illustration">
+    <div class="container">
+        <div class="row">
+            <!-- TODO: Generate tabs and select via Umbraco data -->
+            <!--Nav tabs - Generated in upstreamIllustration.js-->
+            <ul class="nav nav-tabs hidden-xs" role="tablist"></ul>
+            <div class="c-upstream-illustration__wrapper__selectors visible-xs-block col-xs-12">
+                <div class="c-upstream-illustration__wrapper__select">
+                    <!--Dropdown as nav tabs- Generated in upstreamIllustration.js-->
+                    <select class="form-control nav-tabs-select"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="c-upstream-illustration__graphic">
+                    <!-- TODO: If we really need to support multiple versions of this component on the same page, the IDs used in the SVG need to be modified -->
+                    <svg id="upstreamIllustrationSVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 656 656">
+                        <defs>
+                            <clipPath id="clip-path-1">
+                                <path class="cls-1" d="M328,328V0C206.61,0,100.62,66,43.9,164L328,328Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-2">
+                                <path id="SVGID" class="cls-1" d="M612.1,164C555.38,66,449.39,0,328,0V328Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-3">
+                                <path id="SVGID-2" data-name="SVGID" class="cls-1" d="M612.1,164,328,328h0L612.1,492a328.39,328.39,0,0,0,0-328.06Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-4">
+                                <path class="cls-1" d="M328,656c121.39,0,227.38-66,284.1-164L328,328Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-5">
+                                <path id="SVGID-3" data-name="SVGID" class="cls-1" d="M328,328,43.9,492c56.72,98,162.7,164,284.1,164V328Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-6">
+                                <path id="SVGID-4" data-name="SVGID" class="cls-1" d="M43.9,164A328.39,328.39,0,0,0,43.9,492L328,328Z" />
+                            </clipPath>
+                            <clipPath id="clip-path-7">
+                                <path id="SVGID-5" data-name="SVGID" class="cls-1" d="M327.24,359.34H272.1a39.1,39.1,0,0,1-12-2.13V301.63h67.14Z" />
+                            </clipPath>
+
+
+
+                            @for (var i = 0; i < firstTabPanels.Count; i++)
+                            {
+                                var image = firstTabPanels[i].GetPropertyValue<IPublishedContent>("panelImage");
+                                var panelImageUrl = (image != null ? image.Url : "");
+                                @* TODO: Could we make a toggle in the CMS to choose from a list of prebuilt icons *@
+                                <symbol id="icon_panel-@(i+1)" data-name="icon_panel-@(i+1)" viewBox="0 0 54 54">
+                                    <image width="54" height="54" xlink:href="@panelImageUrl" />
+                                </symbol>
+                            }
+
+                            @*TODO: Remove this once we use an image for the Center Circle *@
+                            <symbol id="building" data-name="building" viewBox="0 0 37.7 60.87">
+                                <rect class="cls-2" y="3.23" width="30.7" height="57.1" />
+                                <rect class="cls-3" x="3.23" y="7" width="23.7" height="53.86" />
+                                <polygon class="cls-4" points="37.7 0 7.27 0 0 3.23 30.7 3.23 37.7 0" />
+                                <polygon class="cls-3" points="30.7 60.33 37.7 60.33 37.7 0 30.7 3.23 30.7 60.33" />
+                                <rect class="cls-2" x="3.23" y="9.7" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="11.31" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="9.7" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="9.7" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="9.7" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="9.7" width="1.62" height="4.85" />
+                                <rect class="cls-2" x="3.23" y="17.24" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="18.85" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="17.24" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="17.24" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="17.24" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="17.24" width="1.62" height="4.85" />
+                                <rect class="cls-2" x="3.23" y="24.78" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="26.39" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="24.78" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="24.78" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="24.78" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="24.78" width="1.62" height="4.85" />
+                                <rect class="cls-2" x="3.23" y="32.32" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="33.93" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="32.32" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="32.32" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="32.32" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="32.32" width="1.62" height="4.85" />
+                                <rect class="cls-2" x="3.23" y="39.86" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="41.48" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="39.86" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="39.86" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="39.86" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="39.86" width="1.62" height="4.85" />
+                                <rect class="cls-2" x="3.23" y="47.4" width="24.78" height="4.85" />
+                                <rect class="cls-5" x="3.23" y="49.02" width="9.16" height="3.23" />
+                                <rect class="cls-4" x="14" y="47.4" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="17.24" y="47.4" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="20.47" y="47.4" width="1.62" height="4.85" />
+                                <rect class="cls-4" x="23.7" y="47.4" width="1.62" height="4.85" />
+                                <rect class="cls-5" x="22.08" y="4.85" width="2.15" height="1.08" />
+                                <rect class="cls-5" x="25.32" y="4.85" width="2.15" height="1.08" />
+                            </symbol>
+                        </defs>
+
+                        <g id="upstreamIllustration">
+                            <g id="circles">
+                                <g id="circle_panel-1">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="circle_panel-2">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite-2" data-name="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer" data-name="centerCircleGreenOuter">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="circle_panel-3">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite-3" data-name="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer" data-name="centerCircleGreenOuter">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="circle_panel-4">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite-4" data-name="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer" data-name="centerCircleGreenOuter">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="circle_panel-5">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite-5" data-name="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer" data-name="centerCircleGreenOuter">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="circle_panel-6">
+                                    <circle class="cls-14" cx="328" cy="328" r="292" />
+                                    <circle class="cls-15" cx="328" cy="328" r="176" />
+                                    <circle id="centerCircleWhite-6" data-name="centerCircleWhite" class="cls-7" cx="328" cy="328" r="100" />
+                                    <g class="circle_center-circle-green-outer" data-name="centerCircleGreenOuter">
+                                        <circle class="cls-16" cx="328" cy="328" r="80.5" />
+                                        <circle class="cls-16" cx="328" cy="328" r="92" />
+                                    </g>
+                                </g>
+                                <g id="pieSliceSeparators">
+                                    <line class="cls-22" x1="328" x2="328" y2="656" />
+                                    <line class="cls-22" x1="43.94" y1="492" x2="612.06" y2="164" />
+                                    <line class="cls-22" x1="612.06" y1="492" x2="43.94" y2="164" />
+                                </g>
+                                <g id="centerCircle">
+                                    <circle id="centerCircleGreen" class="cls-23" cx="328" cy="328" r="72" />
+                                    @if (Model.HasValue("circleCenterText"))
+                                    {
+                                        <text>
+                                            <text id="centerCircleText" class="cls-24" transform="translate(285.48 377.83)">
+                                                <tspan>@(Model.Value<string>("circleCenterText"))</tspan>
+                                            </text>
+                                        </text>
+                                    }
+
+                                    @*Start Center Image*@
+                                    <g id="centerCircleIcon">
+                                        @if (Model.HasValue("circleCenterImage"))
+                                        {
+                                            var centerImage = Model.Value<IPublishedContent>("circleCenterImage");
+                                            var centerImageUrl = (centerImage != null ? centerImage.Url : "");
+                                            <image width="120" height="80" xlink:href="@centerImageUrl" transform="translate(273.5 281)" />
+                                        }
+                                        else {
+                                            <path class="cls-26" d="M383.75,300.44c0-4.3-5.31-8.45-9.1-8.45a6.73,6.73,0,0,0-3.65,1c-.76-3.2-3.26-9.21-11.32-9.21-11,0-12.12,10-12.12,10-9.1,0-9.1,8-9.1,8s0,8.84,8.44,8.84h38.18a5.17,5.17,0,0,0,4.1-5.45C389.18,300.29,383.75,300.44,383.75,300.44Z" />
+                                            <polygon class="cls-27" points="305.58 311.42 355.85 289.34 362.32 296.88 322.72 350.79 305.58 311.42" />
+                                            <path class="cls-7" d="M383,300.6a9.26,9.26,0,0,0-8.59-9.05c-2.26-.11-3.31,1.2-4.2,1.92-.6-2.54-.76-5.68-5.8-5.68-8.7,0-8,7.89-8,7.89-7.2,0-7.2,6.31-7.2,6.31s0,7.45,6.68,7.45h30.23a4.91,4.91,0,0,0,3.26-4.77C389.43,301.18,383,300.6,383,300.6Z" />
+                                            <path class="cls-6" d="M366.87,306a.64.64,0,0,1-.44-.18.63.63,0,0,1,0-.88l8.33-8.32a.62.62,0,0,1,.87,0,.63.63,0,0,1,0,.88l-8.32,8.32A.62.62,0,0,1,366.87,306Z" />
+                                            <path class="cls-6" d="M361.62,306a.62.62,0,0,1-.44-.18.63.63,0,0,1,0-.88l8.32-8.32a.62.62,0,0,1,.87,0,.63.63,0,0,1,0,.88l-8.32,8.32A.61.61,0,0,1,361.62,306Z" />
+                                            <path class="cls-6" d="M356.31,306a.62.62,0,0,1-.44-.18.63.63,0,0,1,0-.88l8.32-8.32a.62.62,0,0,1,.87,0,.63.63,0,0,1,0,.88l-8.32,8.32A.61.61,0,0,1,356.31,306Z" />
+                                            <path class="cls-28" d="M358.63,289.28a.62.62,0,0,1,.87,0l4.38,4.38.11-.12a2,2,0,0,0,0-2.4c-.55-.54-3.37-3.37-3.37-3.37a2.32,2.32,0,0,0-3.29,0s-2.49,2.42-3.12,3.11a2.77,2.77,0,0,0-.11,2.94Z" />
+                                            <path class="cls-3" d="M364,291.14l-.49-.48a1.25,1.25,0,0,1-.19,1.34l-1.72,1.69,1.2,1.07c.58-.57,1.06-1.06,1.21-1.22A2,2,0,0,0,364,291.14Z" />
+                                            <path class="cls-3" d="M362,295.26a1.6,1.6,0,0,0-2.13.15l-.37.36a.57.57,0,0,1-.37.18v1.92a1.82,1.82,0,0,0,1.11-.52l.18-.19h0c.32-.33.81-.15,1.19.2s1.32,1.23,1.32,1.23v-2.42A9.25,9.25,0,0,0,362,295.26Z" />
+                                            <path class="cls-3" d="M359.08,287.09a2.32,2.32,0,0,0-1.76.68s-2.4,2.32-3,3a2.94,2.94,0,0,0-.21,3l4.54-4.54a.57.57,0,0,1,.45-.18Z" />
+                                            <path class="cls-28" d="M359.08,297.87V296a.6.6,0,0,1-.49-.18l-3.88-3.84a1.16,1.16,0,0,1-.15-1.43l-.24.25a2.85,2.85,0,0,0-.21,3.1c.55.63,3.5,3.5,3.5,3.5a1.82,1.82,0,0,0,1.47.52Z" />
+                                            <path class="cls-29" d="M383.89,311.42H347a9.72,9.72,0,0,1-9.48-9.75,9.49,9.49,0,0,1,9.33-9.48,12.64,12.64,0,0,1,24.43-.89,9.73,9.73,0,0,1,3.31-.58,9.84,9.84,0,0,1,9.61,8,6.23,6.23,0,0,1,5.94,6.21A6.45,6.45,0,0,1,383.89,311.42ZM347,294.22a7.53,7.53,0,0,0-.2,15h36.92a4.49,4.49,0,0,0,4.38-4.33,4.18,4.18,0,0,0-4.17-4.18,3.13,3.13,0,0,0-.5,0l-1.05.12-.08-1.05a7.77,7.77,0,0,0-7.71-7.11,7.65,7.65,0,0,0-3.54.86l-1.2.61-.26-1.32a10.61,10.61,0,0,0-20.89.48l-.14.94-.95-.08Z" />
+                                            <circle class="cls-4" cx="336.46" cy="318.96" r="4.57" />
+                                            <polygon class="cls-7" points="335.99 321.41 333.93 319.34 334.69 318.58 335.86 319.75 338.18 316.49 339.06 317.12 335.99 321.41" />
+                                            <circle class="cls-4" cx="328.92" cy="307.11" r="3.23" />
+                                            <polygon class="cls-7" points="328.59 308.84 327.13 307.38 327.67 306.84 328.49 307.67 330.13 305.37 330.75 305.81 328.59 308.84" />
+                                            <circle class="cls-4" cx="343.47" cy="300.11" r="2.69" />
+                                            <polygon class="cls-7" points="343.19 301.55 341.97 300.33 342.42 299.88 343.11 300.57 344.48 298.65 344.99 299.02 343.19 301.55" />
+                                            <path class="cls-4" d="M330.65,323h0l-1.14.58-.2-.89,1.51-.75h1v6.22h-1.13Z" />
+                                            <path class="cls-4" d="M345.13,314.53c-.12,1.77-.89,2.83-2.21,2.74s-1.87-1.28-1.76-3,.92-2.81,2.21-2.73S345.24,312.9,345.13,314.53Zm-2.92-.15c-.1,1.34.23,2.06.8,2.1s1-.68,1.07-2-.16-2.05-.79-2.09S342.29,313,342.21,314.38Z" />
+                                            <path class="cls-4" d="M345.88,307.7h0l-.94.47-.16-.73,1.25-.62h.81V312h-.94Z" />
+                                            <path class="cls-4" d="M334.1,308.84h0l-1,.51-.17-.79,1.34-.66h.87v5.52h-1Z" />
+                                            <path class="cls-4" d="M340.92,309.55c0,1.77-.7,2.88-2,2.88s-1.95-1.15-2-2.83.73-2.87,2-2.87S340.92,307.92,340.92,309.55Zm-2.93.05c0,1.34.37,2,.95,2s.93-.75.93-2.08-.31-2-.93-2S338,308.21,338,309.6Z" />
+                                            <path class="cls-4" d="M354.82,296.11h0l-.5.25-.08-.38.65-.33h.43v2.69h-.5Z" />
+                                            <path class="cls-4" d="M337.1,303.82c0,1.65-.65,2.69-1.88,2.69s-1.82-1.08-1.83-2.65.68-2.67,1.89-2.67S337.1,302.29,337.1,303.82Zm-2.73,0c0,1.26.34,1.9.88,1.9s.87-.69.87-1.93-.28-1.9-.87-1.9S334.36,302.57,334.37,303.86Z" />
+                                            <path class="cls-4" d="M326.83,321.44h0l-1.24.62-.22-1,1.65-.81h1.07V327h-1.24Z" />
+                                            <path class="cls-4" d="M357.6,299.73c-.06.95-.47,1.52-1.18,1.48s-1-.69-.94-1.59.49-1.51,1.18-1.46S357.66,298.86,357.6,299.73Zm-1.56-.07c-.05.71.12,1.1.43,1.12s.53-.37.58-1.07-.09-1.1-.43-1.13S356.09,298.92,356,299.66Z" />
+                                            <path class="cls-4" d="M331.76,314.69c0,2-.77,3.19-2.23,3.19s-2.16-1.27-2.17-3.13.81-3.18,2.24-3.18S331.76,312.89,331.76,314.69Zm-3.23.06c0,1.48.4,2.25,1,2.25s1-.82,1-2.29-.34-2.25-1-2.25S328.52,313.22,328.53,314.75Z" />
+                                            <path class="cls-4" d="M323.1,308h0l-1.23.63-.22-1,1.64-.81h1.07v6.75H323.1Z" />
+                                            <path class="cls-4" d="M318.25,310.67h0l-1.23.62-.22-1,1.64-.81h1.07v6.76h-1.24Z" />
+                                            <path class="cls-4" d="M350,297.36c0,1.32-.52,2.15-1.5,2.15s-1.45-.86-1.46-2.11.55-2.14,1.51-2.14S350,296.15,350,297.36Zm-2.17,0c0,1,.27,1.51.7,1.51s.69-.55.69-1.54-.23-1.51-.69-1.51S347.81,296.37,347.82,297.4Z" />
+                                            <path class="cls-4" d="M343,304.77h0l-1,.48-.17-.74,1.27-.63H344v5.23h-1Z" />
+                                            <path class="cls-4" d="M351.63,293.85h0l-.66.34-.12-.52.88-.44h.58v3.65h-.67Z" />
+                                            <path class="cls-4" d="M353.87,301.32h0l-.59.3-.11-.46.79-.39h.51V304h-.59Z" />
+                                            <path class="cls-4" d="M352.61,303c-.08,1.26-.63,2-1.57,2s-1.33-.92-1.26-2.12.66-2,1.58-1.94S352.69,301.83,352.61,303Zm-2.08-.11c-.07,1,.16,1.47.57,1.5s.7-.49.77-1.43-.12-1.46-.57-1.49S350.59,301.9,350.53,302.88Z" />
+                                            <path class="cls-4" d="M348.71,305.28h0l-.79.4-.14-.61,1.05-.52h.68v4.29h-.79Z" />
+                                            <path class="cls-4" d="M353.83,299.2c-.06.95-.47,1.52-1.18,1.47s-1-.69-.94-1.59.49-1.51,1.18-1.46S353.89,298.32,353.83,299.2Zm-1.56-.08c0,.72.12,1.1.43,1.12s.53-.36.58-1.07-.1-1.1-.43-1.13S352.32,298.38,352.27,299.12Z" />
+                                            <path class="cls-4" d="M348.84,302.45c-.08,1.26-.63,2-1.57,2s-1.33-.92-1.26-2.11.66-2,1.58-1.95S348.92,301.29,348.84,302.45Zm-2.08-.1c-.07.95.16,1.47.57,1.49s.7-.48.77-1.43-.12-1.46-.57-1.49S346.82,301.36,346.76,302.35Z" />
+                                            <path class="cls-4" d="M330.68,332.46c0,2.3-.9,3.74-2.6,3.74s-2.53-1.5-2.54-3.67.94-3.72,2.61-3.72S330.68,330.35,330.68,332.46Zm-3.78.07c0,1.73.47,2.64,1.22,2.64s1.21-1,1.21-2.69-.4-2.63-1.21-2.63S326.89,330.73,326.9,332.53Z" />
+                                            <path class="cls-4" d="M325.83,318.19c0,2.13-.83,3.46-2.41,3.46s-2.35-1.38-2.36-3.4.88-3.44,2.43-3.44S325.83,316.23,325.83,318.19Zm-3.5.06c0,1.61.44,2.45,1.13,2.45s1.12-.9,1.12-2.49-.37-2.45-1.12-2.45S322.32,316.59,322.33,318.25Z" />
+                                            <g class="cls-30">
+                                                <use width="37.71" height="60.87" transform="translate(273.44 304.96)" xlink:href="#building" />
+                                                <use width="37.71" height="60.87" transform="translate(285.96 317.48)" xlink:href="#building" />
+                                            </g>
+                                        }
+                                    </g>
+                                    @*End Center Image*@
+                                </g>
+                            </g>
+                            <g id="icons">
+                                <use width="54" height="54" transform="translate(234.74 181.1)" xlink:href="#icon_panel-1" />
+                                <use width="54" height="54" transform="translate(374.09 180.56)" xlink:href="#icon_panel-2" />
+                                <use width="54" height="54" transform="translate(437.67 293.65)" xlink:href="#icon_panel-3" />
+                                <use width="54" height="54" transform="translate(372.75 414.2)" xlink:href="#icon_panel-4" />
+                                <use width="54" height="54" transform="translate(232.67 417.64)" xlink:href="#icon_panel-5" />
+                                <use width="54" height="54" transform="translate(167.81 294.52)" xlink:href="#icon_panel-6" />
+                            </g>
+                            @*Start of pannel texts per tab*@
+                            <g id="text">
+                                @for (var i = 0; i < tabs.Count; i++)
+                                {
+                                    <g id="panel-@i">
+                                        @{
+                                            var panelXPositions = new List<double> { 155, 390, 515, 392, 170, 55 };
+                                            var panelYPositions = new List<double> { 126, 105, 310, 516, 505, 310 };
+                                            var panelIndex = 0;
+                                        }
+                                        @foreach (var panel in tabs[i].GetPropertyValue<IList<IPublishedContent>>("panelsDetails"))
+                                        {
+                                            var copy = panel.GetPropertyValue<string>("panelText");
+                                            copy = copy.Replace("\\n", "");
+                                            var lines = !string.IsNullOrEmpty(copy) ? copy.Split('\n') : new string[0];
+                                            <text>
+                                                <text transform="matrix(1 0 0 1 @(panelXPositions[panelIndex]) @(panelYPositions[panelIndex]) )">
+                                                    @if (lines.Length >= 1)
+                                                    {
+                                                        <tspan x="0" y="0" class="cls-31">@lines[0]</tspan>
+                                                    }
+                                                    @if (lines.Length >= 2)
+                                                    {
+                                                        <tspan x="0" y="18" class="cls-31">@lines[1] </tspan>
+                                                    }
+                                                    @if (lines.Length >= 3)
+                                                    {
+                                                        <tspan x="0" y="36" class="cls-31">@lines[2]</tspan>
+                                                    }
+                                                    @if (lines.Length >= 4)
+                                                    {
+                                                        <tspan x="0" y="54" class="cls-31">@lines[3]</tspan>
+                                                    }
+                                                </text>
+                                            </text>
+                                            panelIndex++;
+                                        }
+                                    </g>
+                                }
+                            </g>
+                            @*End of pannel texts per tab*@
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!--TODO: Generate via Umbraco data-->
+                <div class="tab-content"></div>
+                <!--Tab panes - Generated in upstreamIllustration.js-->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var benefitData = [
+     @*TODO move this to an actual object*@
+    @for (var i = 0; i < tabs.Count; i++)
+    {
+        var tab = tabs[i];
+        var panels = tab.GetPropertyValue<IList<IPublishedContent>>("panelsDetails");
+        if (i != 0)
+        {
+            @:,
+        }
+        <text>
+        {
+            "benefit": "@tab.GetPropertyValue("headline")",
+            "description": "@Html.Raw(tab.GetPropertyValue<string>("copy"))",
+            "areasOfBusiness": [
+                 @for (var j = 0; j < panels.Count; j++)
+                 {
+                      if (j != 0)
+                    {
+                        @:,
+                    }
+                     <text>
+                    {
+                        "name": "panel-@(j+1)",
+                        "label": "@(panels[j].GetPropertyValue<string>("panelText").Replace("\n", ""))"
+                    }
+                    </text>
+                }
+            ]
+        }
+        </text>
+    }
+];
+
+
+    var benefitIconMapping = [
+    @*TODO move this to an actual object*@
+    @for (var i = 0; i < firstTabPanels.Count; i++)
+    {
+        var productImage = firstTabPanels[i].GetPropertyValue<IPublishedContent>("productImage");
+        var productLink = firstTabPanels[i].GetPropertyValue<CTA>("link");
+        if (i != 0)
+        {
+            @:,
+        }
+        <text>
+        {
+            name: 'panel-@(i+1)',
+            icon: '@(productImage != null ? productImage.Url : "")',
+            label: '@(productLink != null ? productLink.Caption : "")',
+            link: '@(productLink != null ? productLink.Link : "")',
+            target: '@(productLink != null ? productLink.Target : "")'
+        }
+        </text>
+    }
+];
+</script>

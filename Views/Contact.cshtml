@@ -1,0 +1,28 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@*@using Archetype.Models;*@
+@{
+    Layout = "Master.cshtml";
+}
+
+<section class="container">
+    <div class="row larger">
+        @Html.Partial("~/Views/Partials/Components/Wrappers/Simple.cshtml", new SimpleWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("pageHead"), ComponentView = "~/Views/Partials/Components/SectionOverviewCopyBlock.cshtml", ComponentSettings = new { IsH1 = true } })
+    </div>
+    <div class="contact-container contact-page">
+        
+        @Html.Partial("~/Views/Partials/Components/contactform.cshtml")
+            
+    </div>
+</section>
+
+
+<div class="container">
+    <hr class="row contact-page" />
+</div>
+
+
+<section class="container">
+    @Html.Partial("~/Views/Partials/Components/Wrappers/grid.cshtml", new GridWrapperModel { ComponentModel = Model.Value<ArchetypeModel>("copy"), ComponentView = "~/Views/Partials/Components/CopyBlock.cshtml", SColumns = 4, ComponentSettings = new { } })
+</section>
+
+

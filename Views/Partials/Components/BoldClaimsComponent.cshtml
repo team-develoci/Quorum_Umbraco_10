@@ -1,0 +1,37 @@
+﻿@model IPublishedContent
+
+
+@{
+    var boldClaims = Model.Value<IEnumerable<IPublishedElement>>("boldClaimElements");
+    var backgroundColor = Model.HasValue("backgroundColor") ? Model.Value<string>("backgroundColor") : string.Empty;
+    var textColor = Model.HasValue("textColor") ? Model.Value<string>("textColor") : string.Empty;
+}
+<section class="w-100 bold-claims" style="background-color: @backgroundColor;">
+    <div class="w-100 row text-center bold-claims-content">   
+        @{
+            var i = 1;
+        }
+        @foreach (var item in boldClaims)
+        {
+            var Title = item.Value<string>("title");
+            var Description = item.Value<string>("description");
+            var cssClasses = "col-md-4 bold-claim-col";
+            if(i==2){
+                cssClasses = cssClasses+" "+"bold-claim-center-col";
+            }
+            <div class="@cssClasses">
+                <div class="bold-claim">
+                @if (item.HasValue("title"))
+                {
+                    <h2 class="bold-claim-h2" style="color:@textColor"> @Html.Raw(Title)</h2>
+                }
+                @if (item.HasValue("description"))
+                {
+                    <h3 class="bold-claim-h3" style="color:@textColor"> @Html.Raw(Description)</h3>
+                }
+                </div>
+            </div>
+            i++;
+        }
+    </div>     
+</section>

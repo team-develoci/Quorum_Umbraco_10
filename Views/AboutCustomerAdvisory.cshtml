@@ -1,0 +1,44 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+@{
+    var HeroComponent = Model.Value<IList<IPublishedElement>>("hero");
+    var solutionmenus = Model.Value<IList<IPublishedElement>>("navigation");
+    var textContent = Model.Value<IList<IPublishedElement>>("textContent");
+    var headingLogo = Model.Value<IList<IPublishedElement>>("headingLogo");
+}
+
+@if (HeroComponent != null)
+{
+    @Html.Partial("~/Views/Partials/NewComponents/ComponentBackgroundHeroNoSpacing.cshtml", HeroComponent.FirstOrDefault())
+}
+<section class="Company-page py-lg-4 py-5 my-0">
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-3">
+                @if (solutionmenus != null)
+                {
+                    foreach (var menu in solutionmenus)
+                    {
+                        @Html.Partial("~/Views/ComponentVerticalNavigation.cshtml", menu);
+                    }
+                }
+            </div>
+            <div class="col-md-9">
+                @if (textContent != null)
+                {
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentTextContent.cshtml", textContent.FirstOrDefault())
+                }
+                @if(headingLogo != null && headingLogo.Any())
+                {
+                    foreach (var logo in headingLogo)
+                    {
+                    @Html.Partial("~/Views/Partials/NewComponents/ComponentHeadingWithLogo.cshtml", logo)
+                    }
+                }
+
+                </div>
+            </div>
+        </div>
+    </section>

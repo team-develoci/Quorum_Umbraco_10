@@ -1,0 +1,36 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta = Model.Value<CTA>("link");
+
+    var image = Model.Value<IPublishedContent>("image");
+}
+
+<div class="c-product-solution-tile">
+
+    <h3 class="c-product-solution-tile__headline">@Model.Value("headline")</h3>
+
+    @if (image != null)
+    {
+        <img class="c-product-solution-tile__image" src="@image.Url" alt="@(!string.IsNullOrEmpty(image.Value<string>("altText"))?image.Value<string>("altText"): string.Empty)">
+    }
+    <div class="c-product-solution-tile__copy rte">
+        @Html.Raw(Model.Value("copy"))
+    </div>
+
+    @if (cta != null)
+    {
+        <a href="@cta.Link" target="@cta.Target" class="cta">
+            <div class="c-product-solution-tile__link-area">
+                @cta.Caption
+            </div>
+        </a>
+    }
+
+</div>
+
+
+
+

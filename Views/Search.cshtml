@@ -1,0 +1,108 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var query = Request.QueryString["q"];
+
+
+    IList<IPublishedContent> searchResults = null;
+    if (!string.IsNullOrEmpty(query))
+    {
+        query = query.ToLower();
+        //var allSearchResults = Umbraco.TypedSearch(query).Where("excludeFromSearchEngines == false").ToList<IPublishedContent>().Where(n => n.HasProperty("excludeFromSearchEngines"));
+        var allSearchResults = Umbraco.ContentQuery.Search(query, 0, 10, out var amount);
+        // var site = Model.Content.Site();
+        searchResults = new List<IPublishedContent>();
+        foreach (var result in allSearchResults)
+        {
+            //filter out other sites
+            //var resultSite = result.Site();
+            //if ((resultSite != null && site != null && resultSite.Id == site.Id))
+            //{
+            searchResults.Add(result.Content);
+            //}
+        }
+
+    }
+
+
+    //ViewBag.TealiumTags = new Dictionary<string, string>() {
+    //    { "search_keyword", query },
+    //    { "search_results", searchResults.Count().ToString()},
+    //    { "page_type", "search"},
+    //    { "site_section", "search"}
+
+    //};
+}
+
+
+<div class="">
+    <div>
+        <div class="" id="">
+             <div class="container">
+                <div class="search-bar mobile search-mobile search-bottom">
+                    <div class="container">
+                        <input id="mobile-search-box" class="search-box" type="text" placeholder="Search..." maxlength="40" name="query" data-search-url="@Model.Url()" />
+                        <input type="submit" class="submit-btn search-submit-btn" value="Go" />
+                    </div>
+                </div>
+                </div>
+            
+        </div>
+    </div>
+</div>
+@if (query != "")
+{
+    <div class="padding-md-def-md-def ">
+        <div class="container">
+            <div class="row search-text">
+                <h1>Search Results</h1>
+                @if (string.IsNullOrEmpty(query))
+                {
+                    <div class="search-container no-search search-details-text search-bottom">
+                        <p class="search-results-label">You didn't search for anything.</p>
+                        <p>What would you like to search for
+                        @*<a href="@Model.Url()?q=pizza">pizza</a>*@
+                        ?
+                        </p>
+
+                    </div>
+                }
+                else
+                {
+
+
+
+                    <div class="search-container">
+                        @*<p>You searched for @query</p>*@
+
+                        <!-- check for search results-->
+                        @if (searchResults != null)
+                        {
+                            <p class="search-results-label search-details-text">
+                                @searchResults.Count() @(searchResults.Count() == 1 ? "result" : "results") for @query
+                            </p>
+
+                            <!-- show any search results here -->
+                            <div class="search-results search-bottom">
+                                @foreach (var result in searchResults)
+                                {
+                                    var url = result.HasProperty("sourceUrl") && result.HasValue("sourceUrl") ? result.Value("sourceUrl") : result.Url();
+
+                                    <div class="search-result-item">
+                                        <h3><a href="@(url)">@result.Name</a></h3>
+                                        <p>@Html.Raw(result.Value("pageDescription"))</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+    
+    
+}

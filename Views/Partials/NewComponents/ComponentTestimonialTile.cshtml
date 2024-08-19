@@ -1,0 +1,31 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var cta = Model.Value<CTA>("link");
+
+    var image = Model.Value<IPublishedContent>("image");
+}
+
+<div class="c-testimonial-tile">
+
+    @if (image != null)
+    { 
+    <img src="@image.Url" alt="@(image!=null?image.Value<string>("altText"): string.Empty)">
+    }
+    <blockquote>
+        <p class="c-testimonial-tile__blockquote quoteHeight">@Model.Value("quoteText")</p>
+      </blockquote>
+         <p class="quote-citation">@Model.Value("citation")</p>
+
+    @if(cta != null)
+    {
+        <a href="@cta.Link" target="@cta.Target" class="cta">@cta.Caption</a>
+    }
+
+</div>
+
+
+
+

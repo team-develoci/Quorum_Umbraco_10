@@ -1,0 +1,41 @@
+﻿@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+
+	var rootId = string.Empty;
+	var rootNode  = Model.AncestorsOrSelf().Where(x => x.ContentType.Alias == "homePageV2").FirstOrDefault();
+	if(rootNode!=null && rootNode.Id > 0)
+	{
+		rootId = rootNode.Id.ToString();
+	}
+	else
+	{
+		var tempRootNode = Model.AncestorsOrSelf().Last();
+		rootNode = tempRootNode.Siblings().Where(x => x.ContentType.Alias == "homePageV2").FirstOrDefault();
+		rootId = rootNode.Id.ToString();
+	}
+    var configuration = UmbracoContext.ContentCache.GetByRoute(rootId + "/configuration");
+
+    string gtmId = configuration.Value<string>("googleAnalyticsID", "");
+
+
+    string[] tags = gtmId.ToString().Split(',');
+}
+
+@if (!string.IsNullOrEmpty(gtmId.ToString()))
+{
+    @*<!-- Google Tag Manager (Paste as high in the <head> as possible:) -->*@
+    foreach (string tag in tags)
+    {
+        <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: "gtm" + "." + "js" }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '@tag');</script>
+    }
+    @*<!-- End Google Tag Manager -->*@
+
+    @*Add Default GTM Id for GLG Data Tracking Script Logic *@
+    <script>defaultGTMId = '@tags.FirstOrDefault()'; </script>
+
+}
+else
+{
+    <!-- No GTM Id configured -->
+}

@@ -1,0 +1,82 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+
+@* Footer *@
+<footer class="
+        " role="contentinfo">
+    <div class="footer-inner-content">
+
+        <div class="small-paragraph add-margin footer-bootom">
+            <div class="footer-wrapper-left">
+                <div>
+                    <h3 class="footer1">@Model.Value("footer1")</h3>
+                    @Html.Raw(Model.Value("footerDescription1"))
+                </div>
+                <div>
+                    <h3 class="footer1">@Model.Value("footer2")</h3>
+                    @Html.Raw(Model.Value("footer2Description"))
+                </div>
+            </div>
+            <div class="footer-spacing"></div>
+            <div class="footer-wrapper-right">
+                <div>
+                    <h3 class="footer2">@Model.Value("footer3Text")</h3>
+                    @foreach (var footer in Model.Value<IEnumerable<Link>>("footer3links"))
+                    {
+                        <ul>
+                            <a class="footer-name" target="@footer.Target"
+                               href="@footer.Url">
+                                @footer.Name
+                            </a>
+                        </ul>
+                    }
+
+                </div>
+                <div>
+                    <h3 class="footer2">@Model.Value("footer4Text")</h3>
+                    @foreach (var footer in Model.Value<IEnumerable<Link>>("footer4links"))
+                    {
+                        <ul>
+                            <a class="footer-name" href="@footer.Url" target="@footer.Target">
+                                @footer.Name
+                            </a>
+                        </ul>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <hr class="horizontal-line-footer" />
+        <div class="row small-paragraph add-margin footer-bottom-links">
+
+
+
+            <div class="col-md-4">
+                <a class="legal-text">@Html.Raw(Model.Value("legalText"))</a>
+            </div>
+
+            <div class="col-md-4">
+                @Html.Partial("~/Views/Partials/Social/SocialPageLinks.cshtml")
+            </div>
+
+            <div class="col-md-4 footer-3-cols">
+                <ul class="c-footer--secondary-links list-unstyled">
+
+                    @foreach (var link in Model.Value<IEnumerable<Link>>("legalLinks"))
+                    {
+
+                        <a class="link-name" href="@link.Url" target="@link.Target">
+                            @link.Name
+                        </a>
+                       <span class="footer-dots">.</span>
+                    }
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+  
+</footer>
+

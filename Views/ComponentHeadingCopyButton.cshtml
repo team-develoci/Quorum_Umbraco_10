@@ -1,0 +1,20 @@
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var button = Model.Value<List<Link>>("link");
+}
+
+
+<div class="container-header medium-font-header">@Model.Value("heading")</div>
+<div class="container-details medium-font-detail">
+    <div class="col-sm-8 pl-0">@Html.Raw(Model.Value("copy"))</div>
+ </div>
+<div class="w-100">
+    
+    @if (button != null)
+    {
+        <button class="carousel-btn"> @button.FirstOrDefault().Name </button>
+    }
+</div>
+

@@ -1,0 +1,24 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = null;
+    string url = "";
+    var media = Model.Value<IPublishedContent>("mediaItem");
+    if (media != null)
+    {
+        url = media.Url;
+    }
+    
+    if(string.IsNullOrEmpty(url))
+    {
+        url = Model.Value<string>("pardotLink");
+    }
+
+    if (!string.IsNullOrEmpty(url))
+    { 
+        Response.Redirect(url, true);
+    } 
+    else
+    {
+        Response.StatusCode = 404;
+    }
+}

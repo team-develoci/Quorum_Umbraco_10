@@ -1,0 +1,16 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var component = Model.Value<IPublishedContent>("component");
+
+}
+@if (Model != null)
+{
+
+    @Html.Partial("~/views/partials/newcomponents/" + component.ContentType.Alias + ".cshtml", component)
+}
+else
+{
+    <!-- No Component is selected -->
+}
+

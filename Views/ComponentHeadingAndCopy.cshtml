@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    Layout = null;
+}
+
+<div class="@Model.Value("textAlign")">
+	<div class="container-header">
+		@Model.Value("heading")
+	</div> 
+	<div class="container-details pb-5"> 
+      @Html.Raw(Model.Value("copy")) 
+   </div> 
+</div> 
+

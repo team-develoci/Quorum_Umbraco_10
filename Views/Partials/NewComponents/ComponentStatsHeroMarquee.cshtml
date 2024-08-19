@@ -1,0 +1,46 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+
+    var backgroundImage = Model.Value<IPublishedContent>("backgroundImage");
+    
+}
+
+
+@*write CSS for background image.  Note that crop sizes and breakpoints are defined in the CMS *@
+@ImageHtmlHelper.WriteBackgroundImageCrops(backgroundImage, ".c-stats-hero-blade")
+
+<div class="container-fluid">
+    <div class="c-stats-hero-blade text-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="stat-header">
+                        <h1>@Model.Value("headline")</h1>
+                        <p class="large">@Model.Value("subhead")</p>
+                    </div>
+                    <div class="c-stats-hero-blade__carousel">
+                        @foreach (var stat in Model.Value<IList<IPublishedContent>>("stats"))
+                        {
+                        <div class="stat col-xs-10 col-md-4">
+                            <p>
+                               
+                               @if (stat.HasValue("statValue")) { <span class="stat-number">@Html.Raw(stat.GetPropertyValue("statValue"))</span>}
+                                @if (stat.HasValue("statValueSuperscript")) {  <span class="stat-sup">@Html.Raw(stat.GetPropertyValue("statValueSuperscript"))</span> }
+                                @if (stat.HasValue("statDescription")) {<span class="stat-copy col-xs-10 col-sm-12">@Html.Raw(stat.GetPropertyValue("statDescription"))</span> }
+                            </p>
+                        </div>
+                        }
+                       
+                    </div>
+                    <div class="stat-diamonds">
+                        <div class="stat-diamond"></div>
+                        <div class="stat-diamond desktop-only"></div>
+                        <div class="stat-diamond desktop-only"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

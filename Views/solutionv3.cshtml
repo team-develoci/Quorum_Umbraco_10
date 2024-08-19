@@ -1,0 +1,132 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using System.Globalization
+@using System.Web.Optimization;
+
+@{
+    Layout = "~/Views/Master.cshtml";
+
+    var bannerImage = Model.Value<MediaWithCrops>("banner");
+    var components = Model.Value<IEnumerable<IPublishedContent>>("components");
+	var parent = Model.Parent;
+	var parentparent = parent.Parent;
+    var buttons = Model.Value("linkButton");
+    var contactFormIsModal = "0";
+    var form = Model.Value<IPublishedContent>("contactBlade");
+    if(form!=null){
+        contactFormIsModal = form.Value("enableModal").ToString();
+    }  
+    var enableUberFlip = 0;
+    if(Model.HasValue("enableDiv")){
+        enableUberFlip = (int)Model.Value("enableDiv");
+    }
+    const string option1 = "SingleWideColumn";
+    const string option2 = "TwoColumnImageLeft";
+    const string option3 = "TwoColumnImageRight";
+    var heroLayout = (Model.HasValue("heroLayout")  && !String.IsNullOrEmpty(Model.Value<string>("heroLayout")))? Model.Value<string>("heroLayout") : option1;
+    var blueBoxTone = (Model.HasValue("blueBoxTone")  && !String.IsNullOrEmpty(Model.Value<string>("blueBoxTone")))? Model.Value<string>("blueBoxTone") : "";
+}
+
+@{
+    if (parent != null && parentparent !=null)
+    {
+        <p class="solution-breadcrumbs">
+			<a href="@parentparent.Url">@parentparent.Name</a>
+            <span class="solution-span">/</span>
+            <a href="@parent.Url">@parent.Name</a>
+            <span class="solution-span">/</span>@Model.Name
+        </p>
+    }
+}
+
+@*UF RECO EMBED WIDGET*@
+@* @if(enableUberFlip == 1){
+    @Html.Raw(Model.Value("uberflipCode"))
+} *@
+@{
+    var div1_CSS="";
+    var div2_CSS="";
+    var content_paragraph_css="";
+    var content_head_css="";
+    var background_css= !String.IsNullOrEmpty(blueBoxTone) ? " blueBox_"+blueBoxTone : "";
+    var imagePosition = (heroLayout==option2) ? " order-first" : "";
+}
+
+<section class="heroImage-wrapper hero-bottom position-relative d-flex justify-content-center">
+        @if (heroLayout == option1 && bannerImage != null)
+        {
+            <img loading="lazy" class="w-100 h-100" src="@bannerImage.Content.Url()" alt="@bannerImage.Content.Value("altText")" />
+            div1_CSS = "containter-lg position-absolute top-0 px-3 py-6 d-flex align-items-center h-100 w-100 m-auto justify-content-center solution-hero";
+            content_paragraph_css = "paragraph-text text-white fw-500 mb-3";
+            content_head_css = "head-h1 text-white fw-200 mb-3";
+        }
+        else{
+            div1_CSS = "col-sm-6 col-12 d-flex align-items-center justify-content-center solution-hero solution-hero-content"+ background_css;
+            div2_CSS = "col-sm-6 col-12 d-flex solution-hero-image"+imagePosition;
+            content_paragraph_css = "solution-hero-paragraph";
+            content_head_css = "solution-hero-h1";
+            @:<div class="row g-0">
+        }
+            <div class="@div1_CSS">
+                    <div class="col-xl-10 p-0">
+                        @if (Model.HasValue("bannerTitle"))
+                        {
+                            <h1 class="@content_head_css">
+                                @Html.Raw(Model.Value("bannerTitle"))
+                            </h1>
+                        }
+                        @if (Model.HasValue("bannerTitle"))
+                        {
+                            <div class="@content_paragraph_css">@Html.Raw(Model.Value("bannerSummary"))</div> 
+                            if (buttons!=null)
+                            {
+                                try{
+                                    var btn = (List<Link>)buttons;
+                                    <a href="@btn.FirstOrDefault().Url" class="btn btnOrange d-flex justify-content-center align-items-center ms-0 me-4">@btn.FirstOrDefault().Name</a>   
+                                }
+                                catch{
+                                @*No buttons on page*@ 
+                                }
+                            }
+                        }
+                        @if(contactFormIsModal=="1"){
+                            @* Button trigger modal *@
+                            var modalName = form.Value("modalName");
+                            var buttonLabel = form.Value("eventLabel");
+                            <button type="button" class="btn btnOrange d-flex justify-content-center align-items-center ms-0" data-bs-toggle="modal" data-bs-target="#@modalName">
+                            @buttonLabel
+                            </button>                        
+                        }                        
+                    </div>
+            </div>
+        @if(heroLayout==option2 || heroLayout==option3){
+            <div class="@div2_CSS"> 
+                @if (bannerImage != null)
+                {
+                    <img loading="lazy" class="w-100 h-100" src="@bannerImage.Content.Url()" alt="@bannerImage.Content.Value("altText")" />
+                }
+            </div>
+            @:</div>
+        }
+</section>
+
+@* UberFlip Page Placement *@
+@if(enableUberFlip == 1){
+<section>
+    <div id="uberflip-tiles"></div>
+</section>
+}
+
+@if (components != null && components.Any())
+{
+    foreach (var component in components)
+    {
+        @Html.Partial($"~/Views/Partials/Components/{component.ContentType.Alias.ToFirstUpperInvariant()}.cshtml", component)
+    }
+}
+
+@*Contact Blade*@
+@if(form != null){
+    @Html.Partial("~/views/partials/newcomponents/" + form.ContentType.Alias + ".cshtml", form);
+}
+
+        

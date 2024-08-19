@@ -1,0 +1,73 @@
+﻿@model IPublishedContent
+
+
+@{
+
+    string Title = Model.HasValue("title") ? Model.Value<string>("title") : string.Empty;
+    var customerSuccessLogos = Model.Value<IEnumerable<IPublishedElement>>("customerSuccessLogos");
+    var backgroundColor = Model.HasValue("backgroundColor") ? Model.Value<string>("backgroundColor") : string.Empty;
+    var textColor = Model.HasValue("textColor") ? Model.Value<string>("textColor") : string.Empty;
+}
+<section class="w-100 customer-success-section" style="background-color: @backgroundColor;">
+    <div class="customerSuccessHeadline d-flex  w-100 justify-content-center mb-2 pt-4"><h1 class="head-h2" style="color:@textColor">@Title</h1></div>
+    <div class="w-100">
+    <div id="customerLogos" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">       
+            @{
+                var i = 1;
+                var itemcount = customerSuccessLogos.Count();
+            }
+            @foreach (var item in customerSuccessLogos)
+            {
+                if(i==1 || i==6){
+                    var active="active";
+                    if(i > 1){
+                      active="";
+                    }
+                    @:<div class="carousel-item @active">
+                    @:<div class="row justify-content-center">
+                }
+                @:<div class="col-sm-2 col-12 p-3 customer-col">
+                @:<div class="customer-inner">
+                if (item.Value("link")!=null && item.Value<IEnumerable<Link>>("link").FirstOrDefault()!=null)
+                {
+                    var linkValue = item.Value<IEnumerable<Link>>("link").FirstOrDefault();
+                    @:<a href="@linkValue.Url" class=uc-link-title>
+                }
+                if (item.HasValue("customerLogo"))
+                {
+                    var logo = item.Value<IPublishedContent>("customerLogo");
+                    if (logo != null)
+                    {
+                        var logoUrl = logo.Url();
+                        var logoAlt = logo.Value<string>("alt", defaultValue: string.Empty);
+                        <div class="customerLogo">
+                            <img loading="lazy" srcset="@logoUrl" alt="@logoAlt" class="customer-logo-img"/>
+                        </div>
+                     }
+                }
+                if (item.Value("link")!=null && item.Value<IEnumerable<Link>>("link").FirstOrDefault()!=null)
+                {
+                    @:</a>
+                }
+                @:</div>
+                @:</div>
+                if(i==5 || i==itemcount){
+                    @:</div>
+                    @:</div>
+                }
+                i++;
+            }
+
+        </div>
+       
+        <button class="carousel-control-prev" type="button" data-bs-target="#customerLogos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#customerLogos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>     
+    </section>

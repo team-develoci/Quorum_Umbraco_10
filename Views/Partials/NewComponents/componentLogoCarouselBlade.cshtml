@@ -1,0 +1,57 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedElement>
+
+@{
+    var itemId = Html.ViewContext.ViewBag.elementNumber as int?;
+    if (itemId.HasValue)
+    {
+        itemId = itemId.Value + 1;
+
+    }
+    else
+    {
+        itemId = 99;
+    }
+    ViewBag.elementNumber = itemId;
+
+    var elemntId = "element_" + itemId.Value;
+}
+<div class="c-logo-slider-blade">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="c-logo-slider-blade__carousel">
+                    @foreach (var logoItem in Model.Value<IList<IPublishedElement>>("logos"))
+                    {
+                        var logoImage = logoItem.Value<IPublishedContent>("logo");
+                        var hoverImage = logoItem.Value<IPublishedContent>("hoverLogo");
+                        if (hoverImage == null) { hoverImage = logoImage; }
+                        var logoLink = logoItem.Value<string>("link");
+                        if (logoImage != null)
+                        {
+                            <div class="logo-item">
+                                @if (!string.IsNullOrEmpty(logoLink))
+                                {
+                                    <a href="@logoLink" class="no-tealium">
+                                        <img loading="lazy" class="blue-logo" src="@hoverImage.GetCropUrl(height:85, width:183, imageCropMode: global::Umbraco.Web.Models.ImageCropMode.Pad)&bgcolor=fff" alt="@((hoverImage != null && !string.IsNullOrEmpty(hoverImage.Value<string>("altText")))?hoverImage.Value<string>("altText"): string.Empty)" />
+                                        <img loading="lazy" class="grey-logo" src="@logoImage.GetCropUrl(height: 85, width: 183, imageCropMode: global::Umbraco.Web.Models.ImageCropMode.Pad)&bgcolor=fff" alt="@((logoImage != null && !string.IsNullOrEmpty(logoImage.Value<string>("altText")))?logoImage.Value<string>("altText"): string.Empty)" />
+
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img class="" src="@logoImage.GetCropUrl(height: 85, width: 183, imageCropMode: global::Umbraco.Web.Models.ImageCropMode.Pad)&bgcolor=fff" alt="@((logoImage != null && !string.IsNullOrEmpty(logoImage.Value<string>("altText")))?logoImage.Value<string>("altText"): string.Empty)"/>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

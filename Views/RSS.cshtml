@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Response.ContentType = "text/xml";
+    var rssRoot = Model.AncestorOrSelf("BlogList") != null ? Model.AncestorOrSelf("BlogList") : Model.AncestorOrSelf("PressReleaseList");
+    var rssRootHeadline = rssRoot.HasProperty("headline") && rssRoot.HasValue("headline") ? rssRoot.Value<string>("headline") : rssRoot.Name;
+    var rssItems = rssRoot.Descendants("BlogPost").Any() ? rssRoot.Descendants("BlogPost") : rssRoot.Descendants("PressReleaseItem");
+    rssItems = rssItems.OrderByDescending(r => r.Value<DateTime>("itemDate") != DateTime.MinValue ? r.Value<DateTime>("itemDate") : r.CreateDate).ToList();;
+
+}<rss version="2.0"
+      xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      xmlns:atom="http://www.w3.org/2005/Atom"
+      xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+      xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+
+    <channel>
+        <title>@rssRootHeadline</title>
+        <atom:link href="@Request.Url" rel="self" type="application/rss+xml" />
+        <link>@rssRoot.Url(mode: UrlMode.Absolute)</link>
+        <description>@Model.Value("pageDescription") : @rssRoot.Value("pageDescription")</description>
+        <lastbuilddate>@DateTime.Now.ToString("r")</lastbuilddate>
+        <language>CultureInfo.CurrentCulture</language>
+        <sy:updateperiod>hourly</sy:updateperiod>
+        <sy:updatefrequency>1</sy:updatefrequency>
+        @foreach (var item in rssItems)
+        {
+            var categoryName="";
+            if (item.HasProperty("category") && item.HasValue("category")){
+                IPublishedContent category = item.Value<IPublishedContent>("category");
+                if(category != null){
+                    categoryName = category.Name;
+                }
+            }
+            else{
+                categoryName = item.Parent.Name;
+            }
+            var authorName = "";
+            if (item.HasProperty("author") && item.HasValue("author")){
+                IPublishedContent author = item.Value<IPublishedContent>("author");
+                if(author != null){
+                    authorName = author.Name;
+                }
+            }
+            var publishedDate = item.Value<DateTime>("itemDate") != DateTime.MinValue ? item.Value<DateTime>("itemDate") : item.CreateDate;
+
+            var itemHeadline = item.HasProperty("headline") && item.HasValue("headline") ? item.Value<string>("headline") : item.Name;
+            <item>
+                <title>@itemHeadline</title>
+                @Html.Raw("<link>" + @item.Url(mode: UrlMode.Absolute) + "</link>")
+                <pubdate>@publishedDate.ToString("r")</pubdate>
+                <dc:creator><![CDATA[@authorName]]></dc:creator>
+                <category><![CDATA[@categoryName]]></category>
+                <description><![CDATA[@Html.Raw(item.Value("teaserText"))]]></description>
+                @if(item.HasProperty("bodyContent"))
+                {
+                <content:encoded>
+                    <![CDATA[@Html.Raw(item.Value("bodyContent"))]]>
+                </content:encoded>
+                }
+                else if (item.HasProperty("bodyCopy"))
+                {
+                    <content:encoded>
+                        <![CDATA[@Html.Raw(item.Value("bodyCopy"))]]>
+                    </content:encoded>
+                }
+            </item>
+        }
+    </channel>
+</rss>

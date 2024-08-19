@@ -1,0 +1,132 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+
+
+    int itemsPerPage = 20;
+    int startItems = 0; //items loaded in the marquee that would be page 0;
+
+
+
+    int page, year;
+    if (!int.TryParse(Request.QueryString["page"], out page)) { page = 1; }
+    int.TryParse(Request.QueryString["y"], out year);
+
+
+
+    IEnumerable<IPublishedContent> items  ;
+    if (year > 0)
+    {
+        //var date = DateTime.Parse("01-01-" + (year+1).ToString());
+		items = Model.Children.Where(x=>x.ContentType.Alias == "PressReleaseItem");
+        items = Model.Children.Where(item => item.Value<DateTime>("itemDate").Year == year);
+    }
+    else
+    {
+        items = Model.Children.Where(x=>x.ContentType.Alias == "PressReleaseItem");
+    }
+
+
+
+    int totalPages = (int)Math.Ceiling((decimal)(items.Count() - startItems) / (decimal)itemsPerPage);
+    //items = items.OrderByDescending(x => x.Value("itemDate")).Take(page * itemsPerPage + startItems);
+
+
+
+
+    var minDate = Model.Children.Select(item => item.Value<DateTime>("itemDate")).Where(d => d != DateTime.MinValue).Min();
+    var maxDate = Model.Children.Select(item => item.Value<DateTime>("itemDate")).Max();
+
+    var jsonObj = items.Select(x => new
+    {
+        imageurl = x.Value<IPublishedContent>("teaserImage") != null? x.Value<IPublishedContent>("teaserImage").Url():"",
+        sourceurl = x.HasProperty("sourceUrl") && x.HasValue("sourceUrl") ? x.Value<string>("sourceUrl") : x.Url(),
+        date= x.Value<DateTime>("itemDate")!=null? x.Value<DateTime>("itemDate").ToString("MMMM dd, yyyy"):"",
+        name = x.Name,
+        teaserText = x.Value<string>("teaserText"),
+        itemDate= x.Value<DateTime>("itemDate")
+    }).OrderByDescending(x1 =>x1.itemDate).ToList();
+
+}
+
+
+
+@*@if (Request.QueryString["load-more"] == "true")
+    {
+    Layout = null;
+    foreach (IPublishedContent item in items.Skip((page - 1) * itemsPerPage + startItems))
+    {
+    <text>@Html.Partial("~/Views/Partials/Components/newsTeaser.cshtml", item)</text>
+    }
+    return;
+    }*@
+
+
+
+
+<section class="press-releases-page py-lg-4 py-5 my-0">
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sideBar-company pt-0">
+                    <div class="solution-header companyOverview"><a href="/about/press-releases/" class="text-dark">Current Press Releases</a> </div>
+                    <ul class="px-0">
+                        @for (var y = maxDate.Year - 1; y >= minDate.Year; y--)
+                        {
+                            <li class="solution-subhead px-2"><a href="@Model.Url()?y=@y" class="w-100">@y @Model.Value("groupLabel")</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            @*<div class="col-md-9" data-page-number="@page" data-total-pages="@totalPages">*@
+        <div class="col-md-9" id="press-release">
+            @*@foreach (var item in items)
+        {
+            <text>@Html.Partial("~/Views/Partials/Components/newsTeaser.cshtml", item)</text>
+        }*@
+        </div>
+            <div class="py-2"> <button id="btnLoadMore" class="text-decrotion-none learnbtn mx-auto"> Show More</button> </div>
+        
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script type="text/javascript">
+        var page = 0;
+        var totalpage=@totalPages;
+        var JOI = @Html.Raw(Json.Encode(jsonObj));
+
+        $(document).ready(function () {
+            laodmore(0);
+        });
+
+        $("#btnLoadMore").click(function () {
+            page = page + 1;
+            laodmore(1);
+        });
+
+        var laodmore = function (addinc) {
+            var newsTeasertemplate = ``;
+            var startpage = 20 * page + addinc;
+            var remainingpage = startpage + 20 > totalpage ;
+            for (var i = startpage; i < JOI.length ; i++)
+            {
+                newsTeasertemplate += `<section class="mb-5 py-5 pt-0 border-1 border-bottom">
+                    <div class="fw-normal text fw-500 text-start pipeline-gray-color">
+                        <p>${JOI[i].date}</p>
+                    </div>
+                    <div class="">
+                        <h1 class="head-h4 dark-blue fw-300"><a class="dark-blue fw-300" href="${JOI[i].sourceurl}" style="text-decoration:none">${JOI[i].name}</a></h1> </div>
+                    <div class="fw-500 dark-gray pt-4 fs-6">
+                        <p>${JOI[i].teaserText}</p>
+                    </div></section>`;
+
+            }
+            $('#press-release').append(newsTeasertemplate);
+            if (!remainingpage) {
+                $("#btnLoadMore").hide();
+            }
+        }
+    </script>
+    }

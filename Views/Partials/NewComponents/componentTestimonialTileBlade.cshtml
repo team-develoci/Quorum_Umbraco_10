@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    var itemId = Guid.NewGuid();
+    var elemntId = "element_" + itemId;
+
+    var tiles = Model.Value<IList<IPublishedContent>>("tiles");
+}
+
+<div class="c-testimonial-tile-blade">
+    <div class="container">
+        <div class="hidden-xs">
+            @Html.Partial("~/Views/Partials/NewComponents/Repeaters/grid.cshtml", new GridWrapperModel { ComponentModel = tiles, ComponentView = "~/Views/Partials/NewComponents/ComponentTestimonialTile.cshtml", SColumns = 3, ComponentSettings = new { } })
+        </div>
+        <div class="visible-xs">
+            <div class="row">
+                @Html.Partial("~/Views/Partials/NewComponents/Repeaters/carousel.cshtml", new CarouselWrapperModel { ComponentModel = tiles, ComponentView = "~/Views/Partials/NewComponents/ComponentTestimonialTile.cshtml", HideArrows = true, ComponentSettings = new { } })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

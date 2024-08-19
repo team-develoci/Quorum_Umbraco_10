@@ -1,0 +1,43 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+	Layout = "Master.cshtml";
+	var solutionTiles = Model.Value<IList<IPublishedElement>>("solutionTiles");
+}
+<section class="solution-tiles">
+@if(solutionTiles != null){
+	int count = solutionTiles.Count();
+	int item = 0;
+	foreach (var tile in solutionTiles)
+    {
+		var header = tile.Value("heading");
+		var text = tile.Value("text");
+		var action = tile.Value<IEnumerable<Link>>("action").FirstOrDefault();
+		var image = tile.Value<MediaWithCrops>("image");
+			
+		if (item % 3 == 0) // Check if it's the first item of a row (multiple of 3)
+		{
+			@:<div class="wrap">  
+		}
+		<div class="solutions-tile">
+			@if(image != null){
+				var imageUrl = image.Content.Url();
+				var imageAlt = image.Content.Value("altText");
+				 <img loading="lazy" src="@imageUrl" alt="@imageAlt"/>
+			}
+			<div class="solutions-tile-text">
+				<h1 class="solutions-tile-h1">@header</h1> <!-- Add the 'bar' class here -->
+				<p class="animate-text">@text</p>
+				@if(action != null){
+					<a href="@action.Url" target="@action.Target" class="no-underline" target="_blank"><h2 class="animate-text">@action.Name &#8594;</h2></a>
+				}
+			</div>
+		</div>
+		if (item == count - 1 || (item + 1) % 3 == 0) // Check if it's the last item in the row
+		{
+			@:</div>
+		}
+		item++;
+	}
+}
+</section>
